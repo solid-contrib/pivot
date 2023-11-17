@@ -40,6 +40,17 @@
         "Derived from config/file-no-setup.json"
       ]
     },
+    {
+      "comment": "The key/cert values should be replaces with paths to the correct files. The 'options' block can be removed if not needed.",
+      "@id": "urn:solid-server:default:ServerFactory",
+      "@type": "BaseServerFactory",
+      "configurator": {
+        "@id": "urn:solid-server:default:ServerConfigurator"
+      },
+      "options_https": true,
+      "options_key": "/etc/letsencrypt/live/solidcommunity.net/privkey.pem",
+      "options_cert": "/etc/letsencrypt/live/solidcommunity.net/fullchain.pem"
+    },
 
     {
       "comment": "Serve Penny as default representation",
