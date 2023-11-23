@@ -6,6 +6,43 @@ Feel free to [open a feature request](https://github.com/solid-contrib/pivot/iss
 
 You can also [join the Matrix chat for solidcommunity.net](https://matrix.to/#/#solid_solidcommunity.net:gitter.im).
 
+### Example usage
+
+```bash
+root@cloud:~# git clone https://github.com/solid-contrib/pivot
+Cloning into 'pivot'...
+remote: Enumerating objects: 76, done.
+remote: Counting objects: 100% (76/76), done.
+remote: Compressing objects: 100% (52/52), done.
+remote: Total 76 (delta 31), reused 56 (delta 19), pack-reused 0
+Receiving objects: 100% (76/76), 19.78 MiB | 17.21 MiB/s, done.
+Resolving deltas: 100% (31/31), done.
+root@cloud:~# cd pivot
+root@cloud:~/pivot# npm ci --skip=dev
+
+added 830 packages, and audited 1041 packages in 36s
+
+150 packages are looking for funding
+  run `npm fund` for details
+
+13 moderate severity vulnerabilities
+
+To address issues that do not require attention, run:
+  npm audit fix
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+
+Run `npm audit` for details.
+root@cloud:~/pivot# npx community-solid-server -c ./config/https-mashlib-suffix-file.json -f ./data --httpsKey /etc/letsencrypt/live/cloud.pondersource.com/privkey.pem --httpsCert /etc/letsencrypt/live/cloud.pondersource.com/fullchain.pem -p 8086 -b https://cloud.pondersource.com:8086
+2023-11-23T19:17:08.208Z [Components.js] info: Initiating component discovery from /root/pivot/node_modules/@solid/community-server/
+2023-11-23T19:17:09.447Z [Components.js] info: Discovered 168 component packages within 1041 packages
+2023-11-23T19:17:09.450Z [Components.js] info: Initiating component loading
+2023-11-23T19:17:31.504Z [Components.js] info: Registered 890 components
+2023-11-23T19:17:31.515Z [Components.js] info: Loaded configs
+2023-11-23T19:17:37.559Z [ServerInitializer] {Primary} info: Listening to server at https://localhost:8086/
+```
+
 ### Why 'pivot'?
 _Short answer:_ we needed a name. ;)
 
