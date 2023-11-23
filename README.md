@@ -7,7 +7,7 @@ Feel free to [open a feature request](https://github.com/solid-contrib/pivot/iss
 You can also [join the Matrix chat for solidcommunity.net](https://matrix.to/#/#solid_solidcommunity.net:gitter.im).
 
 ### Example usage
-
+These are the bash commands to run on for example https://cloud.pondersource.com:8086/
 ```bash
 root@cloud:~# git clone https://github.com/solid-contrib/pivot
 Cloning into 'pivot'...
