@@ -1,0 +1,18 @@
+@prefix foaf: <http://xmlns.com/foaf/0.1/>.
+@prefix solid: <http://www.w3.org/ns/solid/terms#>.
+@prefix space: <http://www.w3.org/ns/pim/space#>.
+@prefix ldp: <http://www.w3.org/ns/ldp#>.
+<>
+    a foaf:PersonalProfileDocument;
+    foaf:maker <{{webId}}>;
+    foaf:primaryTopic <{{webId}}>.
+
+<{{webId}}>
+    {{#if name}}foaf:name "{{name}}";{{/if}}
+    space:storage <{{podBaseUrl}}>;
+    ldp:inbox <{{podBaseUrl}}inbox/>;
+    space:preferencesFile <{{podBaseUrl}}settings/prefs.ttl>;
+    solid:privateTypeIndex <{{podBaseUrl}}settings/privateTypeIndex.ttl>;
+    solid:publicTypeIndex <{{podBaseUrl}}settings/publicTypeIndex.ttl>;
+    {{#if oidcIssuer}}solid:oidcIssuer <{{oidcIssuer}}>;{{/if}}
+    a foaf:Person.

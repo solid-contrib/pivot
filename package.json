@@ -1,0 +1,36 @@
+{
+  "name": "pivot",
+  "version": "1.0.0",
+  "description": "A spec-compliant Solid pod server, based on a remix of CSS components",
+  "main": "index.js",
+  "scripts": {
+    "start0": "npx community-solid-server -c ./config/config-mashlib.json ./config/override-pod-templates.json -f ./data",
+    "start1": "NODE_TLS_REJECT_UNAUTHORIZED=0 && npx community-solid-server -c ./config/https-mashlib-suffix-file.json -f ./data --httpsKey ../privkey.pem --httpsCert ../fullchain.pem -b https://localhost:3000",
+    "start": "npx community-solid-server -c ./config/http-mashlib-suffix-file.json -f ./data",
+    "build": "echo \"Nothing to build.\"",
+    "clean": "[ -d ./data ] && rm -rf ./data || true",
+    "start:clean": "npm run clean &&  npm run start",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "templates": "cp -r templates/ ./node_modules/@solid/community-server/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/solid-contrib/pivot.git"
+  },
+  "keywords": [
+    "css",
+    "mashlib",
+    "node",
+    "javascript"
+  ],
+  "author": "Alain Bourgeois",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/solid-contrib/pivot/issues"
+  },
+  "homepage": "https://github.com/solid-contrib/pivot#readme",
+  "dependencies": {
+    "@solid/community-server": "^7.0.2",
+    "mashlib": "^1.8.8"
+  }
+}

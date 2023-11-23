@@ -1,5 +1,7 @@
 {
-  "@context": "https://linkedsoftwaredependencies.org/bundles/npm/@solid/community-server/^7.0.0/components/context.jsonld",
+  "@context": [
+    "https://linkedsoftwaredependencies.org/bundles/npm/@solid/community-server/^7.0.0/components/context.jsonld"
+  ],
   "import": [
     "css:config/app/init/default.json",
     "css:config/app/main/default.json",
@@ -7,10 +9,10 @@
     "css:config/http/handler/default.json",
     "css:config/http/middleware/default.json",
     "css:config/http/notifications/all.json",
-    "css:config/http/server-factory/http.json",
+    "css:config/http/server-factory/https.json",
     "css:config/http/static/default.json",
     "css:config/identity/access/public.json",
-    "css:config/identity/email/default.json",
+    "css:config/identity/email/example.json",
     "css:config/identity/handler/default.json",
     "css:config/identity/oidc/default.json",
     "css:config/identity/ownership/token.json",
@@ -26,8 +28,7 @@
     "css:config/storage/location/pod.json",
     "css:config/storage/middleware/default.json",
     "css:config/util/auxiliary/acl.json",
-    "css:config/util/identifiers/suffix.json",
-
+    "css:config/util/identifiers/subdomain.json",
     "css:config/util/logging/winston.json",
     "css:config/util/representation-conversion/default.json",
     "css:config/util/resource-locker/file.json",
@@ -35,12 +36,48 @@
   ],
   "@graph": [
     {
+      "comment": "The settings of your email server.",
+      "@type": "Override",
+      "overrideInstance": {
+        "@id": "urn:solid-server:default:EmailSender"
+      },
+      "overrideParameters": {
+        "@type": "BaseEmailSender",
+        "senderName": "Community Solid Server <solid@example.email>",
+        "emailConfig_host": "smtp.example.email",
+        "emailConfig_port": 587,
+        "emailConfig_auth_user": "solid@example.email",
+        "emailConfig_auth_pass": "NYEaCsqV7aVStRCbmC"
+      }
+    },
+    {
+      "comment": "The location of the new pod templates folder.",
+      "@type": "Override",
+      "overrideInstance": {
+        "@id": "urn:solid-server:default:PodResourcesGenerator"
+      },
+      "overrideParameters": {
+        "@type": "StaticFolderGenerator",
+        "templateFolder": "../css-mashlib/templates/pod"
+      }
+    },
+    {
+      "comment": "Where the WebID is located in the generated pod, relative to the root.",
+      "@type": "Override",
+      "overrideInstance": {
+        "@id": "urn:solid-server:default:PodCreator"
+      },
+      "overrideParameters": {
+        "@type": "BasePodCreator",
+        "relativeWebIdPath": "profile/card#me"
+      }
+    },
+    {
       "comment": [
         "A filesystem-based server with Databrowser as UI.",
         "Derived from config/file-no-setup.json"
       ]
     },
-
     {
       "comment": "Serve Databrowser as default representation",
       "@id": "urn:solid-server:default:DefaultUiConverter",
@@ -55,7 +92,6 @@
         "application/pdf"
       ]
     },
-
     {
       "comment": "Serve Mashlib static files.",
       "@id": "urn:solid-server:default:StaticAssetHandler",

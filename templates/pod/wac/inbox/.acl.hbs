@@ -1,0 +1,17 @@
+@prefix : <#>.
+@prefix acl: <http://www.w3.org/ns/auth/acl#>.
+@prefix inbox: <./>.
+@prefix c: <../profile/card#>.
+
+:Append
+    a acl:Authorization;
+    acl:accessTo inbox:;
+    acl:agentClass acl:AuthenticatedAgent;
+    acl:default inbox:;
+    acl:mode acl:Append.
+:ControlReadWrite
+    a acl:Authorization;
+    acl:accessTo inbox:;
+    {{#if email}}acl:agent c:me, <mailto:{{email}}>;{{/if}}
+    acl:default inbox:;
+    acl:mode acl:Control, acl:Read, acl:Write.
