@@ -34,13 +34,13 @@ To address all issues (including breaking changes), run:
   npm audit fix --force
 
 Run `npm audit` for details.
-root@cloud:~/pivot# npx community-solid-server -c ./config/https-mashlib-suffix-file.json -f ./data --httpsKey /etc/letsencrypt/live/cloud.pondersource.com/privkey.pem --httpsCert /etc/letsencrypt/live/cloud.pondersource.com/fullchain.pem -p 8086 -b https://cloud.pondersource.com:8086
-2023-11-23T19:17:08.208Z [Components.js] info: Initiating component discovery from /root/pivot/node_modules/@solid/community-server/
-2023-11-23T19:17:09.447Z [Components.js] info: Discovered 168 component packages within 1041 packages
-2023-11-23T19:17:09.450Z [Components.js] info: Initiating component loading
-2023-11-23T19:17:31.504Z [Components.js] info: Registered 890 components
-2023-11-23T19:17:31.515Z [Components.js] info: Loaded configs
-2023-11-23T19:17:37.559Z [ServerInitializer] {Primary} info: Listening to server at https://localhost:8086/
+root@cloud:~/pivot# npx community-solid-server -c ./config/https-mashlib-subdomain-file.json -f ./data --httpsKey /etc/letsencrypt/live/cloud.pondersource.com/privkey.pem --httpsCert /etc/letsencrypt/live/cloud.pondersource.com/fullchain.pem -p 8086 -b https://cloud.pondersource.com:8086
+2023-11-24T09:36:47.005Z [Components.js] info: Initiating component discovery from /root/pivot/node_modules/@solid/community-server/
+2023-11-24T09:36:47.971Z [Components.js] info: Discovered 168 component packages within 1041 packages
+2023-11-24T09:36:47.973Z [Components.js] info: Initiating component loading
+2023-11-24T09:37:07.756Z [Components.js] info: Registered 890 components
+2023-11-24T09:37:07.768Z [Components.js] info: Loaded configs
+2023-11-24T09:37:13.220Z [ServerInitializer] {Primary} info: Listening to server at https://localhost:8086/
 ```
 
 ### Why 'pivot'?
