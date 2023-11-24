@@ -11,8 +11,8 @@
     {{#if name}}foaf:name "{{name}}";{{/if}}
     space:storage <{{podBaseUrl}}>;
     ldp:inbox <{{podBaseUrl}}inbox/>;
-    space:preferencesFile <{{podBaseUrl}}settings/prefs.ttl>;
-    solid:privateTypeIndex <{{podBaseUrl}}settings/privateTypeIndex.ttl>;
-    solid:publicTypeIndex <{{podBaseUrl}}settings/publicTypeIndex.ttl>;
+    space:preferencesFile <{{podBaseUrl}}/settings/prefs.ttl>;
+    solid:privateTypeIndex <{{podBaseUrl}}/settings/privateTypeIndex.ttl>;
+    solid:publicTypeIndex <{{podBaseUrl}}/settings/publicTypeIndex.ttl>;
     {{#if oidcIssuer}}solid:oidcIssuer <{{oidcIssuer}}>;{{/if}}
     a foaf:Person.
