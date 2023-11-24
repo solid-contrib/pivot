@@ -12,6 +12,6 @@
 :ControlReadWrite
     a acl:Authorization;
     acl:accessTo inbox:;
-    {{#if email}}acl:agent c:me, <mailto:{{email}}>;{{/if}}
+    acl:agent <{{webId}}>;
     acl:default inbox:;
     acl:mode acl:Control, acl:Read, acl:Write.
