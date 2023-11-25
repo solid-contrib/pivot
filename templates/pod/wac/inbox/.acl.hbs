@@ -1,17 +1,19 @@
-@prefix : <#>.
-@prefix acl: <http://www.w3.org/ns/auth/acl#>.
-@prefix inbox: <./>.
-@prefix c: <../profile/card#>.
+# ACL resource for the profile Inbox
 
-:Append
+@prefix acl: <http://www.w3.org/ns/auth/acl#>.
+@prefix foaf: <http://xmlns.com/foaf/0.1/>.
+
+<#owner>
     a acl:Authorization;
-    acl:accessTo inbox:;
-    acl:agentClass acl:AuthenticatedAgent;
-    acl:default inbox:;
-    acl:mode acl:Append.
-:ControlReadWrite
-    a acl:Authorization;
-    acl:accessTo inbox:;
     acl:agent <{{webId}}>;
-    acl:default inbox:;
-    acl:mode acl:Control, acl:Read, acl:Write.
+    acl:accessTo <./>;
+    acl:default <./>;
+    acl:mode
+        acl:Read, acl:Write, acl:Control.
+
+# Appendable by authenticated, but NOT public-readable
+<#authenticated>
+    a acl:Authorization;
+    acl:agentClass acl:AuthenticatedAgent;
+    acl:accessTo <./>;
+    acl:mode acl:Append.

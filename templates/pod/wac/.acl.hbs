@@ -15,8 +15,6 @@
 <#owner>
     a acl:Authorization;
     acl:agent <{{webId}}>;
-    # Optional owner email, to be used for account recovery:
-    {{#if email}}acl:agent <mailto:{{{email}}}>;{{/if}}
     # Set the access to the root storage folder itself
     acl:accessTo <./>;
     # All resources will inherit this authorization, by default
