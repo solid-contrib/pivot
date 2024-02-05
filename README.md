@@ -43,6 +43,14 @@ root@cloud:~/pivot# npx community-solid-server -c ./config/https-mashlib-subdoma
 2023-11-24T09:37:13.220Z [ServerInitializer] {Primary} info: Listening to server at https://localhost:8086/
 ```
 
+Or on localhost:
+```
+git clone https://github.com/solid-contrib/pivot
+cd pivot
+npm install
+npx community-solid-server -c ./config/https-mashlib-subdomain-file.json -f ./data --httpsKey ./self-signed.key --httpsCert ./self-signed.crt -p 8086 -b https://localhost:8086
+```
+
 ### Why 'pivot'?
 _Short answer:_ we needed a name. ;)
 

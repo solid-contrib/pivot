@@ -1,3 +1,8 @@
+# from readme instructions
+data
+self-signed.key
+self-signed.crt
+
 # Logs
 logs
 *.log
