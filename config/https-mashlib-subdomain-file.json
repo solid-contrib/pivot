@@ -58,7 +58,7 @@
       },
       "overrideParameters": {
         "@type": "StaticFolderGenerator",
-        "templateFolder": "../css-mashlib/templates/pod"
+        "templateFolder": "./templates/pod"
       }
     },
     {
