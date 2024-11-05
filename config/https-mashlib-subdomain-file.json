@@ -23,7 +23,7 @@
     "css:config/ldp/metadata-parser/default.json",
     "css:config/ldp/metadata-writer/default.json",
     "css:config/ldp/modes/default.json",
-    "css:config/storage/backend/file.json",
+    "css:config/storage/backend/data-accessors/file.json",
     "css:config/storage/key-value/resource-store.json",
     "css:config/storage/location/pod.json",
     "css:config/storage/middleware/default.json",
@@ -113,6 +113,15 @@
           "filePath": "./node_modules/mashlib/dist/mashlib.min.js.map"
         }
       ]
+    },
+    {
+      "comment": "A default store setup with a file system backend.",
+      "@id": "urn:solid-server:default:ResourceStore_Backend",
+      "@type": "DataAccessorBasedStore",
+      "identifierStrategy": { "@id": "urn:solid-server:default:IdentifierStrategy" },
+      "auxiliaryStrategy": { "@id": "urn:solid-server:default:AuxiliaryStrategy" },
+      "accessor": { "@id": "urn:solid-server:default:FileDataAccessor" },
+      "metadataStrategy": { "@id": "urn:solid-server:default:MetadataStrategy" }
     }
   ]
 }
