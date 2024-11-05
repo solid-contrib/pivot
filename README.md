@@ -51,6 +51,21 @@ npm install
 npx community-solid-server -c ./config/https-mashlib-subdomain-file.json -f ./data --httpsKey ./self-signed.key --httpsCert ./self-signed.crt -p 8086 -b https://localhost:8086
 ```
 
+In order to remove the [error from the domain root](https://github.com/solid-contrib/pivot/issues/15), make sure you have the following root ACL there:
+```
+root@ota:~# cat /root/pivot/data/www/.acl
+# Root ACL resource for the agent account
+@prefix acl: <http://www.w3.org/ns/auth/acl#>.
+@prefix foaf: <http://xmlns.com/foaf/0.1/>.
+
+# The homepage is readable by the public
+<#public>
+    a acl:Authorization;
+    acl:agentClass foaf:Agent;
+    acl:accessTo <./>;
+    acl:mode acl:Read.
+```
+
 ### Why 'pivot'?
 _Short answer:_ we needed a name. ;)
 
