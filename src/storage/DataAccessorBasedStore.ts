@@ -2,33 +2,33 @@ import type { NamedNode, Quad, Term } from '@rdfjs/types';
 import arrayifyStream from 'arrayify-stream';
 import { DataFactory } from 'n3';
 import { v4 as uuid } from 'uuid';
-import type { AuxiliaryStrategy } from '../http/auxiliary/AuxiliaryStrategy';
-import { BasicRepresentation } from '../http/representation/BasicRepresentation';
-import type { Patch } from '../http/representation/Patch';
-import type { Representation } from '../http/representation/Representation';
-import { RepresentationMetadata } from '../http/representation/RepresentationMetadata';
-import type { ResourceIdentifier } from '../http/representation/ResourceIdentifier';
-import { getLoggerFor } from '../logging/LogUtil';
-import { INTERNAL_QUADS } from '../util/ContentTypes';
-import { BadRequestHttpError } from '../util/errors/BadRequestHttpError';
-import { ConflictHttpError } from '../util/errors/ConflictHttpError';
-import { createErrorMessage } from '../util/errors/ErrorUtil';
-import { ForbiddenHttpError } from '../util/errors/ForbiddenHttpError';
-import { MethodNotAllowedHttpError } from '../util/errors/MethodNotAllowedHttpError';
-import { NotFoundHttpError } from '../util/errors/NotFoundHttpError';
-import { NotImplementedHttpError } from '../util/errors/NotImplementedHttpError';
-import { PreconditionFailedHttpError } from '../util/errors/PreconditionFailedHttpError';
-import type { IdentifierStrategy } from '../util/identifiers/IdentifierStrategy';
-import { concat } from '../util/IterableUtil';
-import { IdentifierMap } from '../util/map/IdentifierMap';
+import type { AuxiliaryStrategy } from '@solid/community-server/dist/http/auxiliary/AuxiliaryStrategy';
+import { BasicRepresentation } from '@solid/community-server/dist/http/representation/BasicRepresentation';
+import type { Patch } from '@solid/community-server/dist/http/representation/Patch';
+import type { Representation } from '@solid/community-server/dist/http/representation/Representation';
+import { RepresentationMetadata } from '@solid/community-server/dist/http/representation/RepresentationMetadata';
+import type { ResourceIdentifier } from '@solid/community-server/dist/http/representation/ResourceIdentifier';
+import { getLoggerFor } from '@solid/community-server/dist/logging/LogUtil';
+import { INTERNAL_QUADS } from '@solid/community-server/dist/util/ContentTypes';
+import { BadRequestHttpError } from '@solid/community-server/dist/util/errors/BadRequestHttpError';
+import { ConflictHttpError } from '@solid/community-server/dist/util/errors/ConflictHttpError';
+import { createErrorMessage } from '@solid/community-server/dist/util/errors/ErrorUtil';
+import { ForbiddenHttpError } from '@solid/community-server/dist/util/errors/ForbiddenHttpError';
+import { MethodNotAllowedHttpError } from '@solid/community-server/dist/util/errors/MethodNotAllowedHttpError';
+import { NotFoundHttpError } from '@solid/community-server/dist/util/errors/NotFoundHttpError';
+import { NotImplementedHttpError } from '@solid/community-server/dist/util/errors/NotImplementedHttpError';
+import { PreconditionFailedHttpError } from '@solid/community-server/dist/util/errors/PreconditionFailedHttpError';
+import type { IdentifierStrategy } from '@solid/community-server/dist/util/identifiers/IdentifierStrategy';
+import { concat } from '@solid/community-server/dist/util/IterableUtil';
+import { IdentifierMap } from '@solid/community-server/dist/util/map/IdentifierMap';
 import {
   ensureTrailingSlash,
   isContainerIdentifier,
   isContainerPath,
   toCanonicalUriPath,
   trimTrailingSlashes,
-} from '../util/PathUtil';
-import { addResourceMetadata, updateModifiedDate } from '../util/ResourceUtil';
+} from '@solid/community-server/dist/util/PathUtil';
+import { addResourceMetadata, updateModifiedDate } from '@solid/community-server/dist/util/ResourceUtil';
 import {
   AS,
   CONTENT_TYPE_TERM,
@@ -42,10 +42,10 @@ import {
   SOLID_HTTP,
   SOLID_META,
   XSD,
-} from '../util/Vocabularies';
-import type { DataAccessor } from './accessors/DataAccessor';
-import type { Conditions } from './conditions/Conditions';
-import type { ChangeMap, ResourceStore } from './ResourceStore';
+} from '@solid/community-server/dist/util/Vocabularies';
+import type { DataAccessor } from '@solid/community-server/dist/storage/accessors/DataAccessor';
+import type { Conditions } from '@solid/community-server/dist/storage/conditions/Conditions';
+import type { ChangeMap, ResourceStore } from '@solid/community-server/dist/storage/ResourceStore';
 import namedNode = DataFactory.namedNode;
 
 /**
