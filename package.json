@@ -6,6 +6,7 @@
   "scripts": {
     "start0": "npx community-solid-server -c ./config/config-mashlib.json ./config/override-pod-templates.json -f ./data",
     "start1": "NODE_TLS_REJECT_UNAUTHORIZED=0 && npx community-solid-server -c ./config/https-mashlib-suffix-file.json -f ./data --httpsKey ../privkey.pem --httpsCert ../fullchain.pem -b https://localhost:3000",
+    "staging": "npx community-solid-server -c ./config/https-mashlib-subdomain-file.json -f ./data --httpsKey /etc/letsencrypt/live/pivot.pondersource.com-0001/privkey.pem --httpsCert /etc/letsencrypt/live/pivot.pondersource.com-0001/fullchain.pem -p 443 -b https://pivot.pondersource.com",
     "start": "npx community-solid-server -c ./config/http-mashlib-suffix-file.json -f ./data",
     "build": "echo \"Nothing to build.\"",
     "clean": "[ -d ./data ] && rm -rf ./data || true",
