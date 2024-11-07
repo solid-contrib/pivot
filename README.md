@@ -1,61 +1,92 @@
-<img width="1230" alt="Screenshot 2023-11-17 at 09 04 27" src="https://github.com/solid-contrib/pivot/assets/408412/62dfdec2-eb7c-4d43-ad1b-4ea885b853fa">
+# Community Solid Server
 
-A spec-compliant Solid server for use on the [Solid Community server](https://solidcommunity.net), based on a remix of building blocks from the [Community Solid Server](https://github.com/CommunitySolidServer/CommunitySolidServer) project.
+<img
+ src="https://raw.githubusercontent.com/CommunitySolidServer/CommunitySolidServer/main/templates/images/solid.svg"
+ alt="[Solid logo]" height="150" align="right"/>
 
-Feel free to [open a feature request](https://github.com/solid-contrib/pivot/issues/new) if you think `solidcommunity.net` should implement some additional feature - because it's a missing spec feature, or because it's a new optional or experimental spec feature, or just because you want to show a novel way for your Solid project to interact with a Solid pod server.
+[![MIT license](https://img.shields.io/npm/l/@solid/community-server)](https://github.com/CommunitySolidServer/CommunitySolidServer/blob/main/LICENSE.md)
+[![npm version](https://img.shields.io/npm/v/@solid/community-server)](https://www.npmjs.com/package/@solid/community-server)
+[![Node.js version](https://img.shields.io/node/v/@solid/community-server)](https://www.npmjs.com/package/@solid/community-server)
+[![Build Status](https://github.com/CommunitySolidServer/CommunitySolidServer/workflows/CI/badge.svg)](https://github.com/CommunitySolidServer/CommunitySolidServer/actions)
+[![Coverage Status](https://coveralls.io/repos/github/CommunitySolidServer/CommunitySolidServer/badge.svg)](https://coveralls.io/github/CommunitySolidServer/CommunitySolidServer)
+[![DOI](https://zenodo.org/badge/265197208.svg)](https://zenodo.org/badge/latestdoi/265197208)
+[![GitHub discussions](https://img.shields.io/github/discussions/CommunitySolidServer/CommunitySolidServer)](https://github.com/CommunitySolidServer/CommunitySolidServer/discussions)
+[![Chat on Gitter](https://badges.gitter.im/CommunitySolidServer/community.svg)](https://gitter.im/CommunitySolidServer/community)
 
-You can also [join the Matrix chat for solidcommunity.net](https://matrix.to/#/#solid_solidcommunity.net:gitter.im).
+**The Community Solid Server is open software
+that provides you with a [Solid](https://solidproject.org/) Pod and identity.
+This Pod acts as your own personal storage space
+so you can share data with people and Solid applications.**
 
-### Under development
+As an open and modular implementation of the
+[Solid specifications](https://solidproject.org/TR/),
+the Community Solid Server is a great companion:
 
-This server is still under active development, see [our first milestone](https://github.com/solid-contrib/pivot/milestone/1).
-During this process, we are using [pivot.pondersource.com](https://pivot.pondersource.com) as a staging server.
-These are the bash commands to run it there
-```bash
-certbot certonly --manual --preferred-challenges dns -d "pivot.pondersource.com" -d "*.pivot.pondersource.com"
-git clone https://github.com/solid-contrib/pivot
-cd pivot
-npm install
-npm run staging
+- 🧑🏽 **for people** who want to try out having their own Pod
+
+- 👨🏿‍💻 **for developers** who want to quickly create and test Solid apps
+
+- 👩🏻‍🔬 **for researchers** who want to design new features for Solid
+
+And, of course, for many others who like to experience Solid.
+
+## ⚡ Running the Community Solid Server
+
+Make sure you have [Node.js](https://nodejs.org/en/) 18.0 or higher.
+If this is your first time using Node.js,
+you can find instructions on how to do this [here](https://nodejs.org/en/download/package-manager).
+
+```shell
+npx @solid/community-server
 ```
 
-In order to remove the [error from the domain root](https://github.com/solid-contrib/pivot/issues/15), make sure you have the following root ACL there:
-```
-root@ota:~# cat /root/pivot/data/www/.acl
-# Root ACL resource for the agent account
-@prefix acl: <http://www.w3.org/ns/auth/acl#>.
-@prefix foaf: <http://xmlns.com/foaf/0.1/>.
+Now visit your brand new server at [http://localhost:3000/](http://localhost:3000/)!
 
-# The homepage is readable by the public
-<#public>
-    a acl:Authorization;
-    acl:agentClass foaf:Agent;
-    acl:accessTo <./>;
-    acl:mode acl:Read.
+To persist your pod's contents between restarts, use:
+
+```shell
+npx @solid/community-server -c @css:config/file.json -f data/
 ```
 
-In order to remove the [error from the domain root](https://github.com/solid-contrib/pivot/issues/15), make sure you have the following root ACL there:
-```
-root@ota:~# cat /root/pivot/data/www/.acl
-# Root ACL resource for the agent account
-@prefix acl: <http://www.w3.org/ns/auth/acl#>.
-@prefix foaf: <http://xmlns.com/foaf/0.1/>.
+In case you prefer to use Docker instead,
+you can find instructions for this and other methods in the
+[documentation](https://communitysolidserver.github.io/CommunitySolidServer/latest/usage/starting-server/).
 
-# The homepage is readable by the public
-<#public>
-    a acl:Authorization;
-    acl:agentClass foaf:Agent;
-    acl:accessTo <./>;
-    acl:mode acl:Read.
-```
+## 🔧 Configure your server
 
-### Why 'pivot'?
-_Short answer:_ we needed a name. ;)
+Substantial changes to server behavior can be achieved via JSON configuration files.
+The Community Solid Server uses [Components.js](https://componentsjs.readthedocs.io/en/latest/)
+to specify how modules and components need to be wired together at runtime.
 
-_Long answer:_ it comes from the role a Solid pod can play in a data portability scenario.
-In traditional data portability, the user consents to organisation A transferring their data to organisation B.
-A Solid pod, however, can act as a "pivot" for data sharing: data is first transferred from organisation A to the pod, and then from the pod to organisation B, without the two organisations ever interacting directly. The organisations only interact through the "pivot" that is owned by the user.
-This greatly simplifies consent management and makes data access control user-centric. Hence the name "pivot" for this open source Solid server implementation. :)
+Recipes for configuring the server can be found at [CommunitySolidServer/recipes](https://github.com/CommunitySolidServer/recipes).
 
+Examples and guidance on custom configurations
+are available in the [`config` folder](https://github.com/CommunitySolidServer/CommunitySolidServer/tree/main/config),
+and the [configurations tutorial](https://github.com/CommunitySolidServer/tutorials/blob/main/custom-configurations.md).
+There is also a [configuration generator](https://communitysolidserver.github.io/configuration-generator/).
 
-Photo 138720473 © Leo Lintang | Dreamstime.com
+## 👩🏽‍💻 Developing server code
+
+The server allows writing and plugging in custom modules
+without altering its base source code.
+
+The [📗 API documentation](https://communitysolidserver.github.io/CommunitySolidServer/5.x/docs) and
+the [📓 user documentation](https://communitysolidserver.github.io/CommunitySolidServer/)
+can help you find your way.
+There is also a repository of [📚 comprehensive tutorials](https://github.com/CommunitySolidServer/tutorials/)
+
+## 📜 License
+
+The Solid Community Server code
+is copyrighted by [Inrupt Inc.](https://inrupt.com/)
+and [imec](https://www.imec-int.com/)
+and available under the [MIT License](https://github.com/CommunitySolidServer/CommunitySolidServer/blob/main/LICENSE.md).
+
+## 🎤 Feedback and questions
+
+Don't hesitate to [start a discussion](https://github.com/CommunitySolidServer/CommunitySolidServer/discussions)
+or [report a bug](https://github.com/CommunitySolidServer/CommunitySolidServer/issues).
+
+There's also [a Matrix-based, CSS-focused chat](https://matrix.to/#/#CommunitySolidServer_community:gitter.im)
+
+Learn more about Solid at [solidproject.org](https://solidproject.org/).

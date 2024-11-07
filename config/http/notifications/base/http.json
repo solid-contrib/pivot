@@ -1,0 +1,58 @@
+{
+  "@context": "https://linkedsoftwaredependencies.org/bundles/npm/@solid/pivot/^1.0.0/components/context.jsonld",
+  "@graph": [
+    {
+      "@id": "urn:solid-server:default:NotificationHttpHandler",
+      "@type": "RouterHandler",
+      "baseUrl": { "@id": "urn:solid-server:default:variable:baseUrl" },
+      "targetExtractor": { "@id": "urn:solid-server:default:TargetExtractor" },
+      "allowedPathNames": [ "^/.notifications/" ],
+      "handler": { "@id": "urn:solid-server:default:NotificationParsingHandler" }
+    },
+    {
+      "@id": "urn:solid-server:default:NotificationParsingHandler",
+      "@type": "ParsingHttpHandler",
+      "requestParser": { "@id": "urn:solid-server:default:RequestParser" },
+      "errorHandler": { "@id": "urn:solid-server:default:ErrorHandler" },
+      "responseWriter": { "@id": "urn:solid-server:default:ResponseWriter" },
+      "operationHandler": {
+        "@type": "WaterfallHandler",
+        "handlers": [
+          { "@id": "urn:solid-server:default:NotificationReadWriteHandler" },
+          { "@id": "urn:solid-server:default:NotificationDeleteHandler" }
+        ]
+      }
+    },
+
+    {
+      "comment": "Handles reading and writing notification subscriptions and channels.",
+      "@id": "urn:solid-server:default:NotificationReadWriteHandler",
+      "@type": "OperationRouterHandler",
+      "baseUrl": { "@id": "urn:solid-server:default:variable:baseUrl" },
+      "allowedMethods": [ "HEAD", "GET", "POST" ],
+      "handler": {
+        "comment": "Converts outgoing responses based on the user preferences",
+        "@type": "ConvertingOperationHttpHandler",
+        "converter": { "@id": "urn:solid-server:default:RepresentationConverter" },
+        "operationHandler": {
+          "comment": "New notification subscription types should be added here to allow subscriptions.",
+          "@id": "urn:solid-server:default:NotificationTypeHandler",
+          "@type": "WaterfallHandler",
+          "handlers": [ ]
+        }
+      }
+    },
+
+    {
+      "comment": "Handles deleting notification channels.",
+      "@id": "urn:solid-server:default:NotificationDeleteHandler",
+      "@type": "OperationRouterHandler",
+      "baseUrl": { "@id": "urn:solid-server:default:variable:baseUrl" },
+      "allowedMethods": [ "DELETE" ],
+      "handler": {
+        "@type": "NotificationUnsubscriber",
+        "storage": { "@id": "urn:solid-server:default:SubscriptionStorage" }
+      }
+    }
+  ]
+}

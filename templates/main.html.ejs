@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title><%= extractTitle(htmlBody) %></title>
+  <link rel="stylesheet" href="<%= baseUrl -%>.well-known/css/styles/main.css?v=7" type="text/css">
+  <script type="text/javascript" src="<%= baseUrl -%>.well-known/css/scripts/util.js?v=7"></script>
+</head>
+<body>
+  <header>
+    <a href="<%= baseUrl %>"><img src="<%= baseUrl -%>.well-known/css/images/solid.svg" alt="[Solid logo]" /></a>
+    <h1>Community Solid Server</h1>
+  </header>
+  <main>
+    <%- htmlBody %>
+  </main>
+  <footer>
+    <p>
+      ©2019–2024 <a href="https://inrupt.com/">Inrupt Inc.</a>
+      and <a href="https://www.imec-int.com/">imec</a>
+    </p>
+  </footer>
+</body>
+</html>
+
+<%
+function extractTitle(body) {
+  const match = /^<h1[^>]*>([^<]*)<\/h1>/u.exec(body);
+  return match ? match[1] : 'Solid';
+}
+%>

@@ -1,0 +1,11 @@
+{
+  "@context": "https://linkedsoftwaredependencies.org/bundles/npm/@solid/pivot/^1.0.0/components/context.jsonld",
+  "@graph": [
+    {
+      "comment": "Writes the result to the response stream.",
+      "@id": "urn:solid-server:default:ResponseWriter",
+      "@type": "BasicResponseWriter",
+      "metadataWriter": { "@id": "urn:solid-server:default:MetadataWriter" }
+    }
+  ]
+}

@@ -1,0 +1,121 @@
+<h1>Your account</h1>
+<p class="error" id="error"></p>
+<div id="passwordLogins">
+  <h2>Email/password logins</h2>
+  <p>The email/password logins used to identify this account.</p>
+  <a id="createPasswordLogin" href="" class="link">Add login</a>
+  <ul id="passwordLoginEntries"></ul>
+</div>
+<div id="pods">
+  <h2>Pods</h2>
+  <p>The pods created by this account.</p>
+  <a id="createPod" href="" class="link">Create pod</a>
+  <ul id="podEntries"></ul>
+</div>
+<div id="webIds">
+  <h2>Registered Web IDs</h2>
+  <p>
+    These are the WebIDs you can authenticate as using this account.
+    These WebIDs also have full control access to the pods registered for this account.
+  </p>
+  <a id="linkWebId" href="" class="link">Link WebID</a>
+  <ul id="webIdEntries"></ul>
+</div>
+<div id="clientCredentials">
+  <h2>Credential tokens</h2>
+  <p>The tokens created by this account.</p>
+  <a id="createCredentials" href="" class="link">Create token</a>
+  <ul id="clientCredentialsEntries"></ul>
+</div>
+<p class="actions">
+  <button class="hidden" type="button" id="oidc">Continue authentication</button>
+  <button type="button" id="logout" name="logout">Log out</button>
+</p>
+
+<script>
+  const elements = getElements('passwordLoginEntries', 'podEntries', 'webIdEntries', 'clientCredentialsEntries', 'oidc', 'logout');
+
+  // Retrieve and display client information
+  (async() => {
+    const controls = await fetchControls('<%= idpIndex %>');
+
+    // Button to continue OIDC session if there is one,
+    // in case someone needed to create/update the account during a session.
+    setVisibility('oidc', <%= authenticating %>);
+    elements.oidc.addEventListener('click', async() => {
+      const body = await fetchJson(controls.oidc.prompt);
+      location.href = body.location;
+    });
+
+    elements.logout.addEventListener('click', async() => {
+      await fetch(controls.account.logout, { method: 'POST' });
+      location.href = controls.html.main.login;
+    });
+
+    // Update email/password entries
+    const { passwordLogins } = await fetchJson(controls.password.create);
+    updateElement('createPasswordLogin', controls.password.create, { href: true });
+    showAccountInfo(elements.passwordLoginEntries, passwordLogins, true, true,
+      'Are you sure you want to delete this login method? This will prevent you from logging in to your account with these credentials.');
+
+    // Update pod entries
+    const { pods } = controls.account.pod ? await fetchJson(controls.account.pod) : {};
+    if (!controls.html.account.createPod && Object.keys(pods ?? {}).length === 0) {
+      setVisibility('pods', false);
+    } else {
+      updateElement('createPod', controls.html.account.createPod, { href: true });
+      showAccountInfo(elements.podEntries, pods, true, false);
+    }
+
+    // Update WebID entries
+    const { webIdLinks } = controls.account.webId ? await fetchJson(controls.account.webId) : {};
+    if (!controls.html.account.linkWebId && Object.keys(webIdLinks ?? {}).length === 0) {
+      setVisibility('webIds', false);
+    } else {
+      updateElement('linkWebId', controls.html.account.linkWebId, { href: true });
+      showAccountInfo(elements.webIdEntries, webIdLinks, false, true,
+        'Are you sure you want to delete the registration of this WebID? ' +
+        'If you do so you will be unable to identify as this WebID using this server, which can potentially cause you to lose access to data restricted to this WebID.',
+        'Make sure to remove the relevant solid:oidcIssuer triple from the WebID to prevent existing access tokens from still being used.');
+    }
+
+    // Update Client Credentials entries
+    const { clientCredentials } = controls.account.clientCredentials ? await fetchJson(controls.account.clientCredentials) : {};
+    if (!controls.html.account.createClientCredentials && Object.keys(clientCredentials ?? {}).length === 0) {
+      setVisibility('clientCredentials', false);
+    } else {
+      // Initial boolean is so the create button gets hidden if the account has no WebIDs.
+      // Currently, this does not get updated if the last WebID gets deleted, until the page is refreshed.
+      updateElement('createCredentials', Object.keys(webIdLinks).length && controls.html.account.createClientCredentials, { href: true });
+      showAccountInfo(elements.clientCredentialsEntries, clientCredentials, false, true,
+        'Are you sure you want to delete this token? This will prevent this token from being used in the future.');
+    }
+  })();
+
+  // Adds account info to the UI
+  function showAccountInfo(rootElement, data, addUpdate, addDel, confirmMsg, finishMsg) {
+    for (const [ key, url ] of Object.entries(data)) {
+      const li = document.createElement('li');
+
+      // I didn't want to add another parameter to the function to indicate if the key should be a link
+      if (/^https?:\/\//.test(key)) {
+        li.insertAdjacentHTML('beforeend', `<a href="${key}">${key}</a>`);
+      } else {
+        li.append(key);
+      }
+
+
+      if (addUpdate) {
+        li.insertAdjacentHTML('beforeend', ` <a href="${url}">(update)</a>`);
+      }
+
+
+      if (addDel) {
+        const del = createUrlDeleteElement(li, url, { method: 'DELETE' }, confirmMsg, finishMsg);
+        li.append(' ');
+        li.append(del);
+      }
+      rootElement.append(li);
+    }
+  }
+</script>

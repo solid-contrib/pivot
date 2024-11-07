@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Community Solid Server</title>
+  <link rel="stylesheet" href="/.well-known/css/styles/main.css" type="text/css">
+</head>
+<body>
+  <header>
+    <a href=".."><img src="/.well-known/css/images/solid.svg" alt="[Solid logo]" /></a>
+    <h1>Community Solid Server</h1>
+  </header>
+  <main>
+    <h1>Welcome to Solid</h1>
+    <p>
+      This server implements
+      the <a href="https://solid.github.io/specification/protocol">Solid protocol</a>
+      so you can create your own <a href="https://solidproject.org/about">Solid Pod</a>
+      and identity.
+    </p>
+
+    <h2 id="users">Getting started as a <em>user</em></h2>
+    <p id="registration-enabled">
+      <a id="registration-link" href="./.account/login/password/register/">Sign up for an account</a>
+      to get started with your own Pod and WebID.
+    </p>
+    <p id="registration-disabled" class="hidden">
+      Registration is disabled on this server.
+      Make sure to update the permissions of the root container to prevent other people from modifying your server.
+    </p>
+    <p>
+      To learn more about how this server can be used,
+      have a look at the
+      <a href="https://github.com/CommunitySolidServer/tutorials/blob/main/getting-started.md">getting started tutorial</a>
+      and the server <a href="https://communitysolidserver.github.io/CommunitySolidServer/">documentation</a>.
+    </p>
+
+    <h2 id="developers">Getting started as a <em>developer</em></h2>
+    <p>
+      You can use any of the configurations in the <code>config</code> folder of the server
+      to set up an of this server with different features.
+      Besides the provided configurations,
+      you can also fine-tune your own custom configuration using the
+      <a href="https://communitysolidserver.github.io/configuration-generator/">configuration generator</a>.
+    </p>
+    <p>
+      You can easily choose any folder on your disk
+      to expose as the root Pod.
+      <br>
+      Use the <code>--help</code> switch to learn more.
+    </p>
+
+    <h2>Have a wonderful Solid experience</h2>
+    <p>
+      <strong>Learn more about Solid
+        at <a href="https://solidproject.org/">solidproject.org</a>.</strong>
+    </p>
+    <p>
+      You are warmly invited
+      to <a href="https://github.com/CommunitySolidServer/CommunitySolidServer/discussions">share your experiences</a>
+      and to <a href="https://github.com/CommunitySolidServer/CommunitySolidServer/issues">report any bugs</a> you encounter.
+    </p>
+
+    <h2>Replacing this page</h2>
+    <p>
+      This index page is a static page configured to be shown at the root of the server.
+      You can replace this page by adding the following entry to your server configuration:
+    <pre>{
+  "@type": "Override",
+  "overrideInstance": { "@id": "urn:solid-server:default:RootStaticAsset" },
+  "overrideParameters": {
+    "@type": "StaticAssetEntry",
+    "filePath": "/path/to/my/index.html"
+  }
+}</pre>
+    </p>
+  </main>
+  <footer>
+    <p>
+      ©2019–2024 <a href="https://inrupt.com/">Inrupt Inc.</a>
+      and <a href="https://www.imec-int.com/">imec</a>
+    </p>
+  </footer>
+</body>
+<script>
+  (async() => {
+    // Since this page is in the root of the server, we can determine other URLs relative to the current URL
+    const res = await fetch('.account/');
+    const registrationUrl = (await res.json())?.controls?.html?.password?.register;
+    // We specifically want to check if the HTML page that we link to exists
+    const resRegistrationPage = await fetch(registrationUrl, { headers: { accept: 'text/html' } });
+    const registrationEnabled = registrationUrl && resRegistrationPage.status === 200;
+
+    document.getElementById('registration-enabled').classList[registrationEnabled ? 'remove' : 'add']('hidden');
+    document.getElementById('registration-disabled').classList[registrationEnabled ? 'add' : 'remove']('hidden');
+    document.getElementById('registration-link').href = registrationUrl;
+  })();
+</script>
+</html>

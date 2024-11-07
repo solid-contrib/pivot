@@ -1,0 +1,59 @@
+{
+  "@context": "https://linkedsoftwaredependencies.org/bundles/npm/@solid/pivot/^1.0.0/components/context.jsonld",
+  "import": [
+    "css:config/identity/pod/pod-generators/templated.json",
+    "css:config/identity/pod/resource-generators/templated.json"
+  ],
+  "comment": "Besides the PodManager, also exports a RouterRule that will need to be added to a RoutingStore.",
+  "@graph": [
+    {
+      "comment": "Generates pods based on config templates and stores the results in the correct places",
+      "@id": "urn:solid-server:default:PodManager",
+      "@type": "ConfigPodManager",
+      "podGenerator": { "@id": "urn:solid-server:default:PodGenerator" },
+      "routingStorage": { "@id": "urn:solid-server:default:PodRoutingStorage" },
+      "resourcesGenerator": { "@id": "urn:solid-server:default:PodResourcesGenerator" },
+      "store": { "@id": "urn:solid-server:default:ResourceStore" }
+    },
+
+    {
+      "comment": "Router rule responsible for handling dynamic pod routing. Needs to be used by RoutingResourceStore.",
+      "@id": "urn:solid-server:default:RouterRule",
+      "@type": "BaseUrlRouterRule",
+      "stores": { "@id": "urn:solid-server:default:PodRoutingStorage" }
+    },
+
+    {
+      "comment": "Add to the list of primary initializers.",
+      "@id": "urn:solid-server:default:PrimaryParallelInitializer",
+      "@type": "ParallelHandler",
+      "handlers": [
+        {
+          "comment": "Initializer that instantiates all the dynamic pods.",
+          "@type": "ConfigPodInitializer",
+          "storeFactory": { "@type": "BaseComponentsJsFactory" },
+          "configStorage": { "@id": "urn:solid-server:default:PodConfigurationStorage" },
+          "routingStorage": { "@id": "urn:solid-server:default:PodRoutingStorage" }
+        }
+      ]
+    },
+
+    {
+      "comment": "Everything below is used for storing pod settings."
+    },
+
+    {
+      "comment": "This is where the pod configurations will be stored.",
+      "@id": "urn:solid-server:default:PodConfigurationStorage",
+      "@type": "JsonFileStorage",
+      "filePath": { "@id": "urn:solid-server:default:variable:podConfigJson" },
+      "locker": { "@id": "urn:solid-server:default:ResourceLocker" }
+    },
+
+    {
+      "comment": "This is where instantiated pods will be stored.",
+      "@id": "urn:solid-server:default:PodRoutingStorage",
+      "@type": "MemoryMapStorage"
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "@context": "https://linkedsoftwaredependencies.org/bundles/npm/@solid/pivot/^1.0.0/components/context.jsonld",
+  "@graph": [
+    {
+      "comment": "Handles everything related to parsing a Request.",
+      "@id": "urn:solid-server:default:RequestParser",
+      "@type": "BasicRequestParser",
+      "targetExtractor": {
+        "@id": "urn:solid-server:default:TargetExtractor",
+        "@type": "OriginalUrlExtractor",
+        "identifierStrategy": { "@id": "urn:solid-server:default:IdentifierStrategy" },
+        "includeQueryString": false
+      },
+      "preferenceParser": { "@id": "urn:solid-server:default:PreferenceParser" },
+      "metadataParser": { "@id": "urn:solid-server:default:MetadataParser" },
+      "conditionsParser": {
+        "@type": "BasicConditionsParser",
+        "eTagHandler": {
+          "@id": "urn:solid-server:default:ETagHandler",
+          "@type": "BasicETagHandler"
+        }
+      },
+      "bodyParser": {
+        "@type": "WaterfallHandler",
+        "handlers": [
+          { "@id": "urn:solid-server:default:PatchBodyParser" },
+          { "@type": "RawBodyParser" }
+        ]
+      }
+    },
+    {
+      "comment": "Handles body parsing for PATCH requests. Those requests need to generate an interpreted Patch body.",
+      "@id": "urn:solid-server:default:PatchBodyParser",
+      "@type": "MethodFilterHandler",
+      "methods": [ "PATCH" ],
+      "source": {
+        "@type": "WaterfallHandler",
+        "handlers": [
+          { "@type": "N3PatchBodyParser" },
+          { "@type": "SparqlUpdateBodyParser" }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "@context": "https://linkedsoftwaredependencies.org/bundles/npm/@solid/pivot/^1.0.0/components/context.jsonld",
+  "@graph": [
+    {
+      "comment": "Handles linking a WebID to an account",
+      "@id": "urn:solid-server:default:AccountWebIdRouter",
+      "@type": "AuthorizedRouteHandler",
+      "route": {
+        "@id": "urn:solid-server:default:AccountWebIdRoute",
+        "@type": "RelativePathInteractionRoute",
+        "base": { "@id": "urn:solid-server:default:AccountIdRoute" },
+        "relativePath": "webid/"
+      },
+      "source": {
+        "@id": "urn:solid-server:default:WebIdHandler",
+        "@type": "ViewInteractionHandler",
+        "source": {
+          "@id": "urn:solid-server:default:LinkWebIdHandler",
+          "@type": "LinkWebIdHandler",
+          "baseUrl": { "@id": "urn:solid-server:default:variable:baseUrl" },
+          "ownershipValidator": { "@id": "urn:solid-server:default:OwnershipValidator" },
+          "podStore": { "@id": "urn:solid-server:default:PodStore" },
+          "webIdStore": { "@id": "urn:solid-server:default:WebIdStore" },
+          "webIdRoute": { "@id": "urn:solid-server:default:AccountWebIdLinkRoute" },
+          "storageStrategy": { "@id": "urn:solid-server:default:StorageLocationStrategy" }
+        }
+      }
+    }
+  ]
+}
