@@ -1,0 +1,26 @@
+{
+  "@context": "https://linkedsoftwaredependencies.org/bundles/npm/@solid/pivot/^1.0.0/components/context.jsonld",
+  "import": [
+    "css:config/ldp/metadata-parser/parsers/authorization.json",
+    "css:config/ldp/metadata-parser/parsers/content-type.json",
+    "css:config/ldp/metadata-parser/parsers/cookie.json",
+    "css:config/ldp/metadata-parser/parsers/link.json",
+    "css:config/ldp/metadata-parser/parsers/plain-json-ld-filter.json",
+    "css:config/ldp/metadata-parser/parsers/slug.json"
+  ],
+  "@graph": [
+    {
+      "comment": "Converts request metadata (e.g. headers) to RDF metadata.",
+      "@id": "urn:solid-server:default:MetadataParser",
+      "@type": "ParallelHandler",
+      "handlers": [
+        { "@id": "urn:solid-server:default:AuthorizationParser" },
+        { "@id": "urn:solid-server:default:CookieParser" },
+        { "@id": "urn:solid-server:default:ContentTypeParser" },
+        { "@id": "urn:solid-server:default:LinkRelParser" },
+        { "@id": "urn:solid-server:default:PlainJsonLdFilter" },
+        { "@id": "urn:solid-server:default:SlugParser" }
+      ]
+    }
+  ]
+}

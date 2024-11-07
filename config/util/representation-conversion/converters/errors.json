@@ -1,0 +1,19 @@
+{
+  "@context": "https://linkedsoftwaredependencies.org/bundles/npm/@solid/pivot/^1.0.0/components/context.jsonld",
+  "@graph": [
+    {
+      "@id": "urn:solid-server:default:ErrorToJsonConverter",
+      "@type": "ErrorToJsonConverter"
+    },
+    {
+      "@id": "urn:solid-server:default:ErrorToQuadConverter",
+      "@type": "ErrorToQuadConverter"
+    },
+    {
+      "comment": "Converts an error into a Markdown description of its details.",
+      "@id": "urn:solid-server:default:ErrorToTemplateConverter",
+      "@type": "ErrorToTemplateConverter",
+      "templateEngine": { "@id": "urn:solid-server:default:TemplateEngine" }
+    }
+  ]
+}

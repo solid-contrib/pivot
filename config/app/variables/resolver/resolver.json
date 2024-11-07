@@ -1,0 +1,96 @@
+{
+  "@context": "https://linkedsoftwaredependencies.org/bundles/npm/@solid/pivot/^1.0.0/components/context.jsonld",
+  "@graph": [
+    {
+      "comment": "Converts an input key/value object into an object mapping values to Components.js variables",
+      "@id": "urn:solid-server-app-setup:default:ShorthandResolver",
+      "@type": "CombinedShorthandResolver",
+      "resolvers": [
+        {
+          "CombinedShorthandResolver:_resolvers_key": "urn:solid-server:default:variable:baseUrl",
+          "CombinedShorthandResolver:_resolvers_value": {
+            "@type": "BaseUrlExtractor"
+          }
+        },
+        {
+          "CombinedShorthandResolver:_resolvers_key": "urn:solid-server:default:variable:loggingLevel",
+          "CombinedShorthandResolver:_resolvers_value": {
+            "@type": "KeyExtractor",
+            "key": "loggingLevel",
+            "defaultValue": "info"
+          }
+        },
+        {
+          "CombinedShorthandResolver:_resolvers_key": "urn:solid-server:default:variable:port",
+          "CombinedShorthandResolver:_resolvers_value": {
+            "@type": "KeyExtractor",
+            "key": "port",
+            "defaultValue": 3000
+          }
+        },
+        {
+          "CombinedShorthandResolver:_resolvers_key": "urn:solid-server:default:variable:socket",
+          "CombinedShorthandResolver:_resolvers_value": {
+            "@type": "KeyExtractor",
+            "key": "socket",
+            "defaultValue": ""
+          }
+        },
+        {
+          "CombinedShorthandResolver:_resolvers_key": "urn:solid-server:default:variable:rootFilePath",
+          "CombinedShorthandResolver:_resolvers_value": {
+            "@type": "AssetPathExtractor",
+            "key": "rootFilePath",
+            "defaultPath": "./"
+          }
+        },
+        {
+          "CombinedShorthandResolver:_resolvers_key": "urn:solid-server:default:variable:sparqlEndpoint",
+          "CombinedShorthandResolver:_resolvers_value": {
+            "@type": "KeyExtractor",
+            "key": "sparqlEndpoint"
+          }
+        },
+        {
+          "CombinedShorthandResolver:_resolvers_key": "urn:solid-server:default:variable:showStackTrace",
+          "CombinedShorthandResolver:_resolvers_value": {
+            "@type": "KeyExtractor",
+            "key": "showStackTrace",
+            "defaultValue": false
+          }
+        },
+        {
+          "CombinedShorthandResolver:_resolvers_key": "urn:solid-server:default:variable:podConfigJson",
+          "CombinedShorthandResolver:_resolvers_value": {
+            "@type": "AssetPathExtractor",
+            "key": "podConfigJson",
+            "defaultPath": "./pod-config.json"
+          }
+        },
+        {
+          "CombinedShorthandResolver:_resolvers_key": "urn:solid-server:default:variable:seedConfig",
+          "CombinedShorthandResolver:_resolvers_value": {
+            "@type": "AssetPathExtractor",
+            "key": "seedConfig"
+          }
+        },
+        {
+          "CombinedShorthandResolver:_resolvers_key": "urn:solid-server:default:variable:workers",
+          "CombinedShorthandResolver:_resolvers_value": {
+            "@type": "KeyExtractor",
+            "key": "workers",
+            "defaultValue": 1
+          }
+        },
+        {
+          "CombinedShorthandResolver:_resolvers_key": "urn:solid-server:default:variable:confirmMigration",
+          "CombinedShorthandResolver:_resolvers_value": {
+            "@type": "KeyExtractor",
+            "key": "confirmMigration",
+            "defaultValue": false
+          }
+        }
+      ]
+    }
+  ]
+}

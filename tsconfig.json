@@ -1,0 +1,21 @@
+{
+  "extends": "@tsconfig/node18/tsconfig.json",
+  "compilerOptions": {
+    "incremental": true,
+    "lib": [ "es2022" ],
+    "moduleResolution": "node16",
+    "declaration": true,
+    "inlineSources": true,
+    "newLine": "lf",
+    "outDir": "dist",
+    "preserveConstEnums": true,
+    "sourceMap": true,
+    "stripInternal": true
+  },
+  "include": [
+    "src"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

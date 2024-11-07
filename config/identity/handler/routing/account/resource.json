@@ -1,0 +1,32 @@
+{
+  "@context": "https://linkedsoftwaredependencies.org/bundles/npm/@solid/pivot/^1.0.0/components/context.jsonld",
+  "@graph": [
+    {
+      "comment": "Route pointing to the account resource",
+      "@id": "urn:solid-server:default:AccountIdRoute",
+      "@type": "BaseAccountIdRoute",
+      "base": { "@id": "urn:solid-server:default:AccountRoute" }
+    },
+
+    {
+      "@id": "urn:solid-server:default:HtmlViewHandler",
+      "@type": "HtmlViewHandler",
+      "templates": [{
+        "@id": "urn:solid-server:default:AccountIdHtml",
+        "@type": "HtmlViewEntry",
+        "filePath": "@css:templates/identity/account/resource.html.ejs",
+        "route": { "@id": "urn:solid-server:default:AccountIdRoute" }
+      }]
+    },
+    {
+      "@id": "urn:solid-server:default:AccountHtmlControlHandler",
+      "@type": "ControlHandler",
+      "controls": [
+        {
+          "ControlHandler:_controls_key": "account",
+          "ControlHandler:_controls_value": { "@id": "urn:solid-server:default:AccountIdRoute" }
+        }
+      ]
+    }
+  ]
+}

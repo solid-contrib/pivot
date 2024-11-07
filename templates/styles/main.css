@@ -1,0 +1,327 @@
+@font-face {
+  font-family: Raleway;
+  font-style: normal;
+  font-weight: 100 900;
+  src: url(../fonts/raleway.woff2) format('woff2');
+}
+@font-face {
+  font-family: Raleway;
+  font-style: italic;
+  font-weight: 100 900;
+  src: url(../fonts/raleway-italic.woff2) format('woff2');
+}
+
+html {
+  --solid-purple: #7c4dff;
+  --solid-blue: #18a9e6;
+  --solid-dark: #162542;
+  --solid-gray: #6a6a6a;
+
+  height: 100%;
+
+  background-color: var(--solid-purple);
+  background-image: linear-gradient(135deg, var(--solid-purple) 10%, var(--solid-blue) 90%);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  overscroll-behavior: none;
+}
+
+body, input, button {
+  font: 12pt/1.6 Raleway, sans-serif;
+  font-weight: 300;
+  color: var(--solid-dark);
+}
+
+body {
+  box-sizing: border-box;
+  max-width: 780px;
+  margin: 2em auto;
+  padding: 2em 3em 1em;
+
+  background: white;
+  box-shadow: 5px 5px 2px rgba(0, 0, 0, .1);
+  border-radius: 3px;
+}
+@media (max-width: 800px) {
+  body {
+    margin: 0;
+    padding: 1em 2em;
+  }
+}
+
+header {
+  margin: 1em 0 2em;
+
+  display: grid;
+  grid-template-columns: [logo] 5em [title] auto;
+  grid-gap: 1.5em;
+  align-items: center;
+}
+header h1 {
+  margin: 0;
+
+  font-size: 3em;
+  line-height: 1;
+  letter-spacing: .25px;
+  font-weight: 600;
+}
+header img {
+  width: 100%;
+  margin-bottom: -.5em;
+}
+
+main h1 {
+  margin: 1em 0 0;
+
+  font-size: 2em;
+  font-weight: 700;
+}
+main h2 {
+  margin: 1em 0 0;
+
+  font-size: 1.5em;
+  font-weight: 600;
+  color: var(--solid-gray);
+}
+main p {
+  margin: .75em 0;
+}
+main h1 + p,
+main h2 + p {
+  margin-top: .25em;
+}
+
+footer {
+  margin-top: 2em;
+  text-align: right;
+  font-size: 90%;
+  color: #666666;
+}
+
+strong {
+  font-weight: 600;
+}
+
+a {
+  color: var(--solid-purple);
+  font-weight: 500;
+}
+a:hover {
+  color: var(--solid-blue);
+}
+footer a {
+  color: inherit;
+  font-weight: inherit;
+}
+
+code {
+  font-size: 90%;
+}
+
+ul {
+  margin: .75em 0;
+}
+li {
+  margin: .5em 0;
+}
+li p {
+  margin: 0;
+}
+ul > li {
+  list-style-type: square;
+}
+ul > li::marker {
+  color: var(--solid-purple);
+}
+ul ul, ol ul {
+  margin-top: 0;
+  padding-left: 1em;
+}
+
+dl {
+  padding: 0 0 0 2em;
+  margin: .75em 0 0;
+}
+dl dt {
+  font-weight: bold;
+  float: left;
+  clear: left;
+  min-width: 4em;
+}
+dl dt:after {
+  content: ": ";
+}
+
+pre {
+  overflow-x: scroll;
+}
+
+fieldset {
+  border: none;
+  margin: 0;
+  padding: 0;
+  max-width: 600px;
+}
+fieldset > legend {
+  margin: .5em 0 0;
+
+  font-size: 1.5em;
+  font-weight: 600;
+  color: var(--solid-gray);
+}
+fieldset > legend + p {
+  margin: 0 0 .5em .25em;
+}
+fieldset > fieldset > legend {
+  font-size: 1.2em;
+}
+.hidden legend {
+  display: none;
+}
+fieldset ol {
+  list-style: none;
+  margin: 0;
+  padding: 0 0 0 2em;
+}
+fieldset ol ol {
+  margin: 0 0 1em .5em;
+}
+fieldset ol li:not(.checkbox, .radio) {
+  display: grid;
+  grid-template-columns: 10em auto;
+  grid-gap: 1em;
+  align-items: center;
+}
+fieldset ol ol li:not(.checkbox, .radio) {
+  grid-template-columns: 7.5em auto;
+}
+fieldset li label {
+  font-weight: 600;
+  cursor: pointer;
+}
+fieldset li li label {
+  font-weight: 500;
+}
+fieldset li.checkbox > label > input,
+fieldset li.radio > label > input {
+  margin: 0 .5em 0 0;
+}
+fieldset li p {
+  margin-top: .25em;
+}
+
+input {
+  border: 1px solid var(--solid-purple);
+}
+
+button {
+  cursor: pointer;
+  padding: .5em 2em;
+
+  border: 0px;
+  background-color: var(--solid-purple);
+  color: white;
+}
+button:hover {
+  background-color: var(--solid-blue);
+}
+button[type=submit] {
+  font-weight: 600;
+}
+button:disabled {
+  background-color: var(--solid-gray);
+}
+
+button.alternate {
+  display: block;
+  padding: 0;
+  margin: .5em 0;
+
+  background: none;
+  color: var(--solid-purple);
+  font-weight: normal;
+}
+button.alternate:hover {
+  color: var(--solid-blue);
+}
+
+input:focus, button:focus {
+  outline: var(--solid-blue) solid 1.5px;
+}
+
+p.error {
+  color: #ad0f0f;
+  font-weight: 600;
+}
+p.error:empty {
+  display :none;
+}
+
+p.actions {
+  margin: .5em 0 1em 11em;
+}
+
+ul.actions {
+  padding: 0;
+  margin: 0 0 1em 11em;
+}
+ul.actions > li {
+  list-style-type: none;
+  display: inline;
+  margin-right: 1em;
+}
+
+/* Directly hide hidden elements. */
+.hidden {
+  display: none;
+}
+
+/* Hide form elements with a sliding animation so users can track more easily what is happening. */
+form.loaded * {
+  max-height: 1000px;
+  transition: max-height .2s;
+}
+form .hidden:not(button) {
+  display: block;
+  max-height: 0;
+  overflow: hidden;
+}
+
+ul.container > li {
+  margin: 0.25em 0;
+  list-style-type: none;
+}
+ul.container > li.container > a {
+  font-weight: 800;
+}
+
+ol.breadcrumbs {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 0 .25em;
+  font-size: 90%;
+}
+ol.breadcrumbs > li {
+  display: inline;
+}
+ol.breadcrumbs > li > a {
+  color: var(--solid-gray);
+  font-weight: 400;
+  white-space: nowrap;
+}
+ol.breadcrumbs > li > a:hover {
+  color: var(--solid-purple);
+}
+ol.breadcrumbs > li:not(:last-child):after {
+  padding: 0 .25em;
+  content: ' > ';
+  font-weight: 300;
+  color: var(--solid-gray);
+}
+ol.breadcrumbs > li:last-child {
+  font-weight: 500;
+  color: var(--solid-purple);
+}
+ol.breadcrumbs > li:only-child {
+  display: none;
+}

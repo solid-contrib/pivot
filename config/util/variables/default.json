@@ -1,0 +1,61 @@
+{
+  "@context": "https://linkedsoftwaredependencies.org/bundles/npm/@solid/pivot/^1.0.0/components/context.jsonld",
+  "comment": "Variables used throughout the other configs. Can be set using the CLI.",
+  "@graph": [
+    {
+      "comment": "Port of the server.",
+      "@id": "urn:solid-server:default:variable:port",
+      "@type": "Variable"
+    },
+    {
+      "comment": "Unix Domain Socket of the server.",
+      "@id": "urn:solid-server:default:variable:socket",
+      "@type": "Variable"
+    },
+    {
+      "comment": "Needs to be set to the base URL of the server for authentication and authorization to function.",
+      "@id": "urn:solid-server:default:variable:baseUrl",
+      "@type": "Variable"
+    },
+    {
+      "comment": "Folder to start the server in when using a file-based config.",
+      "@id": "urn:solid-server:default:variable:rootFilePath",
+      "@type": "Variable"
+    },
+    {
+      "comment": "Endpoint to call when using a SPARQL-based config.",
+      "@id": "urn:solid-server:default:variable:sparqlEndpoint",
+      "@type": "Variable"
+    },
+    {
+      "comment": "The max level of log messages that should be output.",
+      "@id": "urn:solid-server:default:variable:loggingLevel",
+      "@type": "Variable"
+    },
+    {
+      "comment": "Whether error stack traces should be shown in the server responses.",
+      "@id": "urn:solid-server:default:variable:showStackTrace",
+      "@type": "Variable"
+    },
+    {
+      "comment": "Path to the JSON file used to store configuration for dynamic pods.",
+      "@id": "urn:solid-server:default:variable:podConfigJson",
+      "@type": "Variable"
+    },
+    {
+      "comment": "Path to the JSON file used to seed pods.",
+      "@id": "urn:solid-server:default:variable:seedConfig",
+      "@type": "Variable"
+    },
+    {
+      "comment": "Run the server in multithreaded mode with the set amount of workers.",
+      "@id": "urn:solid-server:default:variable:workers",
+      "@type": "Variable"
+    },
+    {
+      "comment": "If true, skips the confirmation prompts during migration.",
+      "@id": "urn:solid-server:default:variable:confirmMigration",
+      "@type": "Variable"
+    }
+  ]
+}

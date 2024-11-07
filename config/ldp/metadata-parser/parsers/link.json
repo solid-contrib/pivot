@@ -1,0 +1,41 @@
+{
+  "@context": "https://linkedsoftwaredependencies.org/bundles/npm/@solid/pivot/^1.0.0/components/context.jsonld",
+  "@graph": [
+    {
+      "comment": "Converts link headers into RDF metadata.",
+      "@id": "urn:solid-server:default:LinkRelParser",
+      "@type": "LinkRelParser",
+      "linkRelMap": [
+        {
+          "LinkRelParser:_linkRelMap_key": "type",
+          "LinkRelParser:_linkRelMap_value": {
+            "@type": "LinkRelObject",
+            "value": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "allowList": {
+              "@list": [
+                "http://www.w3.org/ns/ldp#BasicContainer",
+                "http://www.w3.org/ns/ldp#Container",
+                "http://www.w3.org/ns/ldp#Resource"
+              ]
+            }
+          }
+        },
+        {
+          "LinkRelParser:_linkRelMap_key": "http://www.w3.org/ns/ldp#inbox",
+          "LinkRelParser:_linkRelMap_value": {
+            "@type": "LinkRelObject",
+            "value": "http://www.w3.org/ns/ldp#inbox"
+          }
+        },
+        {
+          "LinkRelParser:_linkRelMap_key": "preserve",
+          "LinkRelParser:_linkRelMap_value": {
+            "@type": "LinkRelObject",
+            "value": "urn:npm:solid:community-server:meta:preserve",
+            "ephemeral": true
+          }
+        }
+      ]
+    }
+  ]
+}

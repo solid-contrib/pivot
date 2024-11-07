@@ -1,0 +1,13 @@
+{
+  "@context": "https://linkedsoftwaredependencies.org/bundles/npm/@solid/pivot/^1.0.0/components/context.jsonld",
+  "@graph": [
+    {
+      "comment": "Converts all outgoing resources based on the preferences.",
+      "@id": "urn:solid-server:default:ResourceStore_Converting",
+      "@type": "RepresentationConvertingStore",
+      "metadataStrategy": { "@id": "urn:solid-server:default:MetadataStrategy" },
+      "options_inConverter": { "@id": "urn:solid-server:default:RepresentationConverter" },
+      "options_outConverter": { "@id": "urn:solid-server:default:UiEnabledConverter" }
+    }
+  ]
+}

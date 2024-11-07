@@ -1,0 +1,44 @@
+{
+  "@context": "https://linkedsoftwaredependencies.org/bundles/npm/@solid/pivot/^1.0.0/components/context.jsonld",
+  "import": [
+    "css:config/app/main/general/templates.json",
+    "css:config/util/auxiliary/acl.json",
+    "css:config/util/index/default.json",
+    "css:config/util/representation-conversion/default.json",
+    "css:config/util/variables/default.json"
+  ],
+  "@graph": [
+    {
+      "comment": "Configures classes that are used by all other storage-*.json configurations."
+    },
+
+    {
+      "comment": "Custom pods always use the suffix strategy with their pod URL as base.",
+      "@id": "urn:solid-server:default:IdentifierStrategy",
+      "@type": "SingleRootIdentifierStrategy",
+      "baseUrl": {
+        "@id": "urn:solid-server:template:variable:baseUrl"
+      }
+    },
+    {
+      "@id": "urn:solid-server:template:ResourceStore",
+      "@type": "DataAccessorBasedStore",
+      "accessor": {
+        "@id": "urn:solid-server:template:DataAccessor"
+      },
+      "identifierStrategy": {
+        "@id": "urn:solid-server:default:IdentifierStrategy"
+      },
+      "auxiliaryStrategy": {
+        "@id": "urn:solid-server:default:AuxiliaryStrategy"
+      },
+      "metadataStrategy": {
+        "@id": "urn:solid-server:default:MetadataStrategy"
+      }
+    },
+    {
+      "@id": "urn:solid-server:template:variable:baseUrl",
+      "@type": "Variable"
+    }
+  ]
+}
