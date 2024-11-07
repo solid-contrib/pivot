@@ -63,6 +63,7 @@
     "prepare": "npm run build",
     "release": "commit-and-tag-version",
     "postrelease": "ts-node ./scripts/finalizeRelease.ts",
+    "staging": "npx pivot -c ./config/https-mashlib-subdomain-file.json -f ./data --httpsKey /etc/letsencrypt/live/pivot.pondersource.com-0001/privkey.pem --httpsCert /etc/letsencrypt/live/pivot.pondersource.com-0001/fullchain.pem -p 443 -b https://pivot.pondersource.com",
     "start": "node ./bin/server.js",
     "start:file": "node ./bin/server.js -c config/file.json -f ./.data",
     "start:file-root": "node ./bin/server.js -c config/file-root.json -f ./.data",
