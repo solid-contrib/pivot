@@ -3,8 +3,7 @@ import type { Response } from 'cross-fetch';
 import fetch from 'cross-fetch';
 import type { Quad } from 'n3';
 import { Parser } from 'n3';
-import { isContainerPath } from '../../src';
-import { LDP } from '../../src';
+import { isContainerPath, LDP } from '../../src';
 
 /**
  * This is specifically for GET requests which are expected to succeed.

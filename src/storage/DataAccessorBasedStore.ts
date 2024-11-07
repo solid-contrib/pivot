@@ -3,6 +3,7 @@ import arrayifyStream from 'arrayify-stream';
 import { DataFactory } from 'n3';
 import { v4 as uuid } from 'uuid';
 import type { AuxiliaryStrategy } from '../http/auxiliary/AuxiliaryStrategy';
+import { BadRequestHttpError } from '../util/errors/BadRequestHttpError';
 import { BasicRepresentation } from '../http/representation/BasicRepresentation';
 import type { Patch } from '../http/representation/Patch';
 import type { Representation } from '../http/representation/Representation';
@@ -10,8 +11,8 @@ import { RepresentationMetadata } from '../http/representation/RepresentationMet
 import type { ResourceIdentifier } from '../http/representation/ResourceIdentifier';
 import { getLoggerFor } from '../logging/LogUtil';
 import { INTERNAL_QUADS } from '../util/ContentTypes';
-import { BadRequestHttpError } from '../util/errors/BadRequestHttpError';
 import { ConflictHttpError } from '../util/errors/ConflictHttpError';
+import { RedirectHttpError } from '../util/errors/RedirectHttpError';
 import { createErrorMessage } from '../util/errors/ErrorUtil';
 import { ForbiddenHttpError } from '../util/errors/ForbiddenHttpError';
 import { MethodNotAllowedHttpError } from '../util/errors/MethodNotAllowedHttpError';
@@ -116,8 +117,12 @@ export class DataAccessorBasedStore implements ResourceStore {
       isMetadata = true;
     }
 
-    // In the future we want to use getNormalizedMetadata and redirect in case the identifier differs
-    let metadata = await this.accessor.getMetadata(identifier);
+    let metadata = await this.getNormalizedMetadata(identifier);
+    // Redirect in case the identifier differs
+    if (metadata.identifier.value !== identifier.path) {
+      throw new RedirectHttpError(302, 'Found', metadata.identifier.value);
+    }
+
     let representation: Representation;
 
     // Potentially add auxiliary related metadata

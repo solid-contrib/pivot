@@ -1,8 +1,8 @@
 import type { SolidTokenVerifierFunction } from '@solid/access-token-verifier';
 import { createSolidTokenVerifier } from '@solid/access-token-verifier';
+import { BadRequestHttpError } from '../util/errors/BadRequestHttpError';
 import { getLoggerFor } from '../logging/LogUtil';
 import type { HttpRequest } from '../server/HttpRequest';
-import { BadRequestHttpError } from '../util/errors/BadRequestHttpError';
 import { NotImplementedHttpError } from '../util/errors/NotImplementedHttpError';
 import { matchesAuthorizationScheme } from '../util/HeaderUtil';
 import type { Credentials } from './Credentials';

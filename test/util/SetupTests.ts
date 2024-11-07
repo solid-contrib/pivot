@@ -1,5 +1,4 @@
-import { setGlobalLoggerFactory } from '../../src';
-import { WinstonLoggerFactory } from '../../src';
+import { setGlobalLoggerFactory, WinstonLoggerFactory } from '../../src';
 import { getTestFolder, removeFolder } from '../integration/Config';
 
 // Jest global setup requires a single function to be exported

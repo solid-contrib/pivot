@@ -1,6 +1,6 @@
 import type { SolidTokenVerifierFunction } from '@solid/access-token-verifier';
 import type { SolidAccessTokenPayload } from '@solid/access-token-verifier/dist/type/SolidAccessTokenPayload';
-import { BearerWebIdExtractor, BadRequestHttpError, NotImplementedHttpError } from '../../../src';
+import { BadRequestHttpError, BearerWebIdExtractor, NotImplementedHttpError } from '../../../src';
 import type { HttpRequest } from '../../../src';
 
 let clientId: string | undefined;
