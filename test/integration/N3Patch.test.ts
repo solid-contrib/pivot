@@ -23,7 +23,7 @@ let aclHelper: AclHelper;
 
 async function expectPatch(
   input: { path: string; contentType?: string; body: string },
-  expected: { status: number; message?: string; turtle?: string },
+  expected: { status: number; message?: string; turtle?: string; turtleSyntax?: boolean },
 ): Promise<void> {
   const message = expected.message ?? '';
   const contentType = input.contentType ?? 'text/n3';
@@ -53,8 +53,12 @@ async function expectPatch(
 
     expect(get.status).toBe(200);
     const parser = new Parser({ format: 'text/turtle', baseIRI: url });
-    const actualTriples = parser.parse(await get.text());
+    const text = await get.text();
+    const actualTriples = parser.parse(text);
     expect(actualTriples).toBeRdfIsomorphic(parser.parse(expectedTurtle));
+    if (expected.turtleSyntax) {
+      expect(text).toEqual(expected.turtle);
+    }
   }
 }
 
@@ -132,7 +136,7 @@ describe('A Server supporting N3 Patch', (): void => {
       );
     });
 
-    it('succeeds if there is only read access.', async(): Promise<void> => {
+    it('succeeds if there is only append access.', async(): Promise<void> => {
       await setResource('/append-only', '<a> <b> <c>.', { append: true });
       await expectPatch(
         { path: '/append-only', body: `<> a solid:InsertDeletePatch; solid:inserts { <x> <y> <z>. }.` },
@@ -145,6 +149,26 @@ describe('A Server supporting N3 Patch', (): void => {
       await expectPatch(
         { path: '/write-only', body: `<> a solid:InsertDeletePatch; solid:inserts { <x> <y> <z>. }.` },
         { status: 205, turtle: '<a> <b> <c>. <x> <y> <z>.' },
+      );
+    });
+
+    it('preserves Turtle syntax for Collections.', async(): Promise<void> => {
+      await setResource('/write-only', '@prefix : <#>. :a :b (:c :d).', { write: true });
+      // Documenting the upstream behaviour in this test;
+      // Switch comment/uncomment for https://github.com/solid-contrib/pivot/pull/20
+      // const expected = '@prefix : <#>. :a :b (:c :d). <x> <y> <z>.';
+      const unexpected = `@prefix : <http://localhost:6014/write-only#>.
+
+_:n3-6 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <#c>;
+    <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:n3-7.
+_:n3-7 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <#d>;
+    <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil>.
+<#a> <#b> _:n3-6.
+<http://localhost:6014/x> <http://localhost:6014/y> <http://localhost:6014/z>.
+`;
+      await expectPatch(
+        { path: '/write-only', body: `<> a solid:InsertDeletePatch; solid:inserts { <x> <y> <z>. }.` },
+        { status: 205, turtle: unexpected /* Sic */, turtleSyntax: true },
       );
     });
   });
