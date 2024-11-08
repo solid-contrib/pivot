@@ -1,6 +1,8 @@
 import 'jest-rdf';
 import { fetch } from 'cross-fetch';
 import { Parser } from 'n3';
+import { debug } from '../../src/util/debug';
+
 import type { AclPermissionSet } from '../../src/authorization/permissions/AclPermissionSet';
 import { BasicRepresentation } from '../../src/http/representation/BasicRepresentation';
 import type { App } from '../../src/init/App';
@@ -166,6 +168,7 @@ _:n3-7 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <#d>;
 <#a> <#b> _:n3-6.
 <http://localhost:6014/x> <http://localhost:6014/y> <http://localhost:6014/z>.
 `;
+      await debug('calling expectPatch');
       await expectPatch(
         { path: '/write-only', body: `<> a solid:InsertDeletePatch; solid:inserts { <x> <y> <z>. }.` },
         { status: 205, turtle: unexpected /* Sic */, turtleSyntax: true },

@@ -1,3 +1,4 @@
+import { debug } from '../util/debug';
 import type { Patch } from '../http/representation/Patch';
 import type { ResourceIdentifier } from '../http/representation/ResourceIdentifier';
 import { NotImplementedHttpError } from '../util/errors/NotImplementedHttpError';
@@ -25,9 +26,11 @@ export class PatchingStore<T extends ResourceStore = ResourceStore> extends Pass
     conditions?: Conditions,
   ): Promise<ChangeMap> {
     try {
+      debug('trying this.source.modifyResource');
       return await this.source.modifyResource(identifier, patch, conditions);
     } catch (error: unknown) {
       if (NotImplementedHttpError.isInstance(error)) {
+        debug('trying this.patchHandler.handleSafe');
         return this.patchHandler.handleSafe({ source: this.source, identifier, patch });
       }
       throw error;

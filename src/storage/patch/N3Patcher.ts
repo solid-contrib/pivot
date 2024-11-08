@@ -5,6 +5,7 @@ import type { Bindings, Quad, Term } from '@rdfjs/types';
 import { mapTerms } from 'rdf-terms';
 import { Generator, Wildcard } from 'sparqljs';
 import type { SparqlGenerator } from 'sparqljs';
+import { debug } from '../../util/debug';
 import { isN3Patch } from '../../http/representation/N3Patch';
 import type { N3Patch } from '../../http/representation/N3Patch';
 import type { RdfDatasetRepresentation } from '../../http/representation/RdfDatasetRepresentation';
@@ -35,12 +36,14 @@ export class N3Patcher extends RepresentationPatcher<RdfDatasetRepresentation> {
   }
 
   public async canHandle({ patch }: RepresentationPatcherInput<RdfDatasetRepresentation>): Promise<void> {
+    await debug('N3Patcher#canHandle');
     if (!isN3Patch(patch)) {
       throw new NotImplementedHttpError('Only N3 Patch updates are supported');
     }
   }
 
   public async handle(input: RepresentationPatcherInput<RdfDatasetRepresentation>): Promise<RdfDatasetRepresentation> {
+    await debug('N3Patcher#handle');
     if (!input.representation) {
       throw new InternalServerError('Patcher requires a representation as input.');
     }
@@ -70,6 +73,8 @@ export class N3Patcher extends RepresentationPatcher<RdfDatasetRepresentation> {
    */
   private async patch({ identifier, patch, store }: RdfStorePatcherInput): Promise<Store> {
     this.logger.debug(`${store.size} quads in ${identifier.path}.`);
+    await debug('N3Patcher#patch');
+
 
     const { deletes, inserts } = await this.applyConditions(patch as N3Patch, identifier, store);
 
