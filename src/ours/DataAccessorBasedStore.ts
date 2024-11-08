@@ -44,9 +44,9 @@ import {
   SOLID_META,
   XSD,
 } from '../util/Vocabularies';
-import type { DataAccessor } from './accessors/DataAccessor';
-import type { Conditions } from './conditions/Conditions';
-import type { ChangeMap, ResourceStore } from './ResourceStore';
+import type { DataAccessor } from '../storage/accessors/DataAccessor';
+import type { Conditions } from '../storage/conditions/Conditions';
+import type { ChangeMap, ResourceStore } from '../storage/ResourceStore';
 import namedNode = DataFactory.namedNode;
 
 /**
