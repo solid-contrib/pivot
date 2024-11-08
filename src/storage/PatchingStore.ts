@@ -31,7 +31,12 @@ export class PatchingStore<T extends ResourceStore = ResourceStore> extends Pass
     } catch (error: unknown) {
       if (NotImplementedHttpError.isInstance(error)) {
         await debug('trying this.patchHandler.handleSafe');
-        return this.patchHandler.handleSafe({ source: this.source, identifier, patch });
+        try {
+          return await this.patchHandler.handleSafe({ source: this.source, identifier, patch });
+        } catch (error: unknown) {
+          await debug((error as { message: string }).message);
+          throw error;
+        }
       }
       throw error;
     }
