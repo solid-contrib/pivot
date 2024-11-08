@@ -56,28 +56,30 @@ export class ConvertingPatcher extends RepresentationPatcher<Representation> {
   }
 
   public async handle(input: RepresentationPatcherInput<Representation>): Promise<Representation> {
-    const { identifier, representation } = input;
-    let outputType: string | undefined;
-    let converted = representation;
-    if (!representation) {
-      // If there is no representation the output will need to be converted to the default type
-      outputType = this.defaultType;
-    } else if (this.intermediateType) {
-      // Convert incoming representation to the requested type
-      outputType = representation.metadata.contentType;
-      const preferences = { type: { [this.intermediateType]: 1 }};
-      converted = await this.converter.handle({ representation, identifier, preferences });
-    }
+    // short-circuit this functionality, let the N3Patcher work directly on the Turtle text.
+    return this.patcher.handle(input);
+    // const { identifier, representation } = input;
+    // let outputType: string | undefined;
+    // let converted = representation;
+    // if (!representation) {
+    //   // If there is no representation the output will need to be converted to the default type
+    //   outputType = this.defaultType;
+    // } else if (this.intermediateType) {
+    //   // Convert incoming representation to the requested type
+    //   outputType = representation.metadata.contentType;
+    //   const preferences = { type: { [this.intermediateType]: 1 }};
+    //   converted = await this.converter.handle({ representation, identifier, preferences });
+    // }
 
-    // Call the wrapped patcher with the (potentially) converted representation
-    let result = await this.patcher.handle({ ...input, representation: converted });
+    // // Call the wrapped patcher with the (potentially) converted representation
+    // let result = await this.patcher.handle({ ...input, representation: converted });
 
-    // Convert the output back to its original type or the default type depending on what was set
-    if (outputType) {
-      const preferences = { type: { [outputType]: 1 }};
-      result = await this.converter.handle({ representation: result, identifier, preferences });
-    }
+    // // Convert the output back to its original type or the default type depending on what was set
+    // if (outputType) {
+    //   const preferences = { type: { [outputType]: 1 }};
+    //   result = await this.converter.handle({ representation: result, identifier, preferences });
+    // }
 
-    return result;
+    // return result;
   }
 }

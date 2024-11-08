@@ -1,3 +1,4 @@
+import { debug } from '../../util/debug';
 import { getLoggerFor } from '../../logging/LogUtil';
 import type { ResourceStore } from '../../storage/ResourceStore';
 import { BadRequestHttpError } from '../../util/errors/BadRequestHttpError';
@@ -24,12 +25,14 @@ export class PatchOperationHandler extends OperationHandler {
   }
 
   public async canHandle({ operation }: OperationHandlerInput): Promise<void> {
+    await debug('LDP PATCH canHandle');
     if (operation.method !== 'PATCH') {
       throw new NotImplementedHttpError('This handler only supports PATCH operations.');
     }
   }
 
   public async handle({ operation }: OperationHandlerInput): Promise<ResponseDescription> {
+    await debug('LDP PATCH handle');
     // Solid, §2.1: "A Solid server MUST reject PUT, POST and PATCH requests
     // without the Content-Type header with a status code of 400."
     // https://solid.github.io/specification/protocol#http-server

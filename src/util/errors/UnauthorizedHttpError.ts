@@ -1,3 +1,4 @@
+import { debug } from '../debug';
 import type { HttpErrorOptions } from './HttpError';
 import { generateHttpErrorClass } from './HttpError';
 
@@ -10,5 +11,7 @@ const BaseHttpError = generateHttpErrorClass(401, 'UnauthorizedHttpError');
 export class UnauthorizedHttpError extends BaseHttpError {
   public constructor(message?: string, options?: HttpErrorOptions) {
     super(message, options);
+    // eslint-disable-next-line ts/no-floating-promises
+    debug('constructing UnauthorizedHttpError');
   }
 }

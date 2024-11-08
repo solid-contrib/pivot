@@ -1,3 +1,4 @@
+import { debug } from '../util/debug';
 import type { ClusterManager } from './cluster/ClusterManager';
 import type { Finalizer } from './final/Finalizer';
 import type { Initializer } from './Initializer';
@@ -20,6 +21,7 @@ export class App {
    * Initializes and starts the application.
    */
   public async start(): Promise<void> {
+    await debug('Starting server');
     await this.initializer.handleSafe();
   }
 
