@@ -21,7 +21,7 @@ export class App {
    * Initializes and starts the application.
    */
   public async start(): Promise<void> {
-    debug('Starting server');
+    await debug('Starting server');
     await this.initializer.handleSafe();
   }
 

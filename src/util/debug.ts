@@ -1,5 +1,5 @@
-import { appendFile } from 'node:fs';
+import { promises } from 'node:fs';
 
-export function debug(str: string): void {
-  appendFile('~/debug.txt', `${str}\n`, (): void => {});
+export async function debug(str: string): Promise<void> {
+  await promises.appendFile('debug.txt', `${str}\n`);
 }
