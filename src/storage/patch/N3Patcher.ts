@@ -75,7 +75,6 @@ export class N3Patcher extends RepresentationPatcher<RdfDatasetRepresentation> {
     this.logger.debug(`${store.size} quads in ${identifier.path}.`);
     await debug('N3Patcher#patch');
 
-
     const { deletes, inserts } = await this.applyConditions(patch as N3Patch, identifier, store);
 
     // Apply deletes

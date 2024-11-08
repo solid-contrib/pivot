@@ -26,11 +26,11 @@ export class PatchingStore<T extends ResourceStore = ResourceStore> extends Pass
     conditions?: Conditions,
   ): Promise<ChangeMap> {
     try {
-      debug('trying this.source.modifyResource');
+      await debug('trying this.source.modifyResource');
       return await this.source.modifyResource(identifier, patch, conditions);
     } catch (error: unknown) {
       if (NotImplementedHttpError.isInstance(error)) {
-        debug('trying this.patchHandler.handleSafe');
+        await debug('trying this.patchHandler.handleSafe');
         return this.patchHandler.handleSafe({ source: this.source, identifier, patch });
       }
       throw error;
