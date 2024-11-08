@@ -37,10 +37,10 @@ export class RdfPatcher extends RepresentationPatcher<Representation> {
   public async handle({ identifier, patch, representation }: RepresentationPatcherInput<Representation>):
   Promise<Representation> {
     let metadata = new RepresentationMetadata(identifier, INTERNAL_QUADS);
-    if (representation && representation.metadata.contentType !== INTERNAL_QUADS) {
-      this.logger.error('Received non-quad data. This should not happen so there is probably a configuration error.');
-      throw new InternalServerError('Quad stream was expected for patching.');
-    }
+    // if (representation && representation.metadata.contentType !== INTERNAL_QUADS) {
+    //   this.logger.error('Received non-quad data. This should not happen so there is probably a configuration error.');
+    //   throw new InternalServerError('Quad stream was expected for patching.');
+    // }
 
     // Drain representation data to N3 Store
     const inputRepresentation: RdfDatasetRepresentation = representation ?

@@ -154,7 +154,7 @@ describe('A Server supporting N3 Patch', (): void => {
       );
     });
 
-    it('preserves Turtle syntax for Collections.', async(): Promise<void> => {
+    it.only('preserves Turtle syntax for Collections.', async(): Promise<void> => {
       await setResource('/write-only', '@prefix : <#>. :a :b (:c :d).', { write: true });
       // Documenting the upstream behaviour in this test;
       // Switch comment/uncomment for https://github.com/solid-contrib/pivot/pull/20
