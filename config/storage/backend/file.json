@@ -1,0 +1,20 @@
+{
+  "@context": [
+    "https://linkedsoftwaredependencies.org/bundles/npm/@solid/community-server/^7.0.0/components/context.jsonld",
+    "https://linkedsoftwaredependencies.org/bundles/npm/@solid/pivot/^1.0.0/components/context.jsonld"
+  ],
+  "import": [
+    "css:config/storage/backend/data-accessors/file.json"
+  ],
+  "@graph": [
+    {
+      "comment": "A default store setup with a file system backend.",
+      "@id": "urn:solid-server:default:ResourceStore_Backend",
+      "@type": "RedirectingStore",
+      "identifierStrategy": { "@id": "urn:solid-server:default:IdentifierStrategy" },
+      "auxiliaryStrategy": { "@id": "urn:solid-server:default:AuxiliaryStrategy" },
+      "accessor": { "@id": "urn:solid-server:default:FileDataAccessor" },
+      "metadataStrategy": { "@id": "urn:solid-server:default:MetadataStrategy" }
+    }
+  ]
+}

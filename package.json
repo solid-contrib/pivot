@@ -17,6 +17,7 @@
   },
   "scripts": {
     "start": "community-solid-server -c config/default.json -f ./data -m .",
+    "staging": "community-solid-server -c ./config/https-mashlib-subdomain-file.json -f ./data --httpsKey /etc/letsencrypt/live/pivot.pondersource.com-0001/privkey.pem --httpsCert /etc/letsencrypt/live/pivot.pondersource.com-0001/fullchain.pem -p 443 -b https://pivot.pondersource.com",
     "build": "npm run build:ts && npm run build:components",
     "build:components": "componentsjs-generator -s src -c dist/components -i .componentsignore -r pivot",
     "build:ts": "tsc",
@@ -29,8 +30,7 @@
   ],
   "dependencies": {
     "@solid/community-server": "^7.1.3",
-    "@types/rdf-validate-shacl": "^0.2.4",
-    "rdf-validate-shacl": "^0.3.2"
+    "mashlib": "^1.8.11"
   },
   "devDependencies": {
     "@tsconfig/node14": "^1.0.3",
