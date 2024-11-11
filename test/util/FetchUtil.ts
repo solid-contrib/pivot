@@ -4,7 +4,6 @@ import fetch from 'cross-fetch';
 import type { Quad } from 'n3';
 import { Parser } from 'n3';
 import { isContainerPath } from '@solid/community-server';
-import { LDP } from '../../src/util/Vocabularies';
 
 /**
  * This is specifically for GET requests which are expected to succeed.
@@ -15,13 +14,13 @@ export async function getResource(url: string,
   const isContainer = isContainerPath(url);
   const response = await fetch(url, { headers: options });
   expect(response.status).toBe(200);
-  expect(response.headers.get('link')).toContain(`<${LDP.Resource}>; rel="type"`);
+  expect(response.headers.get('link')).toContain(`<Resource>; rel="type"`);
   expect(response.headers.get('link')).toContain(`<${url}.acl>; rel="acl"`);
   expect(response.headers.get('accept-patch')).toBe('text/n3, application/sparql-update');
 
   if (isContainer) {
-    expect(response.headers.get('link')).toContain(`<${LDP.Container}>; rel="type"`);
-    expect(response.headers.get('link')).toContain(`<${LDP.BasicContainer}>; rel="type"`);
+    expect(response.headers.get('link')).toContain(`<Container>; rel="type"`);
+    expect(response.headers.get('link')).toContain(`<BasicContainer>; rel="type"`);
   }
   if (expected?.contentType) {
     expect(response.headers.get('content-type')).toBe(expected.contentType);
