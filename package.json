@@ -1,19 +1,19 @@
 {
-  "name": "pivot",
+  "name": "@solid/pivot",
   "version": "1.0.0",
   "description": "A module for the Community Solid Server that allows to create containers that do SHACL shape validation.",
   "repository": "git@github.com:CommunitySolidServer/pivot.git",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "lsd:module": "https://linkedsoftwaredependencies.org/bundles/npm/pivot",
+  "lsd:module": "https://linkedsoftwaredependencies.org/bundles/npm/@solid/pivot",
   "lsd:components": "dist/components/components.jsonld",
   "lsd:contexts": {
-    "https://linkedsoftwaredependencies.org/bundles/npm/pivot/^1.0.0/components/context.jsonld": "dist/components/context.jsonld"
+    "https://linkedsoftwaredependencies.org/bundles/npm/@solid/pivot/^1.0.0/components/context.jsonld": "dist/components/context.jsonld"
   },
   "lsd:importPaths": {
-    "https://linkedsoftwaredependencies.org/bundles/npm/pivot/^1.0.0/components/": "dist/components/",
-    "https://linkedsoftwaredependencies.org/bundles/npm/pivot/^1.0.0/config/": "config/",
-    "https://linkedsoftwaredependencies.org/bundles/npm/pivot/^1.0.0/dist/": "dist/"
+    "https://linkedsoftwaredependencies.org/bundles/npm/@solid/pivot/^1.0.0/components/": "dist/components/",
+    "https://linkedsoftwaredependencies.org/bundles/npm/@solid/pivot/^1.0.0/config/": "config/",
+    "https://linkedsoftwaredependencies.org/bundles/npm/@solid/pivot/^1.0.0/dist/": "dist/"
   },
   "scripts": {
     "start": "community-solid-server -c config/default.json -f ./data -m .",
