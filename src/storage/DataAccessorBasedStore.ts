@@ -47,6 +47,7 @@ import {
   SOLID_META,
   XSD,
 } from '@solid/community-server';
+import { debug } from '../util/debug';
 
 const namedNode = DataFactory.namedNode;
 
@@ -110,6 +111,7 @@ export class DataAccessorBasedStore implements ResourceStore {
   }
 
   public async getRepresentation(identifier: ResourceIdentifier): Promise<Representation> {
+    await debug('getRepresentation called on our DataAccessorBasedStore');
     this.validateIdentifier(identifier);
     let isMetadata = false;
 
