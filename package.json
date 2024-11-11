@@ -16,9 +16,7 @@
     "https://linkedsoftwaredependencies.org/bundles/npm/pivot/^1.0.0/dist/": "dist/"
   },
   "scripts": {
-    "start": "community-solid-server -c pivot-default.json -f ./data -m .",
-    "start:file": "community-solid-server -c pivot-file-no-setup.json -f ./data -m .",
-    "start:memory": "community-solid-server -c pivot-memory-no-setup.json -m .",
+    "start": "community-solid-server -c config/default.json -f ./data -m .",
     "build": "npm run build:ts && npm run build:components",
     "build:components": "componentsjs-generator -s src -c dist/components -i .componentsignore -r pivot",
     "build:ts": "tsc",
