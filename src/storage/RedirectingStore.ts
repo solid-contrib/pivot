@@ -55,10 +55,10 @@ const namedNode = DataFactory.namedNode;
  * ResourceStore which uses a DataAccessor for backend access.
  *
  * The DataAccessor interface provides elementary store operations such as read and write.
- * This DataAccessorBasedStore uses those elementary store operations
+ * This RedirectingStore uses those elementary store operations
  * to implement the more high-level ResourceStore contact, abstracting all common functionality
  * such that new stores can be added by implementing the more simple DataAccessor contract.
- * DataAccessorBasedStore thereby provides behaviours for reuse across different stores, such as:
+ * RedirectingStore thereby provides behaviours for reuse across different stores, such as:
  *  * Converting container metadata to data
  *  * Converting slug to URI
  *  * Checking if addResource target is a container
@@ -74,7 +74,7 @@ const namedNode = DataFactory.namedNode;
  * Work has been done to minimize the number of required calls to the DataAccessor,
  * but the main disadvantage is that sometimes multiple calls are required where a specific store might only need one.
  */
-export class DataAccessorBasedStore implements ResourceStore {
+export class RedirectingStore implements ResourceStore {
   protected readonly logger = getLoggerFor(this);
 
   private readonly accessor: DataAccessor;
@@ -111,7 +111,7 @@ export class DataAccessorBasedStore implements ResourceStore {
   }
 
   public async getRepresentation(identifier: ResourceIdentifier): Promise<Representation> {
-    await debug('getRepresentation called on our DataAccessorBasedStore');
+    await debug('getRepresentation called on our RedirectingStore');
     this.validateIdentifier(identifier);
     let isMetadata = false;
 

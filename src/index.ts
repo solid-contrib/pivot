@@ -1,1 +1,1 @@
-export * from "./storage/DataAccessorBasedStore";
+export * from "./storage/RedirectingStore";

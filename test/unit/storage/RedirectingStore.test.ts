@@ -2,30 +2,33 @@ import 'jest-rdf';
 import type { Readable } from 'node:stream';
 import arrayifyStream from 'arrayify-stream';
 import { DataFactory, Store } from 'n3';
-import type { Conditions } from '../../../src';
-import { CONTENT_TYPE_TERM } from '../../../src';
-import type { AuxiliaryStrategy } from '../../../src/http/auxiliary/AuxiliaryStrategy';
-import { BasicRepresentation } from '../../../src/http/representation/BasicRepresentation';
-import type { Representation } from '../../../src/http/representation/Representation';
-import { RepresentationMetadata } from '../../../src/http/representation/RepresentationMetadata';
-import type { ResourceIdentifier } from '../../../src/http/representation/ResourceIdentifier';
-import type { DataAccessor } from '../../../src/storage/accessors/DataAccessor';
-import { DataAccessorBasedStore } from '../../../src/storage/DataAccessorBasedStore';
-import { INTERNAL_QUADS } from '../../../src/util/ContentTypes';
-import { BadRequestHttpError } from '../../../src/util/errors/BadRequestHttpError';
-import { ConflictHttpError } from '../../../src/util/errors/ConflictHttpError';
-import { ForbiddenHttpError } from '../../../src/util/errors/ForbiddenHttpError';
-import { MethodNotAllowedHttpError } from '../../../src/util/errors/MethodNotAllowedHttpError';
-import { NotFoundHttpError } from '../../../src/util/errors/NotFoundHttpError';
-import { NotImplementedHttpError } from '../../../src/util/errors/NotImplementedHttpError';
-import { PreconditionFailedHttpError } from '../../../src/util/errors/PreconditionFailedHttpError';
-import type { Guarded } from '../../../src/util/GuardedStream';
-import { ContentType } from '../../../src/util/Header';
-import { SingleRootIdentifierStrategy } from '../../../src/util/identifiers/SingleRootIdentifierStrategy';
-import { trimTrailingSlashes } from '../../../src/util/PathUtil';
-import { guardedStreamFrom } from '../../../src/util/StreamUtil';
-import { AS, CONTENT_TYPE, DC, LDP, PIM, RDF, SOLID_AS, SOLID_HTTP, SOLID_META } from '../../../src/util/Vocabularies';
+import {
+  Conditions,
+  CONTENT_TYPE_TERM,
+  AuxiliaryStrategy,
+  BasicRepresentation,
+  Representation,
+  ResourceIdentifier,
+  DataAccessor,
+  Guarded,
+  RepresentationMetadata,
+  INTERNAL_QUADS,
+  BadRequestHttpError,
+  ConflictHttpError,
+  ForbiddenHttpError,
+  MethodNotAllowedHttpError,
+  NotFoundHttpError,
+  RedirectHttpError,
+  NotImplementedHttpError,
+  PreconditionFailedHttpError,
+  SingleRootIdentifierStrategy,
+  trimTrailingSlashes,
+  guardedStreamFrom,
+  AS, CONTENT_TYPE, DC, LDP, PIM, RDF, SOLID_AS, SOLID_HTTP, SOLID_META
+} from '@solid/community-server';
 import { SimpleSuffixStrategy } from '../../util/SimpleSuffixStrategy';
+import { ContentType } from '../../../src/util/Header';
+import { RedirectingStore } from '../../../src/storage/RedirectingStore';
 
 const { namedNode, quad, literal } = DataFactory;
 
@@ -91,11 +94,11 @@ class SimpleDataAccessor implements DataAccessor {
   }
 }
 
-describe('A DataAccessorBasedStore', (): void => {
+describe('A RedirectingStore', (): void => {
   const now = new Date(2020, 5, 12);
   const later = new Date(2021, 6, 13);
   let mockDate: jest.SpyInstance;
-  let store: DataAccessorBasedStore;
+  let store: RedirectingStore;
   let accessor: SimpleDataAccessor;
   const root = 'http://test.com/';
   const identifierStrategy = new SingleRootIdentifierStrategy(root);
@@ -113,7 +116,7 @@ describe('A DataAccessorBasedStore', (): void => {
 
     auxiliaryStrategy = new SimpleSuffixStrategy('.dummy');
 
-    store = new DataAccessorBasedStore(accessor, identifierStrategy, auxiliaryStrategy, metadataStrategy);
+    store = new RedirectingStore(accessor, identifierStrategy, auxiliaryStrategy, metadataStrategy);
 
     containerMetadata = new RepresentationMetadata(
       { [RDF.type]: [
@@ -153,6 +156,19 @@ describe('A DataAccessorBasedStore', (): void => {
         .toBe(auxiliaryStrategy.getAuxiliaryIdentifier(resourceID).path);
     });
 
+    it('will redirect to non-container resource URL if trailing slash is added.', async(): Promise<void> => {
+      const resourceID = { path: `${root}resource` };
+      representation.metadata.identifier = namedNode(resourceID.path);
+      accessor.data[resourceID.path] = representation;
+      expect.assertions(2);
+      try {
+        await store.getRepresentation({ path: `${root}resource/` });
+      } catch (error) {
+        expect(error).toBeInstanceOf(RedirectHttpError);
+        expect(error).toHaveProperty('location', 'http://test.com/resource');
+      }
+    });
+
     it('will return a data stream that matches the metadata for containers.', async(): Promise<void> => {
       const resourceID = { path: `${root}container/` };
       containerMetadata.identifier = namedNode(resourceID.path);
@@ -167,6 +183,23 @@ describe('A DataAccessorBasedStore', (): void => {
       expect(result.metadata.contentType).toEqual(INTERNAL_QUADS);
       expect(result.metadata.get(namedNode('AUXILIARY'))?.value)
         .toBe(auxiliaryStrategy.getAuxiliaryIdentifier(resourceID).path);
+    });
+
+    it('will redirect to container URL if trailing slash is missing.', async(): Promise<void> => {
+      const resourceID = { path: `${root}container/` };
+      containerMetadata.identifier = namedNode(resourceID.path);
+      accessor.data[resourceID.path] = { metadata: containerMetadata } as Representation;
+      const metaMirror = new RepresentationMetadata(containerMetadata);
+      // Generated metadata will have its graph removed
+      metaMirror.add(GENERATED_PREDICATE, 'data', SOLID_META.terms.ResponseMetadata);
+      await auxiliaryStrategy.addMetadata(metaMirror);
+      expect.assertions(2);
+      try {
+        await store.getRepresentation({ path: `${root}container` });
+      } catch (error) {
+        expect(error).toBeInstanceOf(RedirectHttpError);
+        expect(error).toHaveProperty('location', 'http://test.com/container/');
+      }
     });
 
     it('will remove containment triples referencing auxiliary resources.', async(): Promise<void> => {
