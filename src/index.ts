@@ -1,1 +1,1 @@
-
+export * from "./storage/DataAccessorBasedStore";
