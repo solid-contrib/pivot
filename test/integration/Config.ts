@@ -8,8 +8,11 @@ let cachedModuleState: IModuleState;
 /**
  * Returns a component instantiated from a Components.js configuration.
  */
-export async function instantiateFromConfig(componentUrl: string, configPaths: string | string[],
-  variables?: Record<string, any>): Promise<any> {
+export async function instantiateFromConfig(
+  componentUrl: string,
+  configPaths: string | string[],
+  variables?: Record<string, any>,
+): Promise<any> {
   // Initialize the Components.js loader
   const mainModulePath = joinFilePath(__dirname, '../../');
   const manager = await ComponentsManager.build({
@@ -28,7 +31,7 @@ export async function instantiateFromConfig(componentUrl: string, configPaths: s
   for (const configPath of configPaths) {
     await manager.configRegistry.register(configPath);
   }
-  return await manager.instantiate(componentUrl, { variables });
+  return manager.instantiate(componentUrl, { variables });
 }
 
 export function getTestConfigPath(configFile: string): string {
@@ -36,8 +39,7 @@ export function getTestConfigPath(configFile: string): string {
 }
 
 export function getPresetConfigPath(configFile: string): string {
-  // points to CSS config directory in node modules
-  return joinFilePath(__dirname, '../../node_modules/@solid/community-server/config', configFile);
+  return joinFilePath(__dirname, '../../config', configFile);
 }
 
 export function getTestFolder(name: string): string {
@@ -52,9 +54,11 @@ export function getDefaultVariables(port: number, baseUrl?: string): Record<stri
   return {
     'urn:solid-server:default:variable:baseUrl': baseUrl ?? `http://localhost:${port}/`,
     'urn:solid-server:default:variable:port': port,
+    'urn:solid-server:default:variable:socket': null,
     'urn:solid-server:default:variable:loggingLevel': 'off',
     'urn:solid-server:default:variable:showStackTrace': true,
-    'urn:solid-server:default:variable:seededPodConfigJson': null,
+    'urn:solid-server:default:variable:seedConfig': null,
     'urn:solid-server:default:variable:workers': 1,
+    'urn:solid-server:default:variable:confirmMigration': false,
   };
 }
