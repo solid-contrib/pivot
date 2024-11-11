@@ -18,6 +18,7 @@ import {
   ForbiddenHttpError,
   MethodNotAllowedHttpError,
   NotFoundHttpError,
+  RedirectHttpError,
   NotImplementedHttpError,
   PreconditionFailedHttpError,
   SingleRootIdentifierStrategy,
@@ -155,6 +156,19 @@ describe('A DataAccessorBasedStore', (): void => {
         .toBe(auxiliaryStrategy.getAuxiliaryIdentifier(resourceID).path);
     });
 
+    it('will redirect to non-container resource URL if trailing slash is added.', async(): Promise<void> => {
+      const resourceID = { path: `${root}resource` };
+      representation.metadata.identifier = namedNode(resourceID.path);
+      accessor.data[resourceID.path] = representation;
+      expect.assertions(2);
+      try {
+        await store.getRepresentation({ path: `${root}resource/` });
+      } catch (error) {
+        expect(error).toBeInstanceOf(RedirectHttpError);
+        expect(error).toHaveProperty('location', 'http://test.com/resource');
+      }
+    });
+
     it('will return a data stream that matches the metadata for containers.', async(): Promise<void> => {
       const resourceID = { path: `${root}container/` };
       containerMetadata.identifier = namedNode(resourceID.path);
@@ -169,6 +183,23 @@ describe('A DataAccessorBasedStore', (): void => {
       expect(result.metadata.contentType).toEqual(INTERNAL_QUADS);
       expect(result.metadata.get(namedNode('AUXILIARY'))?.value)
         .toBe(auxiliaryStrategy.getAuxiliaryIdentifier(resourceID).path);
+    });
+
+    it('will redirect to container URL if trailing slash is missing.', async(): Promise<void> => {
+      const resourceID = { path: `${root}container/` };
+      containerMetadata.identifier = namedNode(resourceID.path);
+      accessor.data[resourceID.path] = { metadata: containerMetadata } as Representation;
+      const metaMirror = new RepresentationMetadata(containerMetadata);
+      // Generated metadata will have its graph removed
+      metaMirror.add(GENERATED_PREDICATE, 'data', SOLID_META.terms.ResponseMetadata);
+      await auxiliaryStrategy.addMetadata(metaMirror);
+      expect.assertions(2);
+      try {
+        await store.getRepresentation({ path: `${root}container` });
+      } catch (error) {
+        expect(error).toBeInstanceOf(RedirectHttpError);
+        expect(error).toHaveProperty('location', 'http://test.com/container/');
+      }
     });
 
     it('will remove containment triples referencing auxiliary resources.', async(): Promise<void> => {
