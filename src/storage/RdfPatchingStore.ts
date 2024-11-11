@@ -15,13 +15,11 @@ import {
  * otherwise the {@link PatchHandler} will be called instead.
  */
 export class RdfPatchingStore<T extends ResourceStore = ResourceStore> extends PassthroughStore<T> {
-  private readonly patchHandler: PatchHandler;
   protected source: T;
 
-  public constructor(source: T, patchHandler: PatchHandler) {
+  public constructor(source: T) {
     super(source);
     this.source = source;
-    this.patchHandler = patchHandler;
   }
 
   public async modifyResource(
