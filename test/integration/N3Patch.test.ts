@@ -25,6 +25,7 @@ let aclHelper: AclHelper;
 async function expectPatch(
   input: { path: string; contentType?: string; body: string },
   expected: { status: number; message?: string; turtle?: string },
+  respectTurtle?: boolean
 ): Promise<void> {
   const message = expected.message ?? '';
   const contentType = input.contentType ?? 'text/n3';
@@ -54,8 +55,12 @@ async function expectPatch(
 
     expect(get.status).toBe(200);
     const parser = new Parser({ format: 'text/turtle', baseIRI: url });
-    const actualTriples = parser.parse(await get.text());
+    const actualText = await get.text();
+    const actualTriples = parser.parse(actualText);
     expect(actualTriples).toBeRdfIsomorphic(parser.parse(expectedTurtle));
+    if (respectTurtle === true) {
+      expect(actualText).toEqual(expected.turtle);
+    }
   }
 }
 
@@ -146,6 +151,15 @@ describe('A Server supporting N3 Patch', (): void => {
       await expectPatch(
         { path: '/write-only', body: `<> a solid:InsertDeletePatch; solid:inserts { <x> <y> <z>. }.` },
         { status: 205, turtle: '<a> <b> <c>. <x> <y> <z>.' },
+      );
+    });
+
+    it('Respects existing Turtle lists.', async(): Promise<void> => {
+      await setResource('/write-only', '<a> <b> ( <c> <d> ).', { write: true });
+      await expectPatch(
+        { path: '/write-only', body: `<> a solid:InsertDeletePatch; solid:inserts { <x> <y> <z>. }.` },
+        { status: 205, turtle: '<a> <b> ( <c> <d> ). <x> <y> <z>.' },
+        true,
       );
     });
   });
