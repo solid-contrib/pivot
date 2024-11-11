@@ -14,7 +14,7 @@ import {
  * If the original store supports the {@link Patch}, behaviour will be identical,
  * otherwise the {@link PatchHandler} will be called instead.
  */
-export class PatchingStore<T extends ResourceStore = ResourceStore> extends PassthroughStore<T> {
+export class RdfPatchingStore<T extends ResourceStore = ResourceStore> extends PassthroughStore<T> {
   private readonly patchHandler: PatchHandler;
 
   public constructor(source: T, patchHandler: PatchHandler) {

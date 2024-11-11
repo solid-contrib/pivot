@@ -4,10 +4,10 @@ import {
   ResourceStore,
   NotImplementedHttpError,
 } from '@solid/community-server';
-import { PatchingStore } from '../../../src/storage/PatchingStore';
+import { RdfPatchingStore } from '../../../src/storage/RdfPatchingStore';
 
-describe('A PatchingStore', (): void => {
-  let store: PatchingStore;
+describe('An RdfPatchingStore', (): void => {
+  let store: RdfPatchingStore;
   let source: jest.Mocked<ResourceStore>;
   let patcher: PatchHandler;
   let handleSafeFn: jest.Mock<Promise<void>, []>;
@@ -20,7 +20,7 @@ describe('A PatchingStore', (): void => {
     handleSafeFn = jest.fn(async(): Promise<any> => 'patcher');
     patcher = { handleSafe: handleSafeFn } as unknown as PatchHandler;
 
-    store = new PatchingStore(source, patcher);
+    store = new RdfPatchingStore(source, patcher);
   });
 
   it('calls modifyResource directly from the source if available.', async(): Promise<void> => {
