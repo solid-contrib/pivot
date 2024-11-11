@@ -1,6 +1,6 @@
 import { DataFactory } from 'n3';
-import type { AuxiliaryStrategy, RepresentationMetadata, ResourceIdentifier } from '../../src';
-import namedNode = DataFactory.namedNode;
+import type { AuxiliaryStrategy, RepresentationMetadata, ResourceIdentifier } from '@solid/community-server';
+const namedNode = DataFactory.namedNode;
 
 export class SimpleSuffixStrategy implements AuxiliaryStrategy {
   private readonly suffix: string;

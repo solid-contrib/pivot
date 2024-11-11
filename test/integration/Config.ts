@@ -1,7 +1,7 @@
 import type { IModuleState } from 'componentsjs';
 import { ComponentsManager } from 'componentsjs';
 import { remove } from 'fs-extra';
-import { joinFilePath } from '../../src';
+import { joinFilePath } from '@solid/community-server';
 
 let cachedModuleState: IModuleState;
 

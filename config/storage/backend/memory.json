@@ -1,5 +1,8 @@
 {
-  "@context": "https://linkedsoftwaredependencies.org/bundles/npm/@solid/pivot/^1.0.0/components/context.jsonld",
+  "@context": [
+    "https://linkedsoftwaredependencies.org/bundles/npm/@solid/community-server/^7.0.0/components/context.jsonld",
+    "https://linkedsoftwaredependencies.org/bundles/npm/@solid/pivot/^1.0.0/components/context.jsonld"
+  ],
   "import": [
     "css:config/storage/backend/data-accessors/memory.json"
   ],
@@ -7,7 +10,7 @@
     {
       "comment": "A default store setup with a memory backend.",
       "@id": "urn:solid-server:default:ResourceStore_Backend",
-      "@type": "DataAccessorBasedStore",
+      "@type": "RedirectingStore",
       "identifierStrategy": { "@id": "urn:solid-server:default:IdentifierStrategy" },
       "auxiliaryStrategy": { "@id": "urn:solid-server:default:AuxiliaryStrategy" },
       "accessor": { "@id": "urn:solid-server:default:MemoryDataAccessor" },

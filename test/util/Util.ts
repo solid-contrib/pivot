@@ -1,6 +1,6 @@
 import type { Dirent, Stats } from 'node:fs';
 import { PassThrough, Readable } from 'node:stream';
-import type { SystemError } from '../../src';
+import type { SystemError } from '@solid/community-server';
 import Describe = jest.Describe;
 
 const portNames = [

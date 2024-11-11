@@ -1,5 +1,4 @@
-import type { AclPermissionSet, ResourceStore } from '../../src/';
-import { BasicRepresentation } from '../../src/';
+import { ResourceStore, BasicRepresentation, AclPermissionSet } from '@solid/community-server';
 
 export type AclHelperInput = {
   permissions: AclPermissionSet;

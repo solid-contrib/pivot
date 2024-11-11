@@ -1,8 +1,6 @@
 import type { IncomingHttpHeaders } from 'node:http';
 import escapeStringRegexp from 'escape-string-regexp';
-import { getLoggerFor } from '../logging/LogUtil';
-import type { HttpResponse } from '../server/HttpResponse';
-import { BadRequestHttpError } from './errors/BadRequestHttpError';
+import { getLoggerFor, HttpResponse, BadRequestHttpError } from '@solid/community-server';
 import type {
   Accept,
   AcceptCharset,

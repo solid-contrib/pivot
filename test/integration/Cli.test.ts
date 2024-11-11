@@ -1,5 +1,5 @@
-import type { CliResolver } from '../../src';
-import { resolveModulePath } from '../../src';
+import type { CliResolver } from '@solid/community-server';
+import { resolveModulePath } from '@solid/community-server';
 import { instantiateFromConfig } from './Config';
 
 // Needed to prevent yargs from stopping the process on error

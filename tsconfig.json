@@ -1,16 +1,20 @@
 {
-  "extends": "@tsconfig/node18/tsconfig.json",
+  "extends": "@tsconfig/node14/tsconfig.json",
   "compilerOptions": {
-    "incremental": true,
-    "lib": [ "es2022" ],
-    "moduleResolution": "node16",
     "declaration": true,
+    "incremental": true,
     "inlineSources": true,
+    "lib": [ "es2022" ],
     "newLine": "lf",
     "outDir": "dist",
     "preserveConstEnums": true,
     "sourceMap": true,
-    "stripInternal": true
+    "stripInternal": true,
+    "typeRoots": [
+      "types",
+      "node_modules/@types"
+    ],
+    "resolveJsonModule": true,
   },
   "include": [
     "src"
