@@ -1,10 +1,12 @@
-import type { Dirent, Stats } from 'fs';
-import { PassThrough, Readable } from 'stream';
+import type { Dirent, Stats } from 'node:fs';
+import { PassThrough, Readable } from 'node:stream';
 import type { SystemError } from '@solid/community-server';
 import Describe = jest.Describe;
 
 const portNames = [
   // Integration
+  'Accounts',
+  'AcpServer',
   'Conditions',
   'ContentNegotiation',
   'DynamicPods',
@@ -12,6 +14,7 @@ const portNames = [
   'FileBackend',
   'GlobalQuota',
   'Identity',
+  'LegacyWebSocketsProtocol',
   'LpdHandlerWithAuth',
   'LpdHandlerWithoutAuth',
   'Middleware',
@@ -26,25 +29,56 @@ const portNames = [
   'ServerFetch',
   'SetupMemory',
   'SparqlStorage',
+  'StreamingHTTPChannel2023',
   'Subdomains',
-  'WebSocketsProtocol',
+  'WebhookChannel2023',
+  'WebhookChannel2023-client',
+  'WebSocketChannel2023',
 
   // Unit
-  'BaseHttpServerFactory',
+  'BaseServerFactory',
 ] as const;
 
-export function getPort(name: typeof portNames[number]): number {
+// These are ports that are not allowed to change for various reasons
+const fixedPorts = {
+  V6Migration: 6999,
+} as const;
+
+const socketNames = [
+  // Unit
+  'BaseHttpServerFactory',
+];
+
+function isFixedPortName(name: string): name is keyof typeof fixedPorts {
+  return Boolean(fixedPorts[name as keyof typeof fixedPorts]);
+}
+
+export function getPort(name: typeof portNames[number] | keyof typeof fixedPorts): number {
+  if (isFixedPortName(name)) {
+    return fixedPorts[name];
+  }
   const idx = portNames.indexOf(name);
   // Just in case something doesn't listen to the typings
   if (idx < 0) {
     throw new Error(`Unknown port name ${name}`);
   }
-  return 6000 + idx;
+  // 6000 is a bad port, causing node v18+ to block fetch requests targeting such a URL
+  // https://fetch.spec.whatwg.org/#port-blocking
+  return 6000 + idx + 1;
+}
+
+export function getSocket(name: typeof socketNames[number]): string {
+  const idx = socketNames.indexOf(name);
+  // Just in case something doesn't listen to the typings
+  if (idx < 0) {
+    throw new Error(`Unknown socket name ${name}`);
+  }
+  return `css${idx}.sock`;
 }
 
 export function describeIf(envFlag: string): Describe {
   const flag = `TEST_${envFlag.toUpperCase()}`;
-  const enabled = !/^(|0|false)$/iu.test(process.env[flag] ?? '');
+  const enabled = !/^(?:0|false)?$/iu.test(process.env[flag] ?? '');
   return enabled ? describe : describe.skip;
 }
 
@@ -73,7 +107,7 @@ export function compareMaps<TKey, TVal>(map1: Map<TKey, TVal>, map2: Map<TKey, T
 
 /**
  * Mocks (some) functions of the fs system library.
- * It is important that you call `jest.mock('fs');` in your test file before calling this!!!
+ * It is important that you call `jest.mock('node:fs');` in your test file before calling this!!!
  *
  * This function will return an object of which the `data` field corresponds to the contents of the root folder.
  * The file system can be "reset" by assigning an empty object (`{}`) to the data field.
@@ -110,10 +144,10 @@ export function mockFileSystem(rootFilepath?: string, time?: Date): { data: any 
       return { folder: cache, name: 'data' };
     }
 
-    const name = parts.slice(-1)[0];
+    const name = parts.at(-1) as string;
     parts = parts.slice(0, -1);
     let folder = cache.data;
-    parts.forEach((part): any => {
+    for (const part of parts) {
       if (typeof folder === 'string') {
         throwSystemError('ENOTDIR');
       }
@@ -121,7 +155,7 @@ export function mockFileSystem(rootFilepath?: string, time?: Date): { data: any 
       if (!folder) {
         throwSystemError('ENOENT');
       }
-    });
+    }
 
     return { folder, name };
   }
@@ -166,7 +200,6 @@ export function mockFileSystem(rootFilepath?: string, time?: Date): { data: any 
         if (!(await this.lstat(path)).isFile()) {
           throwSystemError('EISDIR');
         }
-        // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
         delete folder[name];
       },
       async symlink(target: string, path: string): Promise<void> {
@@ -189,7 +222,6 @@ export function mockFileSystem(rootFilepath?: string, time?: Date): { data: any 
         if (!(await this.lstat(path)).isDirectory()) {
           throwSystemError('ENOTDIR');
         }
-        // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
         delete folder[name];
       },
       async readdir(path: string): Promise<string[]> {
@@ -243,7 +275,6 @@ export function mockFileSystem(rootFilepath?: string, time?: Date): { data: any 
         const { folder: folderDest, name: nameDest } = getFolder(destination);
         folderDest[nameDest] = folder[name];
 
-        // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
         delete folder[name];
       },
     },
@@ -268,8 +299,15 @@ export function mockFileSystem(rootFilepath?: string, time?: Date): { data: any 
     },
     async remove(path: string): Promise<void> {
       const { folder, name } = getFolder(path);
-      // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
       delete folder[name];
+    },
+    async pathExists(path: string): Promise<boolean> {
+      try {
+        const { folder, name } = getFolder(path);
+        return Boolean(folder[name]);
+      } catch {
+        return false;
+      }
     },
     createReadStream(path: string): any {
       return mockFs.createReadStream(path);
@@ -278,7 +316,7 @@ export function mockFileSystem(rootFilepath?: string, time?: Date): { data: any 
       return mockFs.createWriteStream(path);
     },
     async realpath(path: string): Promise<string> {
-      return await mockFs.promises.realpath(path);
+      return mockFs.promises.realpath(path);
     },
     async stat(path: string): Promise<Stats> {
       return mockFs.promises.lstat(await mockFs.promises.realpath(path));
@@ -296,7 +334,7 @@ export function mockFileSystem(rootFilepath?: string, time?: Date): { data: any 
       await mockFs.promises.rm(path);
     },
     async readdir(path: string): Promise<string[]> {
-      return await mockFs.promises.readdir(path);
+      return mockFs.promises.readdir(path);
     },
     async* opendir(path: string): AsyncIterableIterator<Dirent> {
       for await (const entry of mockFs.promises.opendir(path)) {
@@ -307,7 +345,7 @@ export function mockFileSystem(rootFilepath?: string, time?: Date): { data: any 
       await mockFs.promises.mkdir(path);
     },
     async readFile(path: string): Promise<string> {
-      return await mockFs.promises.readFile(path);
+      return mockFs.promises.readFile(path);
     },
     async writeFile(path: string, data: string): Promise<void> {
       await mockFs.promises.writeFile(path, data);
@@ -317,7 +355,7 @@ export function mockFileSystem(rootFilepath?: string, time?: Date): { data: any 
     },
   };
 
-  const fs = jest.requireMock('fs');
+  const fs = jest.requireMock('node:fs');
   Object.assign(fs, mockFs);
 
   const fsExtra = jest.requireMock('fs-extra');
