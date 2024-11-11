@@ -16,8 +16,8 @@
     "https://linkedsoftwaredependencies.org/bundles/npm/@solid/pivot/^1.0.0/dist/": "dist/"
   },
   "scripts": {
-    "start": "community-solid-server -c config/default.json -f ./data -m .",
-    "staging": "community-solid-server -c ./config/https-mashlib-subdomain-file.json -f ./data --httpsKey /etc/letsencrypt/live/pivot.pondersource.com-0001/privkey.pem --httpsCert /etc/letsencrypt/live/pivot.pondersource.com-0001/fullchain.pem -p 443 -b https://pivot.pondersource.com",
+    "start": "community-solid-server -c config/dev.json -f ./data -m .",
+    "staging": "community-solid-server -c ./config/prod.json -f ./data --httpsKey /etc/letsencrypt/live/pivot.pondersource.com-0001/privkey.pem --httpsCert /etc/letsencrypt/live/pivot.pondersource.com-0001/fullchain.pem -p 443 -b https://pivot.pondersource.com",
     "build": "npm run build:ts && npm run build:components",
     "build:components": "componentsjs-generator -s src -c dist/components -i .componentsignore -r pivot",
     "build:ts": "tsc",
