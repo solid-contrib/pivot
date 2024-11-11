@@ -4,6 +4,7 @@
     "declaration": true,
     "incremental": true,
     "inlineSources": true,
+    "lib": [ "es2022" ],
     "newLine": "lf",
     "outDir": "dist",
     "preserveConstEnums": true,

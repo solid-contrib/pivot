@@ -24,7 +24,7 @@
     "css:config/ldp/metadata-parser/default.json",
     "css:config/ldp/metadata-writer/default.json",
     "css:config/ldp/modes/default.json",
-    "css:config/storage/backend/memory.json",
+    "css:config/storage/backend/file.json",
     "css:config/storage/key-value/resource-store.json",
     "css:config/storage/middleware/default.json",
     "css:config/util/auxiliary/acl.json",
@@ -35,11 +35,11 @@
     "css:config/util/resource-locker/memory.json",
     "css:config/util/variables/default.json",
 
-    "shape-validation:config/shape-validation.json"
+    "pivot:config/pivot.json"
   ],
   "@graph": [
     {
-      "comment": "A single-pod server that stores its resources in memory."
+      "comment": "A single-pod server that stores its resources on disk."
     }
   ]
 }

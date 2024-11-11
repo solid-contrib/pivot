@@ -1,7 +1,7 @@
 {
     "@context": "https://linkedsoftwaredependencies.org/bundles/npm/pivot/^1.0.0/components/context.jsonld",
     "import": [
-        "shape-validation:config/metadata-writer.json",
-        "shape-validation:config/resource-store.json"
+        "pivot:config/metadata-writer.json",
+        "pivot:config/resource-store.json"
     ]
   }

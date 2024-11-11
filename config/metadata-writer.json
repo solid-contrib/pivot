@@ -4,7 +4,7 @@
         "https://linkedsoftwaredependencies.org/bundles/npm/pivot/^1.0.0/components/context.jsonld"
       ],
     "import": [
-      "shape-validation:config/link-rel.json"
+      "pivot:config/link-rel.json"
     ],
     "@graph": [
       {
@@ -12,7 +12,7 @@
         "@id": "urn:solid-server:default:MetadataWriter",
         "@type": "ParallelHandler",
         "handlers": [
-          { "@id": "urn:shape-validation:default:MetadataWriter_LinkRel" }
+          { "@id": "urn:pivot:default:MetadataWriter_LinkRel" }
         ]
       }
     ]

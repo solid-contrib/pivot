@@ -6,7 +6,7 @@
       "@graph": [
       {
         "comment": "Converts all triples with the given predicates to Link headers.",
-        "@id": "urn:shape-validation:default:MetadataWriter_LinkRel",
+        "@id": "urn:pivot:default:MetadataWriter_LinkRel",
         "@type": "LinkRelMetadataWriter",
         "linkRelMap": [
           {
