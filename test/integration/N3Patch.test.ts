@@ -133,7 +133,7 @@ describe('A Server supporting N3 Patch', (): void => {
       );
     });
 
-    it('succeeds if there is only read access.', async(): Promise<void> => {
+    it('succeeds if there is only append access.', async(): Promise<void> => {
       await setResource('/append-only', '<a> <b> <c>.', { append: true });
       await expectPatch(
         { path: '/append-only', body: `<> a solid:InsertDeletePatch; solid:inserts { <x> <y> <z>. }.` },
