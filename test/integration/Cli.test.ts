@@ -13,7 +13,7 @@ describe('An instantiated CliResolver', (): void => {
     // Create the CliExtractor
     cliResolver = await instantiateFromConfig(
       'urn:solid-server-app-setup:default:CliResolver',
-      resolveModulePath('config/default.json'),
+      resolveModulePath('config/default.json'), // this loads node_module/@solid/community-server/config/default.json
     );
   });
 

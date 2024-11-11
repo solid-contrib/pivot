@@ -13,7 +13,6 @@ import { getPort } from '../util/Util';
 import {
   getDefaultVariables,
   getPresetConfigPath,
-  getTestConfigPath,
   instantiateFromConfig,
 } from './Config';
 
@@ -76,7 +75,7 @@ describe('A Server supporting N3 Patch', (): void => {
       'urn:solid-server:test:Instances',
       [
         getPresetConfigPath('storage/backend/memory.json'),
-        getTestConfigPath('ldp-with-auth.json'),
+        getPresetConfigPath('test.json'),
       ],
       getDefaultVariables(port, baseUrl),
     ) as Record<string, any>;
