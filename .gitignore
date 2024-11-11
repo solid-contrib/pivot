@@ -1,3 +1,4 @@
+
 /.acl
 /.eslintcache
 /componentsjs-error-state.json
@@ -7,3 +8,4 @@
 /docs
 /node_modules
 /test/tmp
+/.idea

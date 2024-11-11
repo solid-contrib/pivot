@@ -1,0 +1,19 @@
+{
+  "@context":[
+    "https://linkedsoftwaredependencies.org/bundles/npm/@solid/community-server/^5.0.0/components/context.jsonld",
+    "https://linkedsoftwaredependencies.org/bundles/npm/shape-validation-component/^1.0.0/components/context.jsonld"
+  ],
+      "@graph": [
+      {
+        "comment": "Converts all triples with the given predicates to Link headers.",
+        "@id": "urn:shape-validation:default:MetadataWriter_LinkRel",
+        "@type": "LinkRelMetadataWriter",
+        "linkRelMap": [
+          {
+            "LinkRelMetadataWriter:_linkRelMap_key": "http://www.w3.org/ns/ldp#constrainedBy",
+            "LinkRelMetadataWriter:_linkRelMap_value": "http://www.w3.org/ns/ldp#constrainedBy"
+          }
+        ]
+      }
+    ]
+  }

@@ -1,5 +1,5 @@
 import { DataFactory } from 'n3';
-import type { AuxiliaryStrategy, RepresentationMetadata, ResourceIdentifier } from '../../src';
+import type { AuxiliaryStrategy, RepresentationMetadata, ResourceIdentifier } from '@solid/community-server';
 import namedNode = DataFactory.namedNode;
 
 export class SimpleSuffixStrategy implements AuxiliaryStrategy {
