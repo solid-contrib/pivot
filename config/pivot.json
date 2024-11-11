@@ -1,7 +1,0 @@
-{
-    "@context": "https://linkedsoftwaredependencies.org/bundles/npm/pivot/^1.0.0/components/context.jsonld",
-    "import": [
-        "pivot:config/metadata-writer.json",
-        "pivot:config/resource-store.json"
-    ]
-  }
