@@ -1,12 +1,14 @@
 import {
   Patch,
   ResourceIdentifier,
-  NotImplementedHttpError,
+  TEXT_TURTLE,
   Conditions,
   PassthroughStore,
   PatchHandler,
   ChangeMap,
-  ResourceStore
+  ResourceStore,
+  readableToString,
+  BasicRepresentation
 } from '@solid/community-server';
 
 /**
@@ -27,8 +29,10 @@ export class RdfPatchingStore<T extends ResourceStore = ResourceStore> extends P
     patch: Patch,
     conditions?: Conditions,
   ): Promise<ChangeMap> {
-    const representation = await this.source.getRepresentation(identifier, {});
-    console.log(representation);
+    let representation = await this.source.getRepresentation(identifier, { type: { [TEXT_TURTLE]: 1 }});
+    const turtle: string = await readableToString(representation.data);
+    representation = new BasicRepresentation(turtle + '\n<oh> <hi> <there> .\n', identifier, TEXT_TURTLE);
+
     return this.source.setRepresentation(identifier, representation);
   }
 }
