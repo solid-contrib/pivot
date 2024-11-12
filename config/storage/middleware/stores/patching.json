@@ -88,7 +88,6 @@
       "@id": "urn:solid-server:default:PatchHandler_RDF",
       "@type": "WaterfallHandler",
       "handlers": [
-        { "@type": "N3Patcher" },
         { "@type": "SparqlUpdatePatcher" }
       ]
     }
