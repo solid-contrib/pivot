@@ -1,0 +1,3 @@
+@prefix solid: <http://www.w3.org/ns/solid/terms#>.
+<> a solid:InsertDeletePatch; solid:inserts { <x> <y> <z>. }.
+

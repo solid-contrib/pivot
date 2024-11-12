@@ -42,11 +42,6 @@
     {
       "@id": "urn:solid-server:default:ResourceStore_RdfPatching",
       "@type": "RdfPatchingStore",
-      "source": { "@id": "urn:solid-server:default:ResourceStore_Converting" }
-    },
-    {
-      "@id": "urn:solid-server:default:ResourceStore_Converting",
-      "@type": "RepresentationConvertingStore",
       "source": { "@id": "urn:solid-server:default:ResourceStore_Backend" }
     }
   ]

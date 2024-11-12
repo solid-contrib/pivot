@@ -28,6 +28,7 @@ export class RdfPatchingStore<T extends ResourceStore = ResourceStore> extends P
     conditions?: Conditions,
   ): Promise<ChangeMap> {
     const representation = await this.source.getRepresentation(identifier, {});
+    console.log(representation);
     return this.source.setRepresentation(identifier, representation);
   }
 }
