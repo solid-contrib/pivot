@@ -10,7 +10,7 @@ import {
   readableToString,
   BasicRepresentation
 } from '@solid/community-server';
-import { graph, parse, serialize, sym } from 'rdflib';
+import { graph, parse, serialize } from 'rdflib';
 import { parsePatchDocument } from './patch/n3-patch-parser';
 
 
@@ -37,20 +37,27 @@ export class RdfPatchingStore<T extends ResourceStore = ResourceStore> extends P
     patch: Patch,
     conditions?: Conditions,
   ): Promise<ChangeMap> {
-    console.log(identifier);
+    const store = graph();
+    const patchStr = await readableToString(patch.data);
     const resourceUrl = identifier.path;
-    const resourceSym = sym(resourceUrl);
+    const resourceSym = store.sym(resourceUrl);
     const resourceContentType = TEXT_TURTLE;
     let representation = await this.source.getRepresentation(identifier, { type: { [TEXT_TURTLE]: 1 }});
     const turtle: string = await readableToString(representation.data);
-    const store = graph();
     parse(turtle, store, resourceUrl, resourceContentType);
     const parsePatch = PATCH_PARSERS['text/n3'];
-    const patchObject = await parsePatch(resourceUrl, resourceUrl, '');
-    await (graph as any).applyPatch(patchObject, resourceSym);
+    const patchObject = await parsePatch(resourceUrl, resourceUrl, patchStr);
+    await new Promise((resolve, reject) => {
+      (store as any).applyPatch(patchObject, resourceSym, (err: Error | null): void => {
+        if (err) {
+          reject(err);
+        }
+        resolve(undefined);
+      });
+    });
     let serialized: string | undefined = await new Promise((resolve, reject) => {
-      serialize(resourceSym, graph as any, resourceUrl, resourceContentType, (err: Error | null | undefined, result: string | undefined): void => {
-        if (err !== null) {
+      serialize(resourceSym, store as any, resourceUrl, resourceContentType, (err: Error | null | undefined, result: string | undefined): void => {
+        if (err) {
           reject(err);
         }
         resolve(result);
