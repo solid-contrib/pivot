@@ -17,7 +17,10 @@ describe('An RdfPatchingStore', (): void => {
       modifyResource: jest.fn(async(): Promise<any> => 'modify'),
     } satisfies Partial<ResourceStore> as any;
 
-    store = new RdfPatchingStore(source);
+    handleSafeFn = jest.fn(async(): Promise<any> => 'patcher');
+    patcher = { handleSafe: handleSafeFn } as unknown as PatchHandler;
+
+    store = new RdfPatchingStore(source, patcher);
   });
 
   it('calls modifyResource directly from the source if available.', async(): Promise<void> => {

@@ -8,7 +8,8 @@ import {
   ChangeMap,
   ResourceStore,
   readableToString,
-  BasicRepresentation
+  BasicRepresentation,
+  NotImplementedHttpError
 } from '@solid/community-server';
 import { graph, parse, serialize } from 'rdflib';
 import { parsePatchDocument } from './patch/n3-patch-parser';
@@ -25,14 +26,31 @@ const PATCH_PARSERS = {
  * otherwise the {@link PatchHandler} will be called instead.
  */
 export class RdfPatchingStore<T extends ResourceStore = ResourceStore> extends PassthroughStore<T> {
+  private readonly patchHandler: PatchHandler;
   protected source: T;
 
-  public constructor(source: T) {
+  public constructor(source: T, patchHandler: PatchHandler) {
     super(source);
     this.source = source;
+    this.patchHandler = patchHandler;
   }
 
   public async modifyResource(
+    identifier: ResourceIdentifier,
+    patch: Patch,
+    conditions?: Conditions,
+  ): Promise<ChangeMap> {
+
+    try {
+      return await this.source.modifyResource(identifier, patch, conditions);
+    } catch (error: unknown) {
+      if (NotImplementedHttpError.isInstance(error)) {
+        return this.patchHandler.handleSafe({ source: this.source, identifier, patch });
+      }
+      throw error;
+    }
+  }
+  private async modifyResourceUsingRdflib(
     identifier: ResourceIdentifier,
     patch: Patch,
     conditions?: Conditions,
