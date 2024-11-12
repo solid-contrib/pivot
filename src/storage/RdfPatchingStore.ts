@@ -46,8 +46,7 @@ export class RdfPatchingStore<T extends ResourceStore = ResourceStore> extends P
     } catch (error: unknown) {
       if (NotImplementedHttpError.isInstance(error)) {
         try {
-          await this.patchHandler.canHandle({ source: this.source, identifier, patch });
-          const result = await this.patchHandler.handle({ source: this.source, identifier, patch });
+          const result = await this.patchHandler.handleSafe({ source: this.source, identifier, patch });
           return result;
         } catch (nestedError: unknown) {
           // console.log('inner error', nestedError);
