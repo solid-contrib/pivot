@@ -1,7 +1,4 @@
-// Parses a text/n3 patch
-
-const $rdf = require('rdflib');
-const error = require('../../http-error');
+import { graph, parse, SPARQLToQuery } from 'rdflib';
 
 const PATCH_NS = 'http://www.w3.org/ns/solid/terms#';
 const PREFIXES = `PREFIX solid: <${PATCH_NS}>\n`;
@@ -9,11 +6,11 @@ const PREFIXES = `PREFIX solid: <${PATCH_NS}>\n`;
 // Parses the given N3 patch document
 export async function parsePatchDocument (targetURI: string, patchURI: string, patchText: string): Promise<{ insert: any, delete: any, where: any }> {
   // Parse the N3 document into triples
-  const patchGraph = $rdf.graph();
+  const patchGraph = graph();
   try {
-    $rdf.parse(patchText, patchGraph, patchURI, 'text/n3');
+    parse(patchText, patchGraph, patchURI, 'text/n3');
   } catch (err) {
-    throw error(400, `Patch document syntax error: ${err}`);
+    throw new Error(`Patch document syntax error: ${err}`);
   }
 
   // Query the N3 document for insertions and deletions
@@ -36,14 +33,14 @@ export async function parsePatchDocument (targetURI: string, patchURI: string, p
         OPTIONAL { ?patch solid:where   ?where.  }
       }`);
     } catch (err) {
-      throw error(400, 'No n3-patch found.', err);
+      throw new Error('No n3-patch found.');
     }
   }
 
   // Return the insertions and deletions as an rdflib patch document
   const { '?insert': insert, '?delete': deleted, '?where': where } = firstResult;
   if (!insert && !deleted) {
-    throw error(400, 'Patch should at least contain inserts or deletes.');
+    throw new Error('Patch should at least contain inserts or deletes.');
   }
   return { insert, delete: deleted, where };
 }
@@ -51,7 +48,7 @@ export async function parsePatchDocument (targetURI: string, patchURI: string, p
 // Queries the store with the given SPARQL query and returns the first result
 function queryForFirstResult (store: unknown, sparql: unknown) {
   return new Promise((resolve, reject) => {
-    const query: unknown = $rdf.SPARQLToQuery(sparql, false, store);
+    const query: unknown = SPARQLToQuery(sparql, false, store);
     (store as any).query(query, resolve, null, () => reject(new Error('No results.')));
   });
 }

@@ -10,7 +10,7 @@ import {
   readableToString,
   BasicRepresentation
 } from '@solid/community-server';
-import { graph, parse, serialize } from 'rdflib';
+import { graph, parse, serialize, sym } from 'rdflib';
 import { parsePatchDocument } from './patch/n3-patch-parser';
 
 
@@ -37,8 +37,9 @@ export class RdfPatchingStore<T extends ResourceStore = ResourceStore> extends P
     patch: Patch,
     conditions?: Conditions,
   ): Promise<ChangeMap> {
-    const resourceUrl = identifier.toString();
-    const resourceSym = (graph as any).sym(resourceUrl);
+    console.log(identifier);
+    const resourceUrl = identifier.path;
+    const resourceSym = sym(resourceUrl);
     const resourceContentType = TEXT_TURTLE;
     let representation = await this.source.getRepresentation(identifier, { type: { [TEXT_TURTLE]: 1 }});
     const turtle: string = await readableToString(representation.data);
