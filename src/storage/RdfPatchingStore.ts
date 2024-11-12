@@ -9,7 +9,8 @@ import {
   ResourceStore,
   readableToString,
   BasicRepresentation,
-  NotImplementedHttpError
+  NotImplementedHttpError,
+  UnsupportedMediaTypeHttpError
 } from '@solid/community-server';
 import { graph, parse, serialize } from 'rdflib';
 import { parsePatchDocument } from './patch/n3-patch-parser';
@@ -40,12 +41,20 @@ export class RdfPatchingStore<T extends ResourceStore = ResourceStore> extends P
     patch: Patch,
     conditions?: Conditions,
   ): Promise<ChangeMap> {
-
     try {
       return await this.source.modifyResource(identifier, patch, conditions);
     } catch (error: unknown) {
       if (NotImplementedHttpError.isInstance(error)) {
-        return this.patchHandler.handleSafe({ source: this.source, identifier, patch });
+        try {
+          await this.patchHandler.canHandle({ source: this.source, identifier, patch });
+          const result = await this.patchHandler.handle({ source: this.source, identifier, patch });
+          return result;
+        } catch (nestedError: unknown) {
+          // console.log('inner error', nestedError);
+          if (UnsupportedMediaTypeHttpError.isInstance(nestedError)) {
+            return this.modifyResourceUsingRdflib(identifier, patch, conditions);
+          }
+        }
       }
       throw error;
     }
