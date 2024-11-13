@@ -13,7 +13,8 @@ additional feature - because it's a missing spec feature, or because it's a new 
 spec feature, or just because you want
 to show a novel way for your Solid project to interact with a Solid pod server.
 
-You can also [join the Matrix chat for solidcommunity.net](https://matrix.to/#/#solid_solidcommunity.net:gitter.im).
+You can also join the Matrix chat [for solidcommunity.net](https://matrix.to/#/#solid_solidcommunity.net:gitter.im)
+or [for Pivot as piece of config+software](https://matrix.to/#/#solid_pivot:matrix.org).
 
 ## Example usage
 
