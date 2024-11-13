@@ -13,7 +13,6 @@ import { getPort } from '../util/Util';
 import {
   getDefaultVariables,
   getPresetConfigPath,
-  getTestConfigPath,
   instantiateFromConfig,
 } from './Config';
 
@@ -26,6 +25,7 @@ let aclHelper: AclHelper;
 async function expectPatch(
   input: { path: string; contentType?: string; body: string },
   expected: { status: number; message?: string; turtle?: string },
+  respectTurtle?: boolean
 ): Promise<void> {
   const message = expected.message ?? '';
   const contentType = input.contentType ?? 'text/n3';
@@ -55,8 +55,12 @@ async function expectPatch(
 
     expect(get.status).toBe(200);
     const parser = new Parser({ format: 'text/turtle', baseIRI: url });
-    const actualTriples = parser.parse(await get.text());
+    const actualText = await get.text();
+    const actualTriples = parser.parse(actualText);
     expect(actualTriples).toBeRdfIsomorphic(parser.parse(expectedTurtle));
+    if (respectTurtle === true) {
+      expect(actualText).toEqual(expected.turtle);
+    }
   }
 }
 
@@ -76,7 +80,7 @@ describe('A Server supporting N3 Patch', (): void => {
       'urn:solid-server:test:Instances',
       [
         getPresetConfigPath('storage/backend/memory.json'),
-        getTestConfigPath('ldp-with-auth.json'),
+        getPresetConfigPath('test.json'),
       ],
       getDefaultVariables(port, baseUrl),
     ) as Record<string, any>;
@@ -134,7 +138,7 @@ describe('A Server supporting N3 Patch', (): void => {
       );
     });
 
-    it('succeeds if there is only read access.', async(): Promise<void> => {
+    it('succeeds if there is only append access.', async(): Promise<void> => {
       await setResource('/append-only', '<a> <b> <c>.', { append: true });
       await expectPatch(
         { path: '/append-only', body: `<> a solid:InsertDeletePatch; solid:inserts { <x> <y> <z>. }.` },
@@ -147,6 +151,15 @@ describe('A Server supporting N3 Patch', (): void => {
       await expectPatch(
         { path: '/write-only', body: `<> a solid:InsertDeletePatch; solid:inserts { <x> <y> <z>. }.` },
         { status: 205, turtle: '<a> <b> <c>. <x> <y> <z>.' },
+      );
+    });
+
+    it('Respects existing Turtle lists.', async(): Promise<void> => {
+      await setResource('/write-only', '<a> <b> ( <c> <d> ).', { write: true });
+      await expectPatch(
+        { path: '/write-only', body: `<> a solid:InsertDeletePatch; solid:inserts { <x> <y> <z>. }.` },
+        { status: 205, turtle: `@prefix : </write-only#>.\n@prefix loc: </>.\n\nloc:a loc:b ( loc:c loc:d ).\n\nloc:x loc:y loc:z.\n\n` },
+        true,
       );
     });
   });

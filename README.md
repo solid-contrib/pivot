@@ -21,37 +21,19 @@ These are the bash commands to run on for example [https://cloud.pondersource.co
 
 ```bash
 root@cloud:~# git clone https://github.com/solid-contrib/pivot
-Cloning into 'pivot'...
-remote: Enumerating objects: 76, done.
-remote: Counting objects: 100% (76/76), done.
-remote: Compressing objects: 100% (52/52), done.
-remote: Total 76 (delta 31), reused 56 (delta 19), pack-reused 0
-Receiving objects: 100% (76/76), 19.78 MiB | 17.21 MiB/s, done.
-Resolving deltas: 100% (31/31), done.
 root@cloud:~# cd pivot
 root@cloud:~/pivot# npm ci --skip=dev
+root@cloud:~/pivot# npm run staging
 
-added 830 packages, and audited 1041 packages in 36s
+> pivot@1.0.0 staging
+> npx community-solid-server -c ./config/https-mashlib-subdomain-file.json -f ./data --httpsKey /etc/letsencrypt/live/pivot.pondersource.com-0001/privkey.pem --httpsCert /etc/letsencrypt/live/pivot.pondersource.com-0001/fullchain.pem -p 443 -b https://pivot.pondersource.com
 
-150 packages are looking for funding
-  run `npm fund` for details
-
-13 moderate severity vulnerabilities
-
-To address issues that do not require attention, run:
-  npm audit fix
-
-To address all issues (including breaking changes), run:
-  npm audit fix --force
-
-Run `npm audit` for details.
-root@cloud:~/pivot# npx community-solid-server -c ./config/https-mashlib-subdomain-file.json -f ./data --httpsKey /etc/letsencrypt/live/cloud.pondersource.com/privkey.pem --httpsCert /etc/letsencrypt/live/cloud.pondersource.com/fullchain.pem -p 8086 -b https://cloud.pondersource.com:8086
-2023-11-24T09:36:47.005Z [Components.js] info: Initiating component discovery from /root/pivot/node_modules/@solid/community-server/
-2023-11-24T09:36:47.971Z [Components.js] info: Discovered 168 component packages within 1041 packages
-2023-11-24T09:36:47.973Z [Components.js] info: Initiating component loading
-2023-11-24T09:37:07.756Z [Components.js] info: Registered 890 components
-2023-11-24T09:37:07.768Z [Components.js] info: Loaded configs
-2023-11-24T09:37:13.220Z [ServerInitializer] {Primary} info: Listening to server at https://localhost:8086/
+2024-11-11T14:19:43.511Z [Components.js] info: Initiating component discovery from /root/pivot/node_modules/@solid/community-server/
+2024-11-11T14:19:44.189Z [Components.js] info: Discovered 168 component packages within 1107 packages
+2024-11-11T14:19:44.192Z [Components.js] info: Initiating component loading
+2024-11-11T14:19:53.509Z [Components.js] info: Registered 897 components
+2024-11-11T14:19:53.510Z [Components.js] info: Loaded configs
+2024-11-11T14:19:55.897Z [ServerInitializer] {Primary} info: Listening to server at https://localhost/
 ```
 
 Or on localhost:
@@ -60,7 +42,9 @@ Or on localhost:
 git clone https://github.com/solid-contrib/pivot
 cd pivot
 npm install
-npx community-solid-server -c ./config/https-mashlib-subdomain-file.json -f ./data --httpsKey ./self-signed.key --httpsCert ./self-signed.crt -p 8086 -b https://localhost:8086
+npm run build
+npm test
+npm start
 ```
 
 In order to remove the [error from the domain root](https://github.com/solid-contrib/pivot/issues/15),

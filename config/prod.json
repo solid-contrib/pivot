@@ -8,7 +8,7 @@
     "css:config/app/main/default.json",
     "css:config/app/variables/default.json",
     "css:config/http/handler/default.json",
-    "css:config/http/middleware/default.json",
+    "pivot:config/http/middleware/default.json",
     "css:config/http/notifications/all.json",
     "css:config/http/server-factory/https.json",
     "css:config/http/static/default.json",
