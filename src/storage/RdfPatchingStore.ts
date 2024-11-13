@@ -44,18 +44,15 @@ export class RdfPatchingStore<T extends ResourceStore = ResourceStore> extends P
     conditions?: Conditions,
   ): Promise<ChangeMap> {
     try {
-      debug('trying this.source.modifyResource');
       return await this.source.modifyResource(identifier, patch, conditions);
     } catch (error: unknown) {
       if (NotImplementedHttpError.isInstance(error)) {
         try {
-          debug('trying this.patchHandler.handleSafe');
           const result = await this.patchHandler.handleSafe({ source: this.source, identifier, patch });
           return result;
         } catch (nestedError: unknown) {
           // console.log('inner error', nestedError);
           if (nestedError instanceof PatchRequiresTurtlePreservationError) {
-            debug('trying this.modifyResourceUsingRdfLib');
             return this.modifyResourceUsingRdflib(identifier, patch, conditions);
           }
         }
@@ -89,11 +86,14 @@ export class RdfPatchingStore<T extends ResourceStore = ResourceStore> extends P
         });
       });
     } catch (e) {
-      debug(`RDFLIB PATCH ERROR ${JSON.stringify(e)}`);
+      await debug(`RDFLIB PATCH ERROR ${JSON.stringify(e)}`);
       if (JSON.stringify(e as any).startsWith('\"No match found to be patched')) {
-        debug('RDFLIB NO MATCH');        
         throw new ConflictHttpError('The document does not contain any matches for the N3 Patch solid:where condition.');
       }
+      if (JSON.stringify(e as any).startsWith('\"Could not find to delete')) {
+        throw new ConflictHttpError('The document does not contain all triples the N3 Patch requests to delete');
+      }
+      
       throw e;
     }
     let serialized: string | undefined = await new Promise((resolve, reject) => {

@@ -111,7 +111,6 @@ export class RedirectingStore implements ResourceStore {
   }
 
   public async getRepresentation(identifier: ResourceIdentifier): Promise<Representation> {
-    await debug('getRepresentation called on our RedirectingStore');
     this.validateIdentifier(identifier);
     let isMetadata = false;
 
