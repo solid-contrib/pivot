@@ -1,3 +1,6 @@
 @prefix solid: <http://www.w3.org/ns/solid/terms#>.
-<> a solid:InsertDeletePatch; solid:inserts { <x> <y> <z>. }.
+<> a solid:InsertDeletePatch;
+                 solid:where   { ?a <y> <z>. };
+                 solid:inserts { ?a <y> <z>. };
+                 solid:deletes { ?a <b> <c>. }.
 

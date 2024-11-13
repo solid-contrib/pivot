@@ -10,10 +10,11 @@ import {
   readableToString,
   BasicRepresentation,
   NotImplementedHttpError,
-  UnsupportedMediaTypeHttpError
+  ConflictHttpError
 } from '@solid/community-server';
 import { graph, parse, serialize } from 'rdflib';
 import { parsePatchDocument } from './patch/n3-patch-parser';
+import { debug } from '../util/debug';
 
 export class PatchRequiresTurtlePreservationError {};
 
@@ -43,15 +44,18 @@ export class RdfPatchingStore<T extends ResourceStore = ResourceStore> extends P
     conditions?: Conditions,
   ): Promise<ChangeMap> {
     try {
+      debug('trying this.source.modifyResource');
       return await this.source.modifyResource(identifier, patch, conditions);
     } catch (error: unknown) {
       if (NotImplementedHttpError.isInstance(error)) {
         try {
+          debug('trying this.patchHandler.handleSafe');
           const result = await this.patchHandler.handleSafe({ source: this.source, identifier, patch });
           return result;
         } catch (nestedError: unknown) {
           // console.log('inner error', nestedError);
           if (nestedError instanceof PatchRequiresTurtlePreservationError) {
+            debug('trying this.modifyResourceUsingRdfLib');
             return this.modifyResourceUsingRdflib(identifier, patch, conditions);
           }
         }
@@ -74,14 +78,24 @@ export class RdfPatchingStore<T extends ResourceStore = ResourceStore> extends P
     parse(turtle, store, resourceUrl, resourceContentType);
     const parsePatch = PATCH_PARSERS['text/n3'];
     const patchObject = await parsePatch(resourceUrl, resourceUrl, patchStr);
-    await new Promise((resolve, reject) => {
-      (store as any).applyPatch(patchObject, resourceSym, (err: Error | null): void => {
-        if (err) {
-          reject(err);
-        }
-        resolve(undefined);
+    try {
+
+      await new Promise((resolve, reject) => {
+        (store as any).applyPatch(patchObject, resourceSym, (err: Error | null): void => {
+          if (err) {
+            reject(err);
+          }
+          resolve(undefined);
+        });
       });
-    });
+    } catch (e) {
+      debug(`RDFLIB PATCH ERROR ${JSON.stringify(e)}`);
+      if (JSON.stringify(e as any).startsWith('\"No match found to be patched')) {
+        debug('RDFLIB NO MATCH');        
+        throw new ConflictHttpError('The document does not contain any matches for the N3 Patch solid:where condition.');
+      }
+      throw e;
+    }
     let serialized: string | undefined = await new Promise((resolve, reject) => {
       serialize(resourceSym, store as any, resourceUrl, resourceContentType, (err: Error | null | undefined, result: string | undefined): void => {
         if (err) {
