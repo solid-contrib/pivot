@@ -23,17 +23,14 @@ These are the bash commands to run on for example [https://cloud.pondersource.co
 root@cloud:~# git clone https://github.com/solid-contrib/pivot
 root@cloud:~# cd pivot
 root@cloud:~/pivot# npm ci --skip=dev
-root@cloud:~/pivot# npm run staging
-
-> pivot@1.0.0 staging
-> npx community-solid-server -c ./config/https-mashlib-subdomain-file.json -f ./data --httpsKey /etc/letsencrypt/live/pivot.pondersource.com-0001/privkey.pem --httpsCert /etc/letsencrypt/live/pivot.pondersource.com-0001/fullchain.pem -p 443 -b https://pivot.pondersource.com
-
-2024-11-11T14:19:43.511Z [Components.js] info: Initiating component discovery from /root/pivot/node_modules/@solid/community-server/
-2024-11-11T14:19:44.189Z [Components.js] info: Discovered 168 component packages within 1107 packages
-2024-11-11T14:19:44.192Z [Components.js] info: Initiating component loading
-2024-11-11T14:19:53.509Z [Components.js] info: Registered 897 components
-2024-11-11T14:19:53.510Z [Components.js] info: Loaded configs
-2024-11-11T14:19:55.897Z [ServerInitializer] {Primary} info: Listening to server at https://localhost/
+root@cloud:~/pivot# npm run build
+root@cloud:~/pivot# npx community-solid-server -c ./config/prod.json -f ./data --httpsKey /etc/letsencrypt/live/pivot.pondersource.com-0001/privkey.pem --httpsCert /etc/letsencrypt/live/pivot.pondersource.com-0001/fullchain.pem -p 443 -b https://pivot.pondersource.com -m .
+2024-11-13T11:28:02.426Z [Components.js] info: Initiating component discovery from /root/pivot
+2024-11-13T11:28:02.919Z [Components.js] info: Discovered 169 component packages within 1345 packages
+2024-11-13T11:28:02.921Z [Components.js] info: Initiating component loading
+2024-11-13T11:28:10.017Z [Components.js] info: Registered 901 components
+2024-11-13T11:28:10.018Z [Components.js] info: Loaded configs
+2024-11-13T11:28:12.002Z [ServerInitializer] {Primary} info: Listening to server at https://localhost/
 ```
 
 Or on localhost:
