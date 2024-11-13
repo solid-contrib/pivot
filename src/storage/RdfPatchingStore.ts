@@ -93,7 +93,10 @@ export class RdfPatchingStore<T extends ResourceStore = ResourceStore> extends P
       if (JSON.stringify(e as any).startsWith('\"Could not find to delete')) {
         throw new ConflictHttpError('The document does not contain all triples the N3 Patch requests to delete');
       }
-      
+      if (JSON.stringify(e as any).startsWith('\"Patch ambiguous. No patch done.')) {
+        throw new ConflictHttpError('The document contains multiple matches for the N3 Patch solid:where condition');
+      }
+
       throw e;
     }
     let serialized: string | undefined = await new Promise((resolve, reject) => {
