@@ -154,7 +154,7 @@ describe('A Server supporting N3 Patch', (): void => {
       );
     });
 
-    it.only('Respects existing Turtle lists.', async(): Promise<void> => {
+    it('Respects existing Turtle lists.', async(): Promise<void> => {
       await setResource('/write-only', '<a> <b> ( <c> <d> ).', { write: true });
       await expectPatch(
         { path: '/write-only', body: `<> a solid:InsertDeletePatch; solid:inserts { <x> <y> <z>. }.` },

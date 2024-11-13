@@ -15,6 +15,7 @@ import {
 import { graph, parse, serialize } from 'rdflib';
 import { parsePatchDocument } from './patch/n3-patch-parser';
 
+export class PatchRequiresTurtlePreservationError {};
 
 // Patch parsers by request body content type
 const PATCH_PARSERS = {
@@ -50,7 +51,7 @@ export class RdfPatchingStore<T extends ResourceStore = ResourceStore> extends P
           return result;
         } catch (nestedError: unknown) {
           // console.log('inner error', nestedError);
-          if (UnsupportedMediaTypeHttpError.isInstance(nestedError)) {
+          if (nestedError instanceof PatchRequiresTurtlePreservationError) {
             return this.modifyResourceUsingRdflib(identifier, patch, conditions);
           }
         }
