@@ -11,7 +11,8 @@ import {
   BasicRepresentation,
   NotImplementedHttpError,
   NotFoundHttpError,
-  ConflictHttpError
+  ConflictHttpError,
+  RepresentationMetadata,
 } from '@solid/community-server';
 import { graph, parse, serialize } from 'rdflib';
 import { parsePatchDocument } from './patch/n3-patch-parser';
@@ -81,22 +82,15 @@ export class RdfPatchingStore<T extends ResourceStore = ResourceStore> extends P
       parse(turtle, store, resourceUrl, resourceContentType);
     } catch (e) {
       if (NotFoundHttpError.isInstance(e)) {
-        await debug('PATCH TO CREATE');
         turtle = '';
-        metadataOut = {
-          contentType: TEXT_TURTLE
-        };
+        metadataOut = new RepresentationMetadata(identifier, TEXT_TURTLE);
       } else {
-        await debug('OTHER READ ERROR');
-        await debug(typeof e);
         throw e;
       }
     }
-    await debug('PARSING PATCH');
     const parsePatch = PATCH_PARSERS['text/n3'];
     const patchObject = await parsePatch(resourceUrl, resourceUrl, patchStr);
     try {
-      await debug('APPLYING PATCH');
       await new Promise((resolve, reject) => {
         (store as any).applyPatch(patchObject, resourceSym, (err: Error | null): void => {
           if (err) {
@@ -106,7 +100,6 @@ export class RdfPatchingStore<T extends ResourceStore = ResourceStore> extends P
         });
       });
     } catch (e) {
-      await debug(`RDFLIB PATCH ERROR ${JSON.stringify(e)}`);
       if (JSON.stringify(e as any).startsWith('\"No match found to be patched')) {
         throw new ConflictHttpError('The document does not contain any matches for the N3 Patch solid:where condition.');
       }
@@ -120,7 +113,6 @@ export class RdfPatchingStore<T extends ResourceStore = ResourceStore> extends P
       throw e;
     }
     
-    await debug('SERIALIZING RESULT');
     let serialized: string | undefined = await new Promise((resolve, reject) => {
       serialize(resourceSym, store as any, resourceUrl, resourceContentType, (err: Error | null | undefined, result: string | undefined): void => {
         if (err) {
@@ -130,15 +122,12 @@ export class RdfPatchingStore<T extends ResourceStore = ResourceStore> extends P
       });
     });
     if (typeof serialized !== 'string') {
-      console.log('something went wrong');
+      await debug('something went wrong');
       serialized = turtle;
     }
-    await debug('CONSTRUCTING OUTGOING REPRESENTATION');
     const representationOut = new BasicRepresentation(serialized, metadataOut, TEXT_TURTLE);
 
-    await debug('SETTING REPRESENTATION ON SOURCE');
     const ret = await this.source.setRepresentation(identifier, representationOut);
-    await debug('DONE');
     return ret;
   }
 }
