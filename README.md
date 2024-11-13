@@ -23,7 +23,8 @@ These are the bash commands to run on for example [https://cloud.pondersource.co
 root@cloud:~# git clone https://github.com/solid-contrib/pivot
 root@cloud:~# cd pivot
 root@cloud:~/pivot# npm ci --skip=dev
-root@cloud:~/pivot# npm run staging
+root@cloud:~/pivot# npm run build
+root@cloud:~/pivot# npx community-solid-server -c ./config/prod.json -f ./data --httpsKey /etc/letsencrypt/live/pivot.pondersource.com-0001/privkey.pem --httpsCert /etc/letsencrypt/live/pivot.pondersource.com-0001/fullchain.pem -p 443 -b https://pivot.pondersource.com -m .
 
 > pivot@1.0.0 staging
 > npx community-solid-server -c ./config/https-mashlib-subdomain-file.json -f ./data --httpsKey /etc/letsencrypt/live/pivot.pondersource.com-0001/privkey.pem --httpsCert /etc/letsencrypt/live/pivot.pondersource.com-0001/fullchain.pem -p 443 -b https://pivot.pondersource.com
