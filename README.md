@@ -17,14 +17,14 @@ You can also [join the Matrix chat for solidcommunity.net](https://matrix.to/#/#
 
 ## Example usage
 
-These are the bash commands to run on for example [https://cloud.pondersource.com:8086/](https://cloud.pondersource.com:8086/).
+These are the bash commands to run on for example [https://pivot.pondersource.com/](https://pivot.pondersource.com/).
 
 ```bash
-root@cloud:~# git clone https://github.com/solid-contrib/pivot
-root@cloud:~# cd pivot
-root@cloud:~/pivot# npm ci --skip=dev
-root@cloud:~/pivot# npm run build
-root@cloud:~/pivot# npx community-solid-server -c ./config/prod.json -f ./data --httpsKey /etc/letsencrypt/live/pivot.pondersource.com-0001/privkey.pem --httpsCert /etc/letsencrypt/live/pivot.pondersource.com-0001/fullchain.pem -p 443 -b https://pivot.pondersource.com -m .
+root:~# git clone https://github.com/solid-contrib/pivot
+root:~# cd pivot
+root:~/pivot# npm ci --skip=dev
+root:~/pivot# npm run build
+root:~/pivot# npx community-solid-server -c ./config/prod.json -f ./data --httpsKey /etc/letsencrypt/live/pivot.pondersource.com-0001/privkey.pem --httpsCert /etc/letsencrypt/live/pivot.pondersource.com-0001/fullchain.pem -p 443 -b https://pivot.pondersource.com -m .
 2024-11-13T11:28:02.426Z [Components.js] info: Initiating component discovery from /root/pivot
 2024-11-13T11:28:02.919Z [Components.js] info: Discovered 169 component packages within 1345 packages
 2024-11-13T11:28:02.921Z [Components.js] info: Initiating component loading
