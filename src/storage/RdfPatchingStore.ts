@@ -10,13 +10,14 @@ import {
   readableToString,
   BasicRepresentation,
   NotImplementedHttpError,
+  NotFoundHttpError,
   ConflictHttpError
 } from '@solid/community-server';
 import { graph, parse, serialize } from 'rdflib';
 import { parsePatchDocument } from './patch/n3-patch-parser';
 import { debug } from '../util/debug';
 
-export class PatchRequiresTurtlePreservationError {};
+export class PatchRequiresTurtlePreservation {};
 
 // Patch parsers by request body content type
 const PATCH_PARSERS = {
@@ -52,7 +53,7 @@ export class RdfPatchingStore<T extends ResourceStore = ResourceStore> extends P
           return result;
         } catch (nestedError: unknown) {
           // console.log('inner error', nestedError);
-          if (nestedError instanceof PatchRequiresTurtlePreservationError) {
+          if (nestedError instanceof PatchRequiresTurtlePreservation) {
             return this.modifyResourceUsingRdflib(identifier, patch, conditions);
           }
         }
@@ -70,13 +71,32 @@ export class RdfPatchingStore<T extends ResourceStore = ResourceStore> extends P
     const resourceUrl = identifier.path;
     const resourceSym = store.sym(resourceUrl);
     const resourceContentType = TEXT_TURTLE;
-    let representation = await this.source.getRepresentation(identifier, { type: { [TEXT_TURTLE]: 1 }});
-    const turtle: string = await readableToString(representation.data);
-    parse(turtle, store, resourceUrl, resourceContentType);
+    let turtle: string;
+    let metadataOut;
+    try {
+
+      const representationIn = await this.source.getRepresentation(identifier, { type: { [TEXT_TURTLE]: 1 }});
+      turtle = await readableToString(representationIn.data);
+      metadataOut = representationIn.metadata;
+      parse(turtle, store, resourceUrl, resourceContentType);
+    } catch (e) {
+      if (NotFoundHttpError.isInstance(e)) {
+        await debug('PATCH TO CREATE');
+        turtle = '';
+        metadataOut = {
+          contentType: TEXT_TURTLE
+        };
+      } else {
+        await debug('OTHER READ ERROR');
+        await debug(typeof e);
+        throw e;
+      }
+    }
+    await debug('PARSING PATCH');
     const parsePatch = PATCH_PARSERS['text/n3'];
     const patchObject = await parsePatch(resourceUrl, resourceUrl, patchStr);
     try {
-
+      await debug('APPLYING PATCH');
       await new Promise((resolve, reject) => {
         (store as any).applyPatch(patchObject, resourceSym, (err: Error | null): void => {
           if (err) {
@@ -99,6 +119,8 @@ export class RdfPatchingStore<T extends ResourceStore = ResourceStore> extends P
 
       throw e;
     }
+    
+    await debug('SERIALIZING RESULT');
     let serialized: string | undefined = await new Promise((resolve, reject) => {
       serialize(resourceSym, store as any, resourceUrl, resourceContentType, (err: Error | null | undefined, result: string | undefined): void => {
         if (err) {
@@ -111,8 +133,12 @@ export class RdfPatchingStore<T extends ResourceStore = ResourceStore> extends P
       console.log('something went wrong');
       serialized = turtle;
     }
-    representation = new BasicRepresentation(serialized, representation.metadata, TEXT_TURTLE);
+    await debug('CONSTRUCTING OUTGOING REPRESENTATION');
+    const representationOut = new BasicRepresentation(serialized, metadataOut, TEXT_TURTLE);
 
-    return this.source.setRepresentation(identifier, representation);
+    await debug('SETTING REPRESENTATION ON SOURCE');
+    const ret = await this.source.setRepresentation(identifier, representationOut);
+    await debug('DONE');
+    return ret;
   }
 }

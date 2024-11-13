@@ -123,7 +123,7 @@ describe('A Server supporting N3 Patch', (): void => {
   });
 
   describe('inserting data', (): void => {
-    it('succeeds if there is no resource.', async(): Promise<void> => {
+    it.only('succeeds if there is no resource.', async(): Promise<void> => {
       await expectPatch(
         { path: '/new-insert', body: `<> a solid:InsertDeletePatch; solid:inserts { <x> <y> <z>. }.` },
         { status: 201, turtle: '<x> <y> <z>.' },

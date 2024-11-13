@@ -1,6 +1,6 @@
 
 import { N3Patcher } from '@solid/community-server';
-import { PatchRequiresTurtlePreservationError } from '../RdfPatchingStore';
+import { PatchRequiresTurtlePreservation } from '../RdfPatchingStore';
 
 /**
  * To minimize code disruption, this patcher can be
@@ -10,6 +10,6 @@ import { PatchRequiresTurtlePreservationError } from '../RdfPatchingStore';
  */
 export class ThrowingN3Patcher extends N3Patcher {
   public async handle(): Promise<any> {
-    throw new PatchRequiresTurtlePreservationError();
+    throw new PatchRequiresTurtlePreservation();
   }
 }
