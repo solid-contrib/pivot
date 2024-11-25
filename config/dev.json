@@ -7,7 +7,7 @@
     "css:config/app/init/static-root.json",
     "css:config/app/main/default.json",
     "css:config/app/variables/default.json",
-   
+
     "pivot:config/http/handler/default.json",
     "css:config/http/middleware/default.json",
     "css:config/http/notifications/all.json",

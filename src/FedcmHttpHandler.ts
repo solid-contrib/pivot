@@ -26,7 +26,7 @@ export class FedcmHttpHandler extends HttpHandler {
     super();
     this.baseUrl = baseUrl.slice(-1) === '/'
       ? baseUrl
-      : `${baseUrl}/`; // TODO check if CSS does it automatically    
+      : `${baseUrl}/`; // TODO check if CSS does it automatically
     this.cookieStore = cookieStore
     this.webIdStore = webIdStore
   }
@@ -44,7 +44,7 @@ export class FedcmHttpHandler extends HttpHandler {
     // if your server is hosted at http://localhost:3000/.
     const tokenUrl = `${this.baseUrl}.oidc/token`;
     try {
-       
+
       const response = await fetch(tokenUrl, {
         method: 'POST',
         headers: {
