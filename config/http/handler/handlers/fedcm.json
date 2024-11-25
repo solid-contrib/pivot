@@ -6,7 +6,7 @@
     "@graph": [
       {
         "@id": "urn:fedcm:default:FedcmHandler",
-        "@type": "RouterHandler",    
+        "@type": "RouterHandler",   
         "baseUrl": { "@id": "urn:solid-server:default:variable:baseUrl" },
         "targetExtractor": { "@id": "urn:solid-server:default:TargetExtractor" },
         "allowedPathNames": [ "/\\.well-known/web-identity",
@@ -15,7 +15,7 @@
                               "/\\.well-known/fedcm/accounts_endpoint",
                               "/\\.well-known/fedcm/client_metadata_endpoint"
                              ],
-  
+ 
         "handler": {
           "@type": "FedcmHttpHandler",
           "baseUrl": { "@id": "urn:solid-server:default:variable:baseUrl" },
@@ -25,6 +25,6 @@
       }
     ]
   }
-  
-  
-  
+ 
+ 
+ 

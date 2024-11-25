@@ -26,7 +26,7 @@ export class FedcmHttpHandler extends HttpHandler {
     super();
     this.baseUrl = baseUrl.slice(-1) === '/'
       ? baseUrl
-      : `${baseUrl}/`; // TODO check if CSS does it automatically     
+      : `${baseUrl}/`; // TODO check if CSS does it automatically    
     this.cookieStore = cookieStore
     this.webIdStore = webIdStore
   }
@@ -44,7 +44,7 @@ export class FedcmHttpHandler extends HttpHandler {
     // if your server is hosted at http://localhost:3000/.
     const tokenUrl = `${this.baseUrl}.oidc/token`;
     try {
-        
+       
       const response = await fetch(tokenUrl, {
         method: 'POST',
         headers: {
@@ -59,7 +59,7 @@ export class FedcmHttpHandler extends HttpHandler {
       return resp
     } catch (error) {
       this.logger.info(`Error in get_token: ${error}`)
-      return 
+      return
     }
 
   // This is the Access token that will be used to do an authenticated request to the server.
@@ -99,7 +99,7 @@ private async get_client_id_secret(authorization: string, webId: string) {
 
   } catch (error) {
     this.logger.info(`Error in get_token: ${error}`)
-    return 
+    return
   }
 
 }
@@ -159,7 +159,7 @@ private async deleteToken(tokenId: string, authorization: string) {
 
   private async handleFedcmJSON({ request, response }: HttpHandlerInput): Promise<void> {
     // 3.2
-    // 
+    //
 
     const config = {
       "accounts_endpoint": "/.well-known/fedcm/accounts_endpoint",
@@ -207,7 +207,7 @@ private async deleteToken(tokenId: string, authorization: string) {
     // find a way to check if the user is signed in
 
     if (!accountId) {
-      // TODO Does this necessary mean the user is not signed in ? 
+      // TODO Does this necessary mean the user is not signed in ?
       response.writeHead(400, { 'Content-Type': 'text/plain' });
       response.end(JSON.stringify({ error: `Could not find an account matching the given cookie (${cssAccountCookie}).` }));
       return;
@@ -226,8 +226,8 @@ private async deleteToken(tokenId: string, authorization: string) {
           given_name: 'Doe', // TODO fetch webId's vcard
           // email: 'a@a.a', // TODO get user's email ?
           email: webId, // giving the webId instead of an email
-          picture: 'https://doodleipsum.com/150x150/avatar-2?i=f7de8aff0b8c3f4bc758e106d80d071e', // TODO 
-          approved_clients: [] 
+          picture: 'https://doodleipsum.com/150x150/avatar-2?i=f7de8aff0b8c3f4bc758e106d80d071e', // TODO
+          approved_clients: []
         }
       ]
     }
@@ -259,7 +259,7 @@ private async deleteToken(tokenId: string, authorization: string) {
     // 2. Match the Origin header against the RP origin determine by the client_id. Reject if they don't match.
     // 3. Match account_id against the ID of the already signed-in account. Reject if they don't match.
     // 4. Respond with a token. If the request is rejected, respond with an error response.
-    // How the token is issued is up to the IdP, but in general, it's signed with information 
+    // How the token is issued is up to the IdP, but in general, it's signed with information
     //such as the account ID, client ID, issuer origin, nonce, so that the RP can verify the token is genuine.
 
     const r = await readableToString(request)
@@ -282,7 +282,7 @@ private async deleteToken(tokenId: string, authorization: string) {
       return
     }
 
-    const dpopHeader = nonce // This is a hack since FedCM doesn't support DPoP Header, 
+    const dpopHeader = nonce // This is a hack since FedCM doesn't support DPoP Header,
     // we pass it through the nonce, since its an optional feature of FedCM
 
 

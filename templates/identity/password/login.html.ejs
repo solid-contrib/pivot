@@ -37,7 +37,7 @@
     const registerIdp = async () => {
     	console.log("Idp registration")
       const fedcm_config_url = window.location.protocol + '//' + window.location.host + '/.well-known/fedcm/fedcm.json'
-      
+     
       if (IdentityProvider.register(fedcm_config_url))
       	console.log('registration successfull');
     }

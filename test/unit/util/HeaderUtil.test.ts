@@ -373,7 +373,7 @@ describe('HeaderUtil', (): void => {
     });
 
     it('parses multiple Link header values delimited by a comma.', (): void => {
-      const link = [ `<http://test.com>; rel="myRel"; test="value1", 
+      const link = [ `<http://test.com>; rel="myRel"; test="value1",
       <http://test2.com>; rel="myRel2"; test="value2"` ];
       expect(parseLinkHeader(link)).toEqual([
         {
