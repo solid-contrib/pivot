@@ -1,0 +1,30 @@
+{
+    "@context": [
+      "https://linkedsoftwaredependencies.org/bundles/npm/@solid/community-server/^7.0.0/components/context.jsonld",
+      "https://linkedsoftwaredependencies.org/bundles/npm/css-fedcm-module/^7.0.0/components/context.jsonld"
+    ],
+    "@graph": [
+      {
+        "@id": "urn:fedcm:default:FedcmHandler",
+        "@type": "RouterHandler",    
+        "baseUrl": { "@id": "urn:solid-server:default:variable:baseUrl" },
+        "targetExtractor": { "@id": "urn:solid-server:default:TargetExtractor" },
+        "allowedPathNames": [ "/\\.well-known/web-identity",
+                              "/\\.well-known/fedcm/fedcm.json",
+                              "/\\.well-known/fedcm/token",
+                              "/\\.well-known/fedcm/accounts_endpoint",
+                              "/\\.well-known/fedcm/client_metadata_endpoint"
+                             ],
+  
+        "handler": {
+          "@type": "FedcmHttpHandler",
+          "baseUrl": { "@id": "urn:solid-server:default:variable:baseUrl" },
+          "webIdStore": { "@id": "urn:solid-server:default:WebIdStore" },
+          "cookieStore": { "@id": "urn:solid-server:default:CookieStore" }
+        }
+      }
+    ]
+  }
+  
+  
+  

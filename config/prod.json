@@ -35,7 +35,7 @@
     "css:config/util/representation-conversion/default.json",
     "css:config/util/resource-locker/file.json",
     "css:config/util/variables/default.json",
-    "fedcm:config/http/handler/handlers/fedcm.json"
+    "pivot:config/http/handler/handlers/fedcm.json"
   ],
   "@graph": [
     {
