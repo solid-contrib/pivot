@@ -8,7 +8,7 @@
     "css:config/app/init/default.json",
     "css:config/app/main/default.json",
     "css:config/app/variables/default.json",
-    "css:config/http/handler/default.json",
+    "pivot:config/http/handler/default.json",
     "css:config/http/middleware/default.json",
     "css:config/http/notifications/all.json",
     "css:config/http/server-factory/https.json",
@@ -34,9 +34,7 @@
     "css:config/util/logging/winston.json",
     "css:config/util/representation-conversion/default.json",
     "css:config/util/resource-locker/file.json",
-    "css:config/util/variables/default.json",
-
-    "pivot:config/http/handler/default-with-fedcm.json"
+    "css:config/util/variables/default.json"
   ],
   "@graph": [
     {
