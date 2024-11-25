@@ -35,7 +35,8 @@
     "css:config/util/representation-conversion/default.json",
     "css:config/util/resource-locker/file.json",
     "css:config/util/variables/default.json",
-    "pivot:config/http/handler/handlers/fedcm.json"
+
+    "pivot:config/http/handler/default-with-fedcm.json"
   ],
   "@graph": [
     {
@@ -118,26 +119,15 @@
       ]
     },
     {
-      "comment": "These are all the handlers a request will go through until it is handled.",
-      "@id": "urn:solid-server:default:HttpHandler",
-      "@type": "SequenceHandler",
-      "handlers": [
-        { "@id": "urn:solid-server:default:Middleware" },
-        {
-          "@id": "urn:solid-server:default:BaseHttpHandler",
-          "@type": "WaterfallHandler",
-          "handlers": [
-            { "@id": "urn:solid-server:default:StaticAssetHandler" },
-            { "@id": "urn:solid-server:default:OidcHandler" },
-            { "@id": "urn:fedcm:default:FedcmHandler" },
-            { "@id": "urn:solid-server:default:NotificationHttpHandler" },
-            { "@id": "urn:solid-server:default:StorageDescriptionHandler" },
-            { "@id": "urn:solid-server:default:AuthResourceHttpHandler" },
-            { "@id": "urn:solid-server:default:IdentityProviderHandler" },
-            { "@id": "urn:solid-server:default:LdpHandler" }
-          ]
-        }
-      ]
+      "@id": "urn:fedcm:default:fedcmLoginTemplateOverride",
+      "@type": "Override",
+      "overrideInstance": { "@id": "urn:solid-server:default:PasswordLoginHtml" },
+      "overrideParameters": {
+        "@type" : "HtmlViewEntry",
+        "comment": "Should we use relative path bellow ? aliases like @fedcm doesn't seems to work",
+        "filePath": "./templates/identity/password/login.html.ejs",
+        "route": { "@id": "urn:solid-server:default:LoginPasswordRoute" }
+      }
     }
   ]
 }
