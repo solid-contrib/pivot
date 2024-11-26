@@ -58,7 +58,7 @@
       "templates": [{
         "@id": "urn:solid-server:default:OidcConsentHtml",
         "@type": "HtmlViewEntry",
-        "filePath": "@css:templates/identity/oidc/consent.html.ejs",
+        "filePath": "@pivot:templates/identity/oidc/consent.html.ejs",
         "route": { "@id": "urn:solid-server:default:OidcConsentRoute" }
       }]
     }

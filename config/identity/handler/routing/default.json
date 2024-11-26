@@ -5,7 +5,7 @@
     "css:config/identity/handler/routing/client-credentials/create.json",
     "css:config/identity/handler/routing/client-credentials/resource.json",
     "css:config/identity/handler/routing/core/main.json",
-    "css:config/identity/handler/routing/oidc/main.json",
+    "pivot:config/identity/handler/routing/oidc/main.json",
     "css:config/identity/handler/routing/password/main.json",
     "css:config/identity/handler/routing/pod/create.json",
     "css:config/identity/handler/routing/pod/resource.json",
