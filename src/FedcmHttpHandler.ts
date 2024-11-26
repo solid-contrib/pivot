@@ -217,6 +217,7 @@ private async deleteToken(tokenId: string, authorization: string) {
     const accountLinks = await this.webIdStore.findLinks(accountId)
     const webId = accountLinks[0].webId || '' // TODO multi webId account
 
+    console.log(`processing FedCM request for ${accountId} / ${webId}`);
 
     const accounts = {
       accounts: [
