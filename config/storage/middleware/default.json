@@ -6,7 +6,7 @@
   "import": [
     "css:config/storage/middleware/stores/converting.json",
     "css:config/storage/middleware/stores/locking.json",
-    "css:config/storage/middleware/stores/patching.json"
+    "pivot:config/storage/middleware/stores/patching.json"
   ],
   "@graph": [
     {

@@ -1,11 +1,11 @@
 {
   "@context": [
     "https://linkedsoftwaredependencies.org/bundles/npm/@solid/community-server/^7.0.0/components/context.jsonld",
-    "https://linkedsoftwaredependencies.org/bundles/npm/css-fedcm-module/^7.0.0/components/context.jsonld"
+    "https://linkedsoftwaredependencies.org/bundles/npm/pivot/^1.0.0/components/context.jsonld"
   ],
   "import": [
     "css:config/http/handler/handlers/storage-description.json",
-    "fedcm:config/http/handler/handlers/fedcm.json"
+    "pivot:config/http/handler/handlers/fedcm.json"
   ],
   "@graph": [
     {
