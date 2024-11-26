@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Welcome to this Pivot server</title>
+    <!-- <link rel="stylesheet" href="style.css"> -->
+    <!-- <script src="script.js"></script> -->
+    <style>
+      .favorite {
+        background-color: rgba(220, 150, 150, 1);
+      }
+      .other {
+        background-color: rgba(150, 220, 150, 1);
+      }
+      .styled {
+        border: 0;
+        line-height: 2.5;
+        padding: 0 20px;
+        font-size: 1rem;
+        text-align: center;
+        color: #fff;
+        text-shadow: 1px 1px 1px #000;
+        border-radius: 10px;
+        background-image: linear-gradient(
+          to top left,
+          rgba(0, 0, 0, 0.2),
+          rgba(0, 0, 0, 0.2) 30%,
+          rgba(0, 0, 0, 0)
+        );
+        box-shadow:
+          inset 2px 2px 3px rgba(255, 255, 255, 0.6),
+          inset -2px -2px 3px rgba(0, 0, 0, 0.6);
+      }
+
+      .favorite:hover {
+        background-color: rgba(255, 150, 150, 1);
+      }
+
+      .other:hover {
+        background-color: rgba(150, 255, 150, 1);
+      }
+
+      .styled:active {
+        box-shadow:
+          inset -2px -2px 3px rgba(255, 255, 255, 0.6),
+          inset 2px 2px 3px rgba(0, 0, 0, 0.6);
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Welcome to this Pivot server</h1>
+    <a href="/.account/login/password/register/"><button class="favorite styled" type="button">
+      Register
+    </button></a>
+    <a href="/.account/login/password/"><button class="other styled" type="button">
+      Log in
+    </button></a>
+  </body>
+</html>

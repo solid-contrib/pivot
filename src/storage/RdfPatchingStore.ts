@@ -112,7 +112,7 @@ export class RdfPatchingStore<T extends ResourceStore = ResourceStore> extends P
 
       throw e;
     }
-    
+
     let serialized: string | undefined = await new Promise((resolve, reject) => {
       serialize(resourceSym, store as any, resourceUrl, resourceContentType, (err: Error | null | undefined, result: string | undefined): void => {
         if (err) {

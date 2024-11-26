@@ -50,7 +50,7 @@ After this update, we can verify that the container is indeed constrained with a
 performing a `HEAD` request to the container.
 
 ```curl
-curl --head http://localhost:3000/container/ 
+curl --head http://localhost:3000/container/
 ```
 which will produce a response with at least this header:
 

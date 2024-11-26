@@ -1,13 +1,14 @@
 {
   "@context": [
     "https://linkedsoftwaredependencies.org/bundles/npm/@solid/community-server/^7.0.0/components/context.jsonld",
-    "https://linkedsoftwaredependencies.org/bundles/npm/@solid/pivot/^1.0.0/components/context.jsonld"
+    "https://linkedsoftwaredependencies.org/bundles/npm/@solid/pivot/^1.0.0/components/context.jsonld",
+    "https://linkedsoftwaredependencies.org/bundles/npm/css-fedcm-module/^7.0.0/components/context.jsonld"
   ],
   "import": [
     "css:config/app/init/default.json",
     "css:config/app/main/default.json",
     "css:config/app/variables/default.json",
-    "css:config/http/handler/default.json",
+    "pivot:config/http/handler/default.json",
     "css:config/http/middleware/default.json",
     "css:config/http/notifications/all.json",
     "css:config/http/server-factory/https.json",
@@ -114,6 +115,17 @@
           "filePath": "./node_modules/mashlib/dist/mashlib.min.js.map"
         }
       ]
+    },
+    {
+      "@id": "urn:fedcm:default:fedcmLoginTemplateOverride",
+      "@type": "Override",
+      "overrideInstance": { "@id": "urn:solid-server:default:PasswordLoginHtml" },
+      "overrideParameters": {
+        "@type" : "HtmlViewEntry",
+        "comment": "Should we use relative path bellow ? aliases like @fedcm doesn't seems to work",
+        "filePath": "./templates/identity/password/login.html.ejs",
+        "route": { "@id": "urn:solid-server:default:LoginPasswordRoute" }
+      }
     }
   ]
 }
