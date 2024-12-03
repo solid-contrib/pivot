@@ -2,7 +2,7 @@
   "@context": [
     "https://linkedsoftwaredependencies.org/bundles/npm/@solid/community-server/^7.0.0/components/context.jsonld",
     "https://linkedsoftwaredependencies.org/bundles/npm/@solid/pivot/^1.0.0/components/context.jsonld",
-    "https://linkedsoftwaredependencies.org/bundles/npm/css-fedcm-module/^7.0.0/components/context.jsonld"
+    "https://linkedsoftwaredependencies.org/bundles/npm/@solid/pivot/^1.0.0/components/context.jsonld"
   ],
   "import": [
     "css:config/app/init/default.json",
@@ -117,7 +117,7 @@
       ]
     },
     {
-      "@id": "urn:fedcm:default:fedcmLoginTemplateOverride",
+      "@id": "urn:pivot:default:fedcmLoginTemplateOverride",
       "@type": "Override",
       "overrideInstance": { "@id": "urn:solid-server:default:PasswordLoginHtml" },
       "overrideParameters": {

@@ -39,7 +39,7 @@
   ],
   "@graph": [
     {
-      "@id": "urn:fedcm:default:fedcmLoginTemplateOverride",
+      "@id": "urn:pivot:default:fedcmLoginTemplateOverride",
       "@type": "Override",
       "overrideInstance": { "@id": "urn:solid-server:default:PasswordLoginHtml" },
       "overrideParameters": {
