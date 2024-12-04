@@ -58,6 +58,14 @@
         "@type": "StaticAssetEntry",
         "filePath": "www/index.html"
       }
+    },
+    {
+      "comment": "Redirect to add/remove trailing slash where it helps",
+      "@type": "Override",
+      "overrideInstance": { "@id": "urn:solid-server:default:HandlerServerConfigurator" },
+      "overrideParameters": {
+        "@type": "PivotHandlerServerConfigurator"
+      }
     }
   ]
 }
