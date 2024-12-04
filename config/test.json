@@ -50,6 +50,14 @@
           "RecordObject:_record_value": { "@id": "urn:solid-server:default:ResourceStore" }
         }
       ]
+    },
+    {
+      "@type": "Override",
+      "overrideInstance": { "@id": "urn:solid-server:default:RootStaticAsset" },
+      "overrideParameters": {
+        "@type": "StaticAssetEntry",
+        "filePath": "www/index.html"
+      }
     }
   ]
 }

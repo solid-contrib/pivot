@@ -126,6 +126,14 @@
         "filePath": "./templates/identity/password/login.html.ejs",
         "route": { "@id": "urn:solid-server:default:LoginPasswordRoute" }
       }
+    },
+    {
+      "@type": "Override",
+      "overrideInstance": { "@id": "urn:solid-server:default:RootStaticAsset" },
+      "overrideParameters": {
+        "@type": "StaticAssetEntry",
+        "filePath": "www/index.html"
+      }
     }
   ]
 }
