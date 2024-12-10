@@ -1,8 +1,6 @@
 {
-  "@context": [
-    "https://linkedsoftwaredependencies.org/bundles/npm/@solid/community-server/^7.0.0/components/context.jsonld",
-    "https://linkedsoftwaredependencies.org/bundles/npm/@solid/pivot/^1.0.0/components/context.jsonld"
-  ],
+  "comment": "Copied from https://github.com/CommunitySolidServer/CommunitySolidServer/blob/v7.0.0/config/storage/backend/file.json",
+  "@context": "https://linkedsoftwaredependencies.org/bundles/npm/@solid/community-server/^7.0.0/components/context.jsonld",
   "import": [
     "css:config/storage/backend/data-accessors/memory.json"
   ],
@@ -10,7 +8,7 @@
     {
       "comment": "A default store setup with a memory backend.",
       "@id": "urn:solid-server:default:ResourceStore_Backend",
-      "@type": "RedirectingStore",
+      "@type": "DataAccessorBasedStore",
       "identifierStrategy": { "@id": "urn:solid-server:default:IdentifierStrategy" },
       "auxiliaryStrategy": { "@id": "urn:solid-server:default:AuxiliaryStrategy" },
       "accessor": { "@id": "urn:solid-server:default:MemoryDataAccessor" },

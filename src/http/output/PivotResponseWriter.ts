@@ -1,49 +1,33 @@
+import { IncomingMessage } from 'http';
 import {
-  getLoggerFor,
   HttpResponse,
-  isInternalContentType,
-  NotImplementedHttpError,
-  pipeSafely,
-  MetadataWriter,
   ResponseDescription,
-  ResponseWriter
+  BasicResponseWriter
 } from '@solid/community-server';
 
-/**
- * Writes to an {@link HttpResponse} based on the incoming {@link ResponseDescription}.
- */
-export class PivotResponseWriter extends ResponseWriter {
-  protected readonly logger = getLoggerFor(this);
-  private readonly metadataWriter: MetadataWriter;
+function hasTrailingSlash(input: string): boolean {
+  return (input.slice(-1) === '/');
+}
 
-  public constructor(metadataWriter: MetadataWriter) {
-    super();
-    this.metadataWriter = metadataWriter;
-  }
-
-  public async canHandle(input: { response: HttpResponse; result: ResponseDescription }): Promise<void> {
-    const contentType = input.result.metadata?.contentType;
-    if (isInternalContentType(contentType)) {
-      throw new NotImplementedHttpError(`Cannot serialize the internal content type ${contentType}`);
-    }
-  }
-
+function addTrailingSlash(input: string): string {
+  return `${input}/`;
+}
+  
+export class PivotResponseWriter extends BasicResponseWriter {
   public async handle(input: { response: HttpResponse; result: ResponseDescription }): Promise<void> {
-    if (input.result.metadata) {
-      await this.metadataWriter.handleSafe({ response: input.response, metadata: input.result.metadata });
+    try {
+        if (
+          (input.response.req.method === 'GET') &&
+          (typeof input.response.req.url === 'string') &&
+          ([401, 403, 404].indexOf(input.result.statusCode) !== -1) &&
+          (hasTrailingSlash(input.response.req.url) === false)) {
+          console.log('rewriting', input.response.req.method, input.response.req.url, input.result.statusCode);
+          input.result.statusCode = 301;
+          input.response.setHeader('Location', addTrailingSlash(input.response.req.url));
+        }
+    } catch (e) {
+        console.error(e);
     }
-    console.log('writing response head', input.result.statusCode);
-    input.response.writeHead(input.result.statusCode);
-
-    if (input.result.data) {
-      const pipe = pipeSafely(input.result.data, input.response);
-      pipe.on('error', (error): void => {
-        this.logger.error(`Aborting streaming response because of server error; headers already sent.`);
-        this.logger.error(`Response error: ${error.message}`);
-      });
-    } else {
-      // If there is input data the response will end once the input stream ends
-      input.response.end();
-    }
+    return super.handle(input);
   }
 }
