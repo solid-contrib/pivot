@@ -37,5 +37,16 @@
     "css:config/util/resource-locker/file.json",
     "css:config/util/variables/default.json",
     "pivot:config/pivot-overrides.json"
+  ],
+  "@graph": [
+    {
+      "comment": "moving this to config-overrides.json breaks the N3Patcher integration test, that's why it's here",
+      "@type": "Override",
+      "overrideInstance": { "@id": "urn:solid-server:default:RootStaticAsset" },
+      "overrideParameters": {
+        "@type": "StaticAssetEntry",
+        "filePath": "www/index.html"
+      }
+    }
   ]
 }

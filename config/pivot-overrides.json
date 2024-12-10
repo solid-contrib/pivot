@@ -1,7 +1,6 @@
 {
   "@context": [
     "https://linkedsoftwaredependencies.org/bundles/npm/@solid/community-server/^7.0.0/components/context.jsonld",
-    "https://linkedsoftwaredependencies.org/bundles/npm/@solid/pivot/^1.0.0/components/context.jsonld",
     "https://linkedsoftwaredependencies.org/bundles/npm/@solid/pivot/^1.0.0/components/context.jsonld"
   ],
   "@graph": [
@@ -78,14 +77,6 @@
         "comment": "Should we use relative path bellow ? aliases like @fedcm doesn't seems to work",
         "filePath": "./templates/identity/password/login.html.ejs",
         "route": { "@id": "urn:solid-server:default:LoginPasswordRoute" }
-      }
-    },
-    {
-      "@type": "Override",
-      "overrideInstance": { "@id": "urn:solid-server:default:RootStaticAsset" },
-      "overrideParameters": {
-        "@type": "StaticAssetEntry",
-        "filePath": "www/index.html"
       }
     }
   ]
