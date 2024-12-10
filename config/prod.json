@@ -1,5 +1,5 @@
 {
-  "comment": "Generated on https://communitysolidserver.github.io/configuration-generator/v7/ with: (1) Account Management -> Pod URLs -> Subdomain, (2) Account management -> Email server -> Enabled, (3) Miscellaneous -> HTTPS: Enabled, (4) Advanced features  -> UI converter -> Enabled, (5) pivot:config/storage/middleware/default.json, (6) pivot:config/pivot-overrides.json added as the last import",
+  "comment": "Generated on https://communitysolidserver.github.io/configuration-generator/v7/ with: (1) Account Management -> Pod URLs -> Subdomain, (2) Account management -> Email server -> Enabled, (3) Miscellaneous -> HTTPS: Enabled, (4) Advanced features  -> UI converter -> Enabled, (5) pivot:config/http/handler/default.json, (6) pivot:config/storage/middleware/default.json, (6) pivot:config/pivot-overrides.json added as the last import",
   "@context": [
     "https://linkedsoftwaredependencies.org/bundles/npm/@solid/community-server/^7.0.0/components/context.jsonld",
     "https://linkedsoftwaredependencies.org/bundles/npm/@solid/pivot/^1.0.0/components/context.jsonld"
@@ -8,7 +8,7 @@
     "css:config/app/init/static-root.json",
     "css:config/app/main/default.json",
     "css:config/app/variables/default.json",
-    "css:config/http/handler/default.json",
+    "pivot:config/http/handler/default.json",
     "css:config/http/middleware/default.json",
     "css:config/http/notifications/all.json",
     "css:config/http/server-factory/https.json",
