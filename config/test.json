@@ -1,5 +1,5 @@
 {
-  "comment": "Copied from https://github.com/CommunitySolidServer/CommunitySolidServer/blob/v7.0.0/test/integration/config/ldp-with-auth.json",
+  "comment": "Copied from https://github.com/CommunitySolidServer/CommunitySolidServer/blob/v7.0.0/test/integration/config/ldp-with-auth.json, with (1) pivot:config/storage/middleware/default.json and (2) pivot:config/pivot-overrides.json",
   "@context": [
     "https://linkedsoftwaredependencies.org/bundles/npm/@solid/community-server/^7.0.0/components/context.jsonld",
     "https://linkedsoftwaredependencies.org/bundles/npm/@solid/pivot/^1.0.0/components/context.jsonld"

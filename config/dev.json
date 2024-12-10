@@ -1,5 +1,5 @@
 {
-  "comment": "Generated on https://communitysolidserver.github.io/configuration-generator/v7/ with: (1) Advanced features  -> UI converter -> Enabled, (2) pivot:config/pivot-overrides.json added as the last import, (3) pivot:config/storage/middleware/default.json",
+  "comment": "Generated on https://communitysolidserver.github.io/configuration-generator/v7/ with (1) Account management -> Email server -> Enabled, (2) Advanced features  -> UI converter -> Enabled, (3) pivot:config/storage/middleware/default.json, (4) pivot:config/pivot-overrides.json added as the last import",
   "@context": [
     "https://linkedsoftwaredependencies.org/bundles/npm/@solid/community-server/^7.0.0/components/context.jsonld",
     "https://linkedsoftwaredependencies.org/bundles/npm/@solid/pivot/^1.0.0/components/context.jsonld"
@@ -14,7 +14,7 @@
     "css:config/http/server-factory/http.json",
     "css:config/http/static/default.json",
     "css:config/identity/access/public.json",
-    "css:config/identity/email/default.json",
+    "css:config/identity/email/example.json",
     "css:config/identity/handler/default.json",
     "css:config/identity/oidc/default.json",
     "css:config/identity/ownership/token.json",
@@ -40,12 +40,27 @@
   ],
   "@graph": [
     {
-      "comment": "moving this to config-overrides.json breaks the N3Patcher integration test, that's why it's here",
+      "comment": "this belongs in config-overrides.json, but moving it there breaks the N3Patcher integration test, that's why it's here",
       "@type": "Override",
       "overrideInstance": { "@id": "urn:solid-server:default:RootStaticAsset" },
       "overrideParameters": {
         "@type": "StaticAssetEntry",
         "filePath": "www/index.html"
+      }
+    },
+    {
+      "comment": "this belongs in config-overrides.json, but moving it there breaks the N3Patcher integration test, that's why it's here",
+      "@type": "Override",
+      "overrideInstance": {
+        "@id": "urn:solid-server:default:EmailSender"
+      },
+      "overrideParameters": {
+        "@type": "BaseEmailSender",
+        "senderName": "Community Solid Server <solid@example.email>",
+        "emailConfig_host": "smtp.example.email",
+        "emailConfig_port": 587,
+        "emailConfig_auth_user": "solid@example.email",
+        "emailConfig_auth_pass": "NYEaCsqV7aVStRCbmC"
       }
     }
   ]

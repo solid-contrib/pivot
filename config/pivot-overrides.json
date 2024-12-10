@@ -26,6 +26,7 @@
         "relativeWebIdPath": "profile/card#me"
       }
     },
+
     {
       "comment": "Serve Databrowser as default representation",
       "@id": "urn:solid-server:default:mashlib",
@@ -81,4 +82,4 @@
     }
   ]
 }
-  
+ 
