@@ -1,5 +1,5 @@
 {
-  "comment": "Generated on https://communitysolidserver.github.io/configuration-generator/v7/ with: (1) Advanced features  -> UI converter -> Enabled, (2) pivot:config/pivot-overrides.json added as the last import",
+  "comment": "Generated on https://communitysolidserver.github.io/configuration-generator/v7/ with: (1) Advanced features  -> UI converter -> Enabled, (2) pivot:config/pivot-overrides.json added as the last import, (3) pivot:config/storage/middleware/default.json",
   "@context": [
     "https://linkedsoftwaredependencies.org/bundles/npm/@solid/community-server/^7.0.0/components/context.jsonld",
     "https://linkedsoftwaredependencies.org/bundles/npm/@solid/pivot/^1.0.0/components/context.jsonld"
@@ -28,7 +28,7 @@
     "css:config/storage/backend/file.json",
     "css:config/storage/key-value/resource-store.json",
     "css:config/storage/location/pod.json",
-    "css:config/storage/middleware/default.json",
+    "pivot:config/storage/middleware/default.json",
     "css:config/util/auxiliary/acl.json",
     "css:config/util/identifiers/suffix.json",
     "css:config/util/index/example.json",
