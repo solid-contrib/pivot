@@ -1,14 +1,14 @@
 {
+  "comment": "Generated on https://communitysolidserver.github.io/configuration-generator/v7/ with: (1) Account Management -> Pod URLs -> Subdomain, (2) Account management -> Email server -> Enabled, (3) Miscellaneous -> Initialize root -> Inaccessible root, (4) Miscellaneous -> HTTPS: Enabled, (5) Advanced features  -> UI converter -> Enabled, (6) pivot:config/pivot-overrides.json added as the last import",
   "@context": [
     "https://linkedsoftwaredependencies.org/bundles/npm/@solid/community-server/^7.0.0/components/context.jsonld",
-    "https://linkedsoftwaredependencies.org/bundles/npm/@solid/pivot/^1.0.0/components/context.jsonld",
     "https://linkedsoftwaredependencies.org/bundles/npm/@solid/pivot/^1.0.0/components/context.jsonld"
   ],
   "import": [
     "css:config/app/init/default.json",
     "css:config/app/main/default.json",
     "css:config/app/variables/default.json",
-    "pivot:config/http/handler/default.json",
+    "css:config/http/handler/default.json",
     "css:config/http/middleware/default.json",
     "css:config/http/notifications/all.json",
     "css:config/http/server-factory/https.json",
@@ -31,27 +31,11 @@
     "css:config/storage/middleware/default.json",
     "css:config/util/auxiliary/acl.json",
     "css:config/util/identifiers/subdomain.json",
+    "css:config/util/index/example.json",
     "css:config/util/logging/winston.json",
     "css:config/util/representation-conversion/default.json",
     "css:config/util/resource-locker/file.json",
     "css:config/util/variables/default.json",
     "pivot:config/pivot-overrides.json"
-  ],
-  "@graph": [
-    {
-      "comment": "The settings of your email server.",
-      "@type": "Override",
-      "overrideInstance": {
-        "@id": "urn:solid-server:default:EmailSender"
-      },
-      "overrideParameters": {
-        "@type": "BaseEmailSender",
-        "senderName": "Community Solid Server <solid@example.email>",
-        "emailConfig_host": "smtp.example.email",
-        "emailConfig_port": 587,
-        "emailConfig_auth_user": "solid@example.email",
-        "emailConfig_auth_pass": "NYEaCsqV7aVStRCbmC"
-      }
-    } 
   ]
 }
