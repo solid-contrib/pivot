@@ -1,4 +1,5 @@
 {
+  "comment": "Copied from https://github.com/CommunitySolidServer/CommunitySolidServer/blob/v7.0.0/test/integration/config/ldp-with-auth.json",
   "@context": [
     "https://linkedsoftwaredependencies.org/bundles/npm/@solid/community-server/^7.0.0/components/context.jsonld",
     "https://linkedsoftwaredependencies.org/bundles/npm/@solid/pivot/^1.0.0/components/context.jsonld"
@@ -33,7 +34,8 @@
     "css:config/util/logging/winston.json",
     "css:config/util/representation-conversion/default.json",
     "css:config/util/resource-locker/memory.json",
-    "css:config/util/variables/default.json"
+    "css:config/util/variables/default.json",
+    "pivot:config/pivot-overrides.json"
   ],
   "@graph": [
     {
@@ -50,14 +52,6 @@
           "RecordObject:_record_value": { "@id": "urn:solid-server:default:ResourceStore" }
         }
       ]
-    },
-    {
-      "@type": "Override",
-      "overrideInstance": { "@id": "urn:solid-server:default:RootStaticAsset" },
-      "overrideParameters": {
-        "@type": "StaticAssetEntry",
-        "filePath": "www/index.html"
-      }
     }
   ]
 }

@@ -1,0 +1,93 @@
+{
+  "@context": [
+    "https://linkedsoftwaredependencies.org/bundles/npm/@solid/community-server/^7.0.0/components/context.jsonld",
+    "https://linkedsoftwaredependencies.org/bundles/npm/@solid/pivot/^1.0.0/components/context.jsonld",
+    "https://linkedsoftwaredependencies.org/bundles/npm/@solid/pivot/^1.0.0/components/context.jsonld"
+  ],
+  "@graph": [
+    {
+      "comment": "The location of the new pod templates folder.",
+      "@type": "Override",
+      "overrideInstance": {
+        "@id": "urn:solid-server:default:PodResourcesGenerator"
+      },
+      "overrideParameters": {
+        "@type": "StaticFolderGenerator",
+        "templateFolder": "./templates/pod"
+      }
+    },
+    {
+      "comment": "Where the WebID is located in the generated pod, relative to the root.",
+      "@type": "Override",
+      "overrideInstance": {
+        "@id": "urn:solid-server:default:PodCreator"
+      },
+      "overrideParameters": {
+        "@type": "BasePodCreator",
+        "relativeWebIdPath": "profile/card#me"
+      }
+    },
+    {
+      "comment": "Serve Databrowser as default representation",
+      "@id": "urn:solid-server:default:mashlib",
+      "@type": "Override",
+      "overrideInstance": {
+        "@id": "urn:solid-server:default:DefaultUiConverter"
+      },
+      "overrideParameters": {
+        "@type": "ConstantConverter",
+        "contentType": "text/html",
+        "filePath": "./node_modules/mashlib/dist/databrowser.html",
+        "options_container": true,
+        "options_document": true,
+        "options_minQuality": 1,
+        "options_disabledMediaRanges": [
+          "image/*",
+          "application/pdf"
+        ]
+      }
+    },
+    {
+      "comment": "Serve Mashlib static files.",
+      "@id": "urn:solid-server:default:StaticAssetHandler",
+      "@type": "StaticAssetHandler",
+      "assets": [
+        {
+          "@type": "StaticAssetEntry",
+          "relativeUrl": "/mash.css",
+          "filePath": "./node_modules/mashlib/dist/mash.css"
+        },
+        {
+          "@type": "StaticAssetEntry",
+          "relativeUrl": "/mashlib.min.js",
+          "filePath": "./node_modules/mashlib/dist/mashlib.min.js"
+        },
+        {
+          "@type": "StaticAssetEntry",
+          "relativeUrl": "/mashlib.min.js.map",
+          "filePath": "./node_modules/mashlib/dist/mashlib.min.js.map"
+        }
+      ]
+    },
+    {
+      "@id": "urn:pivot:default:fedcmLoginTemplateOverride",
+      "@type": "Override",
+      "overrideInstance": { "@id": "urn:solid-server:default:PasswordLoginHtml" },
+      "overrideParameters": {
+        "@type" : "HtmlViewEntry",
+        "comment": "Should we use relative path bellow ? aliases like @fedcm doesn't seems to work",
+        "filePath": "./templates/identity/password/login.html.ejs",
+        "route": { "@id": "urn:solid-server:default:LoginPasswordRoute" }
+      }
+    },
+    {
+      "@type": "Override",
+      "overrideInstance": { "@id": "urn:solid-server:default:RootStaticAsset" },
+      "overrideParameters": {
+        "@type": "StaticAssetEntry",
+        "filePath": "www/index.html"
+      }
+    }
+  ]
+}
+  
