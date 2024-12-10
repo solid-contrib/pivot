@@ -11,7 +11,7 @@
     {
       "comment": "These are all the handlers a request will go through until it is handled.",
       "@id": "urn:solid-server:default:HttpHandler",
-      "@type": "PivotHttpSequenceHandler",
+      "@type": "SequenceHandler",
       "handlers": [
         { "@id": "urn:solid-server:default:Middleware" },
         {
