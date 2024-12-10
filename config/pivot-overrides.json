@@ -79,6 +79,16 @@
         "filePath": "./templates/identity/password/login.html.ejs",
         "route": { "@id": "urn:solid-server:default:LoginPasswordRoute" }
       }
+    },
+    {
+      "@id": "urn:pivot:default:consentDialogOverride",
+      "@type": "Override",
+      "overrideInstance": { "@id": "urn:solid-server:default:OidcConsentHtml" },
+      "overrideParameters": {
+        "@type": "HtmlViewEntry",
+        "filePath": "./templates/identity/oidc/consent.html.ejs",
+        "route": { "@id": "urn:solid-server:default:OidcConsentRoute" }
+      }
     }
   ]
 }
