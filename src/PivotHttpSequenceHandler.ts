@@ -35,16 +35,13 @@ export class PivotHttpSequenceHandler<TIn = void, TOut = void> extends AsyncHand
         result = await handler.handle(input);
       }
     }
-    // try {
-    //   const req = ((input as any).request as IncomingMessage);
-    //   const res = ((input as any).response as ServerResponse);
-    //   if (req.method === 'GET' && [401, 403, 404].indexOf(res.statusCode) !== -1) {
-    //     res.setHeader('Location', toggleTrailingSlash(req.url as string));
-    //     res.statusCode = 301;
-    //   }
-    // } catch (e) {
-    //   console.error(e);
-    // }
+    try {
+      const req = ((input as any).request as IncomingMessage);
+      const res = ((input as any).response as ServerResponse);
+      console.log(req.method, req.url, res.statusCode);
+    } catch (e) {
+      console.error(e);
+    }
     return result;
   }
 }
