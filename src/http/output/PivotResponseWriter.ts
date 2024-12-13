@@ -40,7 +40,8 @@ export class PivotResponseWriter extends BasicResponseWriter {
             // console.log('rewriting', input.response.req.method, input.response.req.url, input.result.statusCode);
             input.result.statusCode = 301;
             input.response.setHeader('Location', withSlash);
-            // input.result.data = 'try adding a slash at the end';
+            input.response.end('try adding a slash at the end');
+            return;
           }
         }
     } catch (e) {
