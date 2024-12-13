@@ -29,12 +29,13 @@ export class PivotResponseWriter extends BasicResponseWriter {
           ([401, 403, 404].indexOf(input.result.statusCode) !== -1) &&
           (hasTrailingSlash(input.response.req.url) === false)) {
           const withSlash = addTrailingSlash(input.response.req.url);
-          const exists = true; // await this.store.hasResource({ path: `http://localhost:3000${withSlash}` });
-          console.log('exists', withSlash, exists);
+          const exists = await this.store.hasResource({ path: `http://localhost:3000${withSlash}` });
+          // console.log('exists', withSlash, exists);
           if (exists) {
-            console.log('rewriting', input.response.req.method, input.response.req.url, input.result.statusCode);
+            // console.log('rewriting', input.response.req.method, input.response.req.url, input.result.statusCode);
             input.result.statusCode = 301;
             input.response.setHeader('Location', withSlash);
+            // input.result.data = 'try adding a slash at the end';
           }
         }
     } catch (e) {
