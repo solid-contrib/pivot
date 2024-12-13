@@ -5,71 +5,6 @@
   ],
   "@graph": [
     {
-      "comment": "The location of the new pod templates folder.",
-      "@type": "Override",
-      "overrideInstance": {
-        "@id": "urn:solid-server:default:PodResourcesGenerator"
-      },
-      "overrideParameters": {
-        "@type": "StaticFolderGenerator",
-        "templateFolder": "./templates/pod"
-      }
-    },
-    {
-      "comment": "Where the WebID is located in the generated pod, relative to the root.",
-      "@type": "Override",
-      "overrideInstance": {
-        "@id": "urn:solid-server:default:PodCreator"
-      },
-      "overrideParameters": {
-        "@type": "BasePodCreator",
-        "relativeWebIdPath": "profile/card#me"
-      }
-    },
-
-    {
-      "comment": "Serve Databrowser as default representation",
-      "@id": "urn:solid-server:default:mashlib",
-      "@type": "Override",
-      "overrideInstance": {
-        "@id": "urn:solid-server:default:DefaultUiConverter"
-      },
-      "overrideParameters": {
-        "@type": "ConstantConverter",
-        "contentType": "text/html",
-        "filePath": "./node_modules/mashlib/dist/databrowser.html",
-        "options_container": true,
-        "options_document": true,
-        "options_minQuality": 1,
-        "options_disabledMediaRanges": [
-          "image/*",
-          "application/pdf"
-        ]
-      }
-    },
-    {
-      "comment": "Serve Mashlib static files.",
-      "@id": "urn:solid-server:default:StaticAssetHandler",
-      "@type": "StaticAssetHandler",
-      "assets": [
-        {
-          "@type": "StaticAssetEntry",
-          "relativeUrl": "/mash.css",
-          "filePath": "./node_modules/mashlib/dist/mash.css"
-        },
-        {
-          "@type": "StaticAssetEntry",
-          "relativeUrl": "/mashlib.min.js",
-          "filePath": "./node_modules/mashlib/dist/mashlib.min.js"
-        },
-        {
-          "@type": "StaticAssetEntry",
-          "relativeUrl": "/mashlib.min.js.map",
-          "filePath": "./node_modules/mashlib/dist/mashlib.min.js.map"
-        }
-      ]
-    },
-    {
       "@id": "urn:pivot:default:fedcmLoginTemplateOverride",
       "@type": "Override",
       "overrideInstance": { "@id": "urn:solid-server:default:PasswordLoginHtml" },
@@ -81,13 +16,22 @@
       }
     },
     {
-      "@id": "urn:pivot:default:consentDialogOverride",
       "@type": "Override",
       "overrideInstance": { "@id": "urn:solid-server:default:OidcConsentHtml" },
       "overrideParameters": {
         "@type": "HtmlViewEntry",
         "filePath": "./templates/identity/oidc/consent.html.ejs",
         "route": { "@id": "urn:solid-server:default:OidcConsentRoute" }
+      }
+    },
+    {
+      "@type": "Override",
+      "overrideInstance": { "@id": "urn:solid-server:default:ResponseWriter" },
+      "overrideParameters": {
+        "@type": "PivotResponseWriter",
+        "metadataWriter": { "@id": "urn:solid-server:default:MetadataWriter" },
+        "targetExtractor": { "@id": "urn:solid-server:default:TargetExtractor" },
+        "store": { "@id": "urn:solid-server:default:ResourceStore" }
       }
     }
   ]
