@@ -29,7 +29,8 @@ export class PivotResponseWriter extends BasicResponseWriter {
           ([401, 403, 404].indexOf(input.result.statusCode) !== -1) &&
           (hasTrailingSlash(input.response.req.url) === false)) {
           const withSlash = addTrailingSlash(input.response.req.url);
-          const exists = await this.store.hasResource({ path: withSlash });
+          const exists = true; // await this.store.hasResource({ path: `http://localhost:3000${withSlash}` });
+          console.log('exists', withSlash, exists);
           if (exists) {
             console.log('rewriting', input.response.req.method, input.response.req.url, input.result.statusCode);
             input.result.statusCode = 301;
