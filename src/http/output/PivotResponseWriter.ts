@@ -4,6 +4,8 @@ import {
   ResponseDescription,
   BasicResponseWriter,
   MetadataWriter,
+  TargetExtractor,
+  HttpRequest,
   DataAccessorBasedStore
 } from '@solid/community-server';
 
@@ -17,9 +19,11 @@ function addTrailingSlash(input: string): string {
   
 export class PivotResponseWriter extends BasicResponseWriter {
   private readonly store;
-  constructor(metadataWriter: MetadataWriter, store: DataAccessorBasedStore) {
+  private readonly targetExtractor;
+  constructor(metadataWriter: MetadataWriter, store: DataAccessorBasedStore, targetExtractor: TargetExtractor) {
     super(metadataWriter);
     this.store = store;
+    this.targetExtractor = targetExtractor;
   }
   public async handle(input: { response: HttpResponse; result: ResponseDescription }): Promise<void> {
     try {
@@ -28,8 +32,9 @@ export class PivotResponseWriter extends BasicResponseWriter {
           (typeof input.response.req.url === 'string') &&
           ([401, 403, 404].indexOf(input.result.statusCode) !== -1) &&
           (hasTrailingSlash(input.response.req.url) === false)) {
-          const withSlash = addTrailingSlash(input.response.req.url);
-          const exists = await this.store.hasResource({ path: `http://localhost:3000${withSlash}` });
+          const target = await this.targetExtractor.handleSafe({ request: input.response.req as HttpRequest });
+          const withSlash = addTrailingSlash(target.path);
+          const exists = await this.store.hasResource({ path: withSlash });
           // console.log('exists', withSlash, exists);
           if (exists) {
             // console.log('rewriting', input.response.req.method, input.response.req.url, input.result.statusCode);

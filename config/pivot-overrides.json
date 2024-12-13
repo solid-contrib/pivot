@@ -22,6 +22,7 @@
       "overrideParameters": {
         "@type": "PivotResponseWriter",
         "metadataWriter": { "@id": "urn:solid-server:default:MetadataWriter" },
+        "targetExtractor": { "@id": "urn:solid-server:default:TargetExtractor" },
         "store": { "@id": "urn:solid-server:default:ResourceStore" }
       }
     }
