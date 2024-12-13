@@ -21,7 +21,8 @@
       "overrideInstance": { "@id": "urn:solid-server:default:ResponseWriter" },
       "overrideParameters": {
         "@type": "PivotResponseWriter",
-        "metadataWriter": { "@id": "urn:solid-server:default:MetadataWriter" }
+        "metadataWriter": { "@id": "urn:solid-server:default:MetadataWriter" },
+        "store": { "@id": "urn:solid-server:default:ResourceStore" }
       }
     }
   ]

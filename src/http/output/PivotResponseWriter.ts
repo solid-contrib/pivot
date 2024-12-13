@@ -2,7 +2,9 @@ import { IncomingMessage } from 'http';
 import {
   HttpResponse,
   ResponseDescription,
-  BasicResponseWriter
+  BasicResponseWriter,
+  MetadataWriter,
+  DataAccessorBasedStore
 } from '@solid/community-server';
 
 function hasTrailingSlash(input: string): boolean {
@@ -14,6 +16,11 @@ function addTrailingSlash(input: string): string {
 }
   
 export class PivotResponseWriter extends BasicResponseWriter {
+  private readonly store;
+  constructor(metadataWriter: MetadataWriter, store: DataAccessorBasedStore) {
+    super(metadataWriter);
+    this.store = store;
+  }
   public async handle(input: { response: HttpResponse; result: ResponseDescription }): Promise<void> {
     try {
         if (
@@ -21,9 +28,13 @@ export class PivotResponseWriter extends BasicResponseWriter {
           (typeof input.response.req.url === 'string') &&
           ([401, 403, 404].indexOf(input.result.statusCode) !== -1) &&
           (hasTrailingSlash(input.response.req.url) === false)) {
-          console.log('rewriting', input.response.req.method, input.response.req.url, input.result.statusCode);
-          input.result.statusCode = 301;
-          input.response.setHeader('Location', addTrailingSlash(input.response.req.url));
+          const withSlash = addTrailingSlash(input.response.req.url);
+          const exists = await this.store.hasResource({ path: withSlash });
+          if (exists) {
+            console.log('rewriting', input.response.req.method, input.response.req.url, input.result.statusCode);
+            input.result.statusCode = 301;
+            input.response.setHeader('Location', withSlash);
+          }
         }
     } catch (e) {
         console.error(e);
