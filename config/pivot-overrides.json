@@ -5,7 +5,6 @@
   ],
   "@graph": [
     {
-      "@id": "urn:pivot:default:fedcmLoginTemplateOverride",
       "@type": "Override",
       "overrideInstance": { "@id": "urn:solid-server:default:PasswordLoginHtml" },
       "overrideParameters": {
@@ -16,7 +15,6 @@
       }
     },
     {
-      "@id": "urn:pivot:default:ResponseWriterOverride",
       "@type": "Override",
       "overrideInstance": { "@id": "urn:solid-server:default:ResponseWriter" },
       "overrideParameters": {
@@ -25,7 +23,16 @@
         "targetExtractor": { "@id": "urn:solid-server:default:TargetExtractor" },
         "store": { "@id": "urn:solid-server:default:ResourceStore" }
       }
+    },
+    {
+      "@type": "Override",
+      "overrideInstance": { "@id": "urn:solid-server:default:PasswordLoginHandler" },
+      "overrideParameters": {
+        "@type": "MigratedPasswordLoginHandler",
+        "accountStore": { "@id": "urn:solid-server:default:AccountStore" },
+        "passwordStore": { "@id": "urn:solid-server:default:PasswordStore" },
+        "cookieStore": { "@id": "urn:solid-server:default:CookieStore" }
+      }
     }
   ]
 }
- 
