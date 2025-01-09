@@ -19,6 +19,20 @@ or [for Pivot as piece of config+software](https://matrix.to/#/#solid_pivot:matr
 ## Example usage
 
 These are the bash commands to run on for example [https://pivot.pondersource.com/](https://pivot.pondersource.com/).
+* create an Ubuntu server
+* set the DNS record for pivot.pondersource.com
+* ssh into the server, `apt update`, `apt upgrade`
+* get a wilcard cert
+  * `apt install certbot`
+  * `certbot certonly --manual --preferred-challenges dns --debug-challenges -v -d \*.pivot.pondersource.com`
+  * add the `_acme-challenge.pivot` TXT record in DNS
+  * check `dig txt _acme-challenge.pivot.pondersource.com`
+  * continue certbot dialog
+  * `ls /etc/letsencrypt/live/pivot.pondersource.com/`
+* install node
+  * `curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash`
+  * `source ~/.bashrc`
+  * `nvm install 20`
 
 ```bash
 root:~# git clone https://github.com/solid-contrib/pivot
