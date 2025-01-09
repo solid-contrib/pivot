@@ -28,7 +28,6 @@
     "css:config/storage/middleware/default.json",
     "css:config/util/auxiliary/acl.json",
     "css:config/util/identifiers/subdomain.json",
-    "css:config/util/index/default.json",
     "css:config/util/logging/winston.json",
     "css:config/util/representation-conversion/default.json",
     "css:config/util/resource-locker/file.json",
