@@ -57,9 +57,14 @@ git clone https://github.com/solid-contrib/pivot
 cd pivot
 npm install
 npm run build
+mkdir -p data
+cp -r www data/
 npm test
 npm start
 ```
+This configuration is identical to production, except for http(s) and port number. It even uses subdomains, which is why
+instead of visiting http://localhost:3000 you should visit http://lolcathost.de:3000 ()a utility domain whose subdomains all point to 127.0.0.1).
+
 
 ## Why 'pivot'?
 
