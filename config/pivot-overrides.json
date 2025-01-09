@@ -4,35 +4,5 @@
     "https://linkedsoftwaredependencies.org/bundles/npm/@solid/pivot/^1.0.0/components/context.jsonld"
   ],
   "@graph": [
-    {
-      "@type": "Override",
-      "overrideInstance": { "@id": "urn:solid-server:default:PasswordLoginHtml" },
-      "overrideParameters": {
-        "@type" : "HtmlViewEntry",
-        "comment": "Should we use relative path below ? aliases like @fedcm doesn't seems to work",
-        "filePath": "./templates/identity/password/login.html.ejs",
-        "route": { "@id": "urn:solid-server:default:LoginPasswordRoute" }
-      }
-    },
-    {
-      "@type": "Override",
-      "overrideInstance": { "@id": "urn:solid-server:default:ResponseWriter" },
-      "overrideParameters": {
-        "@type": "PivotResponseWriter",
-        "metadataWriter": { "@id": "urn:solid-server:default:MetadataWriter" },
-        "targetExtractor": { "@id": "urn:solid-server:default:TargetExtractor" },
-        "store": { "@id": "urn:solid-server:default:ResourceStore" }
-      }
-    },
-    {
-      "@type": "Override",
-      "overrideInstance": { "@id": "urn:solid-server:default:PasswordLoginHandler" },
-      "overrideParameters": {
-        "@type": "MigratedPasswordLoginHandler",
-        "accountStore": { "@id": "urn:solid-server:default:AccountStore" },
-        "passwordStore": { "@id": "urn:solid-server:default:PasswordStore" },
-        "cookieStore": { "@id": "urn:solid-server:default:CookieStore" }
-      }
-    }
   ]
 }
