@@ -24,7 +24,7 @@ These are the bash commands to run on for example [https://pivot.pondersource.co
 * ssh into the server, `apt update`, `apt upgrade`
 * get a wilcard cert
   * `apt install certbot`
-  * `certbot certonly --manual --preferred-challenges dns --debug-challenges -v -d \*.pivot.pondersource.com`
+  * `certbot certonly --manual --preferred-challenges dns --debug-challenges -v -d \*.pivot.pondersource.com -d pivot.pondersource.com`
   * add the `_acme-challenge.pivot` TXT record in DNS
   * check `dig txt _acme-challenge.pivot.pondersource.com`
   * continue certbot dialog
