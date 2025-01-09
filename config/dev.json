@@ -2,7 +2,7 @@
   "comment": "https://communitysolidserver.github.io/configuration-generator/v7/ with subdomains",
   "@context": "https://linkedsoftwaredependencies.org/bundles/npm/@solid/community-server/^7.0.0/components/context.jsonld",
   "import": [
-    "css:config/app/init/static-root.json",
+    "css:config/app/init/default.json",
     "css:config/app/main/default.json",
     "css:config/app/variables/default.json",
     "css:config/http/handler/default.json",
