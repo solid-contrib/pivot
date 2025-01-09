@@ -1,5 +1,5 @@
 {
-  "comment": "Copied from config/prod.json, (1) css:config/http/server-factory/http.json, (2) css:config/util/identifiers/suffix.json",
+  "comment": "Copied from config/prod.json, (1) css:config/http/server-factory/http.json",
   "@context": [
     "https://linkedsoftwaredependencies.org/bundles/npm/@solid/community-server/^7.0.0/components/context.jsonld",
     "https://linkedsoftwaredependencies.org/bundles/npm/@solid/pivot/^1.0.0/components/context.jsonld"
@@ -30,7 +30,7 @@
     "css:config/storage/location/pod.json",
     "pivot:config/storage/middleware/default.json",
     "css:config/util/auxiliary/acl.json",
-    "css:config/util/identifiers/suffix.json",
+    "css:config/util/identifiers/subdomain.json",
     "css:config/util/logging/winston.json",
     "css:config/util/representation-conversion/default.json",
     "css:config/util/resource-locker/file.json",
