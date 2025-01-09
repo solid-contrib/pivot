@@ -6,16 +6,6 @@
   "@graph": [
     {
       "@type": "Override",
-      "overrideInstance": { "@id": "urn:solid-server:default:PasswordLoginHtml" },
-      "overrideParameters": {
-        "@type" : "HtmlViewEntry",
-        "comment": "Should we use relative path bellow ? aliases like @fedcm doesn't seems to work",
-        "filePath": "./templates/identity/password/login.html.ejs",
-        "route": { "@id": "urn:solid-server:default:LoginPasswordRoute" }
-      }
-    },
-    {
-      "@type": "Override",
       "overrideInstance": { "@id": "urn:solid-server:default:ResponseWriter" },
       "overrideParameters": {
         "@type": "PivotResponseWriter",
@@ -32,14 +22,6 @@
         "accountStore": { "@id": "urn:solid-server:default:AccountStore" },
         "passwordStore": { "@id": "urn:solid-server:default:PasswordStore" },
         "cookieStore": { "@id": "urn:solid-server:default:CookieStore" }
-      }
-    },
-    {
-      "@type": "Override",
-      "overrideInstance": { "@id": "urn:solid-server:default:MainTemplateEngine" },
-      "overrideParameters": {
-        "@type": "StaticTemplateEngine",
-        "template": "@pivot:templates/main.html.ejs"
       }
     }
   ]

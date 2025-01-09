@@ -34,7 +34,8 @@
     "css:config/util/logging/winston.json",
     "css:config/util/representation-conversion/default.json",
     "css:config/util/resource-locker/file.json",
-    "css:config/util/variables/default.json"
+    "css:config/util/variables/default.json",
+    "pivot:config/pivot-overrides.json"
   ],
   "@graph": [
     {
