@@ -39,6 +39,8 @@ root:~# git clone https://github.com/solid-contrib/pivot
 root:~# cd pivot
 root:~/pivot# npm ci --skip=dev
 root:~/pivot# npm run build
+root:~/pivot# mkdir -p data
+root:~/pivot# cp -r www data/
 root:~/pivot# npx community-solid-server -c ./config/prod.json -f ./data --httpsKey /etc/letsencrypt/live/pivot.pondersource.com/privkey.pem --httpsCert /etc/letsencrypt/live/pivot.pondersource.com/fullchain.pem -p 443 -b https://pivot.pondersource.com -m .
 2024-11-13T11:28:02.426Z [Components.js] info: Initiating component discovery from /root/pivot
 2024-11-13T11:28:02.919Z [Components.js] info: Discovered 169 component packages within 1345 packages
