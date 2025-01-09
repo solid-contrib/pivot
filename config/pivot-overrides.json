@@ -33,14 +33,6 @@
         "passwordStore": { "@id": "urn:solid-server:default:PasswordStore" },
         "cookieStore": { "@id": "urn:solid-server:default:CookieStore" }
       }
-    },
-    {
-      "@type": "Override",
-      "overrideInstance": { "@id": "urn:solid-server:default:MainTemplateEngine" },
-      "overrideParameters": {
-        "@type": "StaticTemplateEngine",
-        "template": "@pivot:templates/main.html.ejs"
-      }
     }
   ]
 }
