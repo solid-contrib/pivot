@@ -1,4 +1,5 @@
-
+cert.pem
+key.pem
 /.acl
 /.eslintcache
 /componentsjs-error-state.json
