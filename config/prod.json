@@ -29,6 +29,7 @@
     "css:config/storage/key-value/resource-store.json",
     "css:config/storage/location/pod.json",
     "pivot:config/storage/middleware/default.json",
+    "css:config/storage/backend/pod-quota-file.json",
     "css:config/util/auxiliary/acl.json",
     "css:config/util/identifiers/subdomain.json",
     "css:config/util/logging/winston.json",
@@ -116,6 +117,18 @@
           "filePath": "./node_modules/mashlib/dist/mashlib.min.js.map"
         }
       ]
+    },
+    {
+      "comment": "Sets the maximum size of a single pod to 7KB.",
+      "@id": "urn:solid-server:default:QuotaStrategy",
+      "@type": "PodQuotaStrategy",
+      "limit_amount": 7000,
+      "limit_unit": "bytes"
+    },
+    {
+      "@id": "urn:solid-server:default:SizeReporter",
+      "@type": "FileSizeReporter",
+      "ignoreFolders": [ "^/\\.internal$" ]
     }
   ]
 }
