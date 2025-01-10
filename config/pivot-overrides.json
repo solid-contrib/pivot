@@ -40,7 +40,7 @@
       "overrideParameters": {
         "@type": "StaticTemplateEngine",
         "templateEngine": { "@id": "urn:solid-server:default:TemplateEngine" },
-        "template": "@css:templates/main.html.ejs"
+        "template": "./templates/main.html.ejs"
       }
     }
   ]
