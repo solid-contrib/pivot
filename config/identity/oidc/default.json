@@ -10,11 +10,26 @@
       "@type": "RouterHandler",
       "args_baseUrl": { "@id": "urn:solid-server:default:variable:baseUrl" },
       "args_targetExtractor": { "@id": "urn:solid-server:default:TargetExtractor" },
-      "args_allowedPathNames": [ "^/.oidc/.*", "/\\.well-known/openid-configuration" ],
+      "args_allowedPathNames": [ "^/.oidc/.*", "^/\\.well-known/openid-configuration" ],
       "args_handler": {
-        "@type": "PivotOidcHttpHandler",
+        "@type": "OidcHttpHandler",
         "providerFactory": { "@id": "urn:solid-server:default:IdentityProviderFactory" }
       }
+    },
+    {
+      "comment": "Handler for OIDC discovery on subdomains",
+      "@id": "urn:solid-server:default:SubdomainOidcHandler",
+      "@type": "RedirectingHttpHandler",
+      "redirects": [
+        {
+          "RedirectingHttpHandler:_redirects_key": "/from/(.*)",
+          "RedirectingHttpHandler:_redirects_value": "/to/$1"
+        }
+      ],
+      "baseUrl": { "@id": "urn:solid-server:default:variable:baseUrl" },
+      "targetExtractor": { "@id": "urn:solid-server:default:TargetExtractor" },
+      "responseWriter": { "@id": "urn:solid-server:default:ResponseWriter" },
+      "statusCode": "303"
     }
   ]
 }
