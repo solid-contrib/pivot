@@ -118,10 +118,10 @@
       ]
     },
     {
-      "comment": "Sets the maximum size of a single pod to 7KB.",
+      "comment": "Sets the maximum size of a single pod to 70MB.",
       "@id": "urn:solid-server:default:QuotaStrategy",
       "@type": "PodQuotaStrategy",
-      "limit_amount": 7000,
+      "limit_amount": 70000000,
       "limit_unit": "bytes"
     },
     {
