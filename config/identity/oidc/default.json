@@ -1,17 +1,33 @@
 {
-    "@context": "https://linkedsoftwaredependencies.org/bundles/npm/@solid/community-server/^7.0.0/components/context.jsonld",
-    "@graph": [
-      {
-        "comment": "Routes all OIDC related requests to the OIDC library.",
-        "@id": "urn:solid-server:default:OidcHandler",
-        "@type": "RouterHandler",
-        "args_baseUrl": { "@id": "urn:solid-server:default:variable:baseUrl" },
-        "args_targetExtractor": { "@id": "urn:solid-server:default:TargetExtractor" },
-        "args_allowedPathNames": [ "^/.oidc/.*", "/\\.well-known/openid-configuration" ],
-        "args_handler": {
-          "@type": "OidcHttpHandler",
-          "providerFactory": { "@id": "urn:solid-server:default:IdentityProviderFactory" }
-        }
+  "@context": [
+    "https://linkedsoftwaredependencies.org/bundles/npm/@solid/community-server/^7.0.0/components/context.jsonld",
+    "https://linkedsoftwaredependencies.org/bundles/npm/@solid/pivot/^1.0.0/components/context.jsonld"
+  ],
+  "@graph": [
+    {
+      "comment": "Routes all OIDC related requests to the OIDC library.",
+      "@id": "urn:solid-server:default:OidcHandler",
+      "@type": "RouterHandler",
+      "args_baseUrl": { "@id": "urn:solid-server:default:variable:baseUrl" },
+      "args_targetExtractor": { "@id": "urn:solid-server:default:TargetExtractor" },
+      "args_allowedPathNames": [ "^/.oidc/.*", "^/\\.well-known/openid-configuration" ],
+      "args_handler": {
+        "@type": "OidcHttpHandler",
+        "providerFactory": { "@id": "urn:solid-server:default:IdentityProviderFactory" }
       }
-    ]
-  }
+    },
+    {
+      "comment": "Handler for OIDC discovery on subdomains",
+      "@id": "urn:solid-server:default:SubdomainOidcHandler",
+      "@type": "RouterHandler",
+      "args_baseUrl": { "@id": "urn:solid-server:default:variable:baseUrl" },
+      "args_targetExtractor": { "@id": "urn:solid-server:default:TargetExtractor" },
+      "args_allowedPathNames": [ "/\\.well-known/openid-configuration" ],
+      "args_handler": {
+        "@type": "PivotOidcHttpHandler",
+        "baseUrl": { "@id": "urn:solid-server:default:variable:baseUrl" },
+        "responseWriter": { "@id": "urn:solid-server:default:ResponseWriter" }
+      }
+    }
+  ]
+}
