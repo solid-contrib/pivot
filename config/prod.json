@@ -45,7 +45,7 @@
         "@id": "urn:solid-server:default:EmailSender"
       },
       "overrideParameters": {
-        "@type": "BaseEmailSender"
+        "@type": "BaseEmailSender",
         "senderName": "no-reply@solidcommunity.net",
         "emailConfig_host": "smtp.sendgrid.net",
         "emailConfig_port": 465,
