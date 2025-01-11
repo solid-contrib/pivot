@@ -45,12 +45,12 @@
         "@id": "urn:solid-server:default:EmailSender"
       },
       "overrideParameters": {
-        "@type": "BaseEmailSender",
-        "senderName": "Community Solid Server <solid@example.email>",
-        "emailConfig_host": "smtp.example.email",
-        "emailConfig_port": 587,
-        "emailConfig_auth_user": "solid@example.email",
-        "emailConfig_auth_pass": "NYEaCsqV7aVStRCbmC"
+        "@type": "BaseEmailSender"
+        "senderName": "no-reply@solidcommunity.net",
+        "emailConfig_host": "smtp.sendgrid.net",
+        "emailConfig_port": 465,
+        "emailConfig_auth_user": "apikey",
+        "emailConfig_auth_pass": "<fill me in>"
       }
     },
     {
