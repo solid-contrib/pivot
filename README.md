@@ -34,10 +34,11 @@ These are the bash commands to run on for example [https://pivot.pondersource.co
   * `source ~/.bashrc`
   * `nvm install 20`
 * update parameters to your installation
-  in `config/custom-overrides.json` you can easily declare :
-  * templates location
-  * pod quota
-  * your email server
+  in `config/customise-me.json` you can easily declare:
+  * email server settings (will need to at least fill in the auth pass here)
+  * quota settings (defaults to 70 MB per pod)
+  * pod template (defaults to `node_modules/css-mashlib`)
+  * mashlib version (both data browser and static files; defaults to `node_modules/mashlib`)
 
 ```bash
 root:~# git clone https://github.com/solid-contrib/pivot
