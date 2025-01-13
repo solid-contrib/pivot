@@ -1,0 +1,48 @@
+{
+    "comment": "Basic overrides parameters for a production server",
+    "@context": [
+      "https://linkedsoftwaredependencies.org/bundles/npm/@solid/community-server/^7.0.0/components/context.jsonld",
+      "https://linkedsoftwaredependencies.org/bundles/npm/@solid/pivot/^1.0.0/components/context.jsonld"
+    ],
+    "@graph": [
+      {
+        "comment": "The settings of your email server.",
+        "@type": "Override",
+        "overrideInstance": {
+          "@id": "urn:solid-server:default:EmailSender"
+        },
+        "overrideParameters": {
+          "@type": "BaseEmailSender",
+          "senderName": "no-reply@solidcommunity.net",
+          "emailConfig_host": "smtp.sendgrid.net",
+          "emailConfig_port": 465,
+          "emailConfig_auth_user": "apikey",
+          "emailConfig_auth_pass": "<fill me in>"
+        }
+      },
+      {
+        "comment": "The location of the new pod templates folder.",
+        "@type": "Override",
+        "overrideInstance": {
+          "@id": "urn:solid-server:default:PodResourcesGenerator"
+        },
+        "overrideParameters": {
+          "@type": "StaticFolderGenerator",
+          "templateFolder": "node_modules/css-mashlib/templates/pod"
+        }
+      },
+      {
+        "comment": "Sets the maximum size of a single pod to 70MB.",
+        "@type": "Override",
+        "overrideInstance": {
+            "@id": "urn:solid-server:default:QuotaStrategy"
+        },
+        "overrideParameters": {            
+            "@type": "PodQuotaStrategy",
+            "limit_amount": 70000000,
+            "limit_unit": "bytes"
+        }
+      }
+    ]
+  }
+  

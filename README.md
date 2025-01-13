@@ -33,6 +33,11 @@ These are the bash commands to run on for example [https://pivot.pondersource.co
   * `curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash`
   * `source ~/.bashrc`
   * `nvm install 20`
+* update parameters to your installation
+  in `config/custom-overrides.json` you can easily declare :
+  * templates location
+  * pod quota
+  * your email server
 
 ```bash
 root:~# git clone https://github.com/solid-contrib/pivot
