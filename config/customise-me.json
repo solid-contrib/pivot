@@ -42,6 +42,42 @@
             "limit_amount": 70000000,
             "limit_unit": "bytes"
         }
+      },
+      {
+        "comment": "Serve Databrowser as default representation",
+        "@id": "urn:solid-server:default:DefaultUiConverter",
+        "@type": "ConstantConverter",
+        "contentType": "text/html",
+        "filePath": "./node_modules/mashlib/dist/databrowser.html",
+        "options_container": true,
+        "options_document": true,
+        "options_minQuality": 1,
+        "options_disabledMediaRanges": [
+          "image/*",
+          "application/pdf"
+        ]
+      },
+      {
+        "comment": "Serve Mashlib static files.",
+        "@id": "urn:solid-server:default:StaticAssetHandler",
+        "@type": "StaticAssetHandler",
+        "assets": [
+          {
+            "@type": "StaticAssetEntry",
+            "relativeUrl": "/mash.css",
+            "filePath": "./node_modules/mashlib/dist/mash.css"
+          },
+          {
+            "@type": "StaticAssetEntry",
+            "relativeUrl": "/mashlib.min.js",
+            "filePath": "./node_modules/mashlib/dist/mashlib.min.js"
+          },
+          {
+            "@type": "StaticAssetEntry",
+            "relativeUrl": "/mashlib.min.js.map",
+            "filePath": "./node_modules/mashlib/dist/mashlib.min.js.map"
+          }
+        ]
       }
     ]
   }
