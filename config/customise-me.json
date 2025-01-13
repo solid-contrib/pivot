@@ -64,6 +64,11 @@
         "assets": [
           {
             "@type": "StaticAssetEntry",
+            "relativeUrl": "/browse.html",
+            "filePath": "./node_modules/mashlib/dist/browse.html"
+          },
+          {
+            "@type": "StaticAssetEntry",
             "relativeUrl": "/mash.css",
             "filePath": "./node_modules/mashlib/dist/mash.css"
           },
