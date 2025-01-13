@@ -33,8 +33,7 @@ These are the bash commands to run on for example [https://pivot.pondersource.co
   * `curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash`
   * `source ~/.bashrc`
   * `nvm install 20`
-* update parameters to your installation
-  in `config/customise-me.json` you can easily declare:
+* copy `config/customise-me.json`  to `./custom-config.json` and edit it:
   * email server settings (will need to at least fill in the auth pass here)
   * quota settings (defaults to 70 MB per pod)
   * pod template (defaults to `node_modules/css-mashlib`)
@@ -47,7 +46,7 @@ root:~/pivot# npm ci --skip=dev
 root:~/pivot# npm run build
 root:~/pivot# mkdir -p data
 root:~/pivot# cp -r www data/
-root:~/pivot# npx community-solid-server -c ./config/prod.json -f ./data --httpsKey /etc/letsencrypt/live/pivot.pondersource.com/privkey.pem --httpsCert /etc/letsencrypt/live/pivot.pondersource.com/fullchain.pem -p 443 -b https://pivot.pondersource.com -m .
+root:~/pivot# npx community-solid-server -c ./config/prod.json ./custom-config.json -f ./data --httpsKey /etc/letsencrypt/live/pivot.pondersource.com/privkey.pem --httpsCert /etc/letsencrypt/live/pivot.pondersource.com/fullchain.pem -p 443 -b https://pivot.pondersource.com -m .
 2024-11-13T11:28:02.426Z [Components.js] info: Initiating component discovery from /root/pivot
 2024-11-13T11:28:02.919Z [Components.js] info: Discovered 169 component packages within 1345 packages
 2024-11-13T11:28:02.921Z [Components.js] info: Initiating component loading
