@@ -35,8 +35,7 @@
     "css:config/util/representation-conversion/default.json",
     "css:config/util/resource-locker/file.json",
     "css:config/util/variables/default.json",
-    "pivot:config/pivot-overrides.json",
-    "pivot:config/customise-me.json"
+    "pivot:config/pivot-overrides.json"
   ],
   "@graph": [
    {
