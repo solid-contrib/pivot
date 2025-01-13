@@ -34,7 +34,7 @@ These are the bash commands to run on for example [https://pivot.pondersource.co
   * `source ~/.bashrc`
   * `nvm install 20`
 * update parameters to your installation
-  in `config/overrides-prod.json` you can easily declare :
+  in `config/custom-overrides.json` you can easily declare :
   * templates location
   * pod quota
   * your email server
@@ -46,7 +46,7 @@ root:~/pivot# npm ci --skip=dev
 root:~/pivot# npm run build
 root:~/pivot# mkdir -p data
 root:~/pivot# cp -r www data/
-root:~/pivot# npx community-solid-server -c ./config/prod.json ./config/overrides-prod.json -f ./data --httpsKey /etc/letsencrypt/live/pivot.pondersource.com/privkey.pem --httpsCert /etc/letsencrypt/live/pivot.pondersource.com/fullchain.pem -p 443 -b https://pivot.pondersource.com -m .
+root:~/pivot# npx community-solid-server -c ./config/prod.json -f ./data --httpsKey /etc/letsencrypt/live/pivot.pondersource.com/privkey.pem --httpsCert /etc/letsencrypt/live/pivot.pondersource.com/fullchain.pem -p 443 -b https://pivot.pondersource.com -m .
 2024-11-13T11:28:02.426Z [Components.js] info: Initiating component discovery from /root/pivot
 2024-11-13T11:28:02.919Z [Components.js] info: Discovered 169 component packages within 1345 packages
 2024-11-13T11:28:02.921Z [Components.js] info: Initiating component loading

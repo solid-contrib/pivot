@@ -35,7 +35,8 @@
     "css:config/util/representation-conversion/default.json",
     "css:config/util/resource-locker/file.json",
     "css:config/util/variables/default.json",
-    "pivot:config/pivot-overrides.json"
+    "pivot:config/pivot-overrides.json",
+    "pivot:config/custom-overrides.json"
   ],
   "@graph": [
    {
@@ -90,18 +91,6 @@
           "filePath": "./node_modules/mashlib/dist/mashlib.min.js.map"
         }
       ]
-    },
-    {
-      "comment": "Sets the maximum size of a single pod to 7MB.",
-      "@id": "urn:solid-server:default:QuotaStrategy",
-      "@type": "PodQuotaStrategy",
-      "limit_amount": 7000000,
-      "limit_unit": "bytes"
-    },
-    {
-      "@id": "urn:solid-server:default:SizeReporter",
-      "@type": "FileSizeReporter",
-      "ignoreFolders": [ "^/\\.internal$" ]
     }
   ]
 }
