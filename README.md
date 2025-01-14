@@ -7,6 +7,12 @@ A spec-compliant Solid server for use on the [Solid Community server](https://so
 based on a remix of building blocks from the
 [Community Solid Server](https://github.com/CommunitySolidServer/CommunitySolidServer) project.
 
+That is to say, this server implements a certain community flavour of Solid, namely:
+* using [the Solid protocol](https://solidproject.org/TR/protocol)
+* using WAC and not ACP
+* but using an [older version of Solid OIDC](https://github.com/solid/solid-oidc/tree/a5a966c7342da01a57bfb316e5533ea7d82fd245), where storage access control is done with DPoP instead of with UMA
+* ([under development](https://github.com/solid-contrib/pivot/issues/64)) using the PoP token issuer as an indication for app origin
+
 Feel free to [open a feature request](https://github.com/solid-contrib/pivot/issues/new) if you think
 `solidcommunity.net` should implement some
 additional feature - because it's a missing spec feature, or because it's a new optional or experimental
