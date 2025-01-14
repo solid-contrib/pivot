@@ -74,6 +74,16 @@
           },
           {
             "@type": "StaticAssetEntry",
+            "relativeUrl": "/mashlib.js",
+            "filePath": "./node_modules/mashlib/dist/mashlib.js"
+          },
+          {
+            "@type": "StaticAssetEntry",
+            "relativeUrl": "/mashlib.js.map",
+            "filePath": "./node_modules/mashlib/dist/mashlib.js.map"
+          },
+          {
+            "@type": "StaticAssetEntry",
             "relativeUrl": "/mashlib.min.js",
             "filePath": "./node_modules/mashlib/dist/mashlib.min.js"
           },
