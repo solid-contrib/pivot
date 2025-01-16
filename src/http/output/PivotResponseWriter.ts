@@ -38,7 +38,7 @@ export class PivotResponseWriter extends BasicResponseWriter {
           // console.log('exists', withSlash, exists);
           if (exists) {
             // console.log('rewriting', input.response.req.method, input.response.req.url, input.result.statusCode);
-            input.result.statusCode = 301;
+            input.response.statusCode = 301;
             input.response.setHeader('Location', withSlash);
             input.response.end('Try adding a slash at the end of the URL.\n');
             return;

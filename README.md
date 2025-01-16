@@ -7,6 +7,12 @@ A spec-compliant Solid server for use on the [Solid Community server](https://so
 based on a remix of building blocks from the
 [Community Solid Server](https://github.com/CommunitySolidServer/CommunitySolidServer) project.
 
+That is to say, this server implements a certain community flavour of Solid, namely:
+* using [the Solid protocol](https://solidproject.org/TR/protocol)
+* using WAC and not ACP
+* but using an [older version of Solid OIDC](https://github.com/solid/solid-oidc/tree/a5a966c7342da01a57bfb316e5533ea7d82fd245), where storage access control is done with DPoP instead of with UMA
+* ([under development](https://github.com/solid-contrib/pivot/issues/64)) using the PoP token issuer as an indication for app origin
+
 Feel free to [open a feature request](https://github.com/solid-contrib/pivot/issues/new) if you think
 `solidcommunity.net` should implement some
 additional feature - because it's a missing spec feature, or because it's a new optional or experimental
@@ -19,13 +25,34 @@ or [for Pivot as piece of config+software](https://matrix.to/#/#solid_pivot:matr
 ## Example usage
 
 These are the bash commands to run on for example [https://pivot.pondersource.com/](https://pivot.pondersource.com/).
+* create an Ubuntu server
+* set the DNS record for pivot.pondersource.com
+* ssh into the server, `apt update`, `apt upgrade`
+* get a wilcard cert
+  * `apt install certbot`
+  * `certbot certonly --manual --preferred-challenges dns --debug-challenges -v -d \*.pivot.pondersource.com -d pivot.pondersource.com`
+  * add the `_acme-challenge.pivot` TXT record in DNS
+  * check `dig txt _acme-challenge.pivot.pondersource.com`
+  * continue certbot dialog
+  * `ls /etc/letsencrypt/live/pivot.pondersource.com/`
+* install node
+  * `curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash`
+  * `source ~/.bashrc`
+  * `nvm install 20`
+* copy `config/customise-me.json`  to `./custom-config.json` and edit it:
+  * email server settings (will need to at least fill in the auth pass here)
+  * quota settings (defaults to 70 MB per pod)
+  * pod template (defaults to `node_modules/css-mashlib`)
+  * mashlib version (both data browser and static files; defaults to `node_modules/mashlib`)
 
 ```bash
 root:~# git clone https://github.com/solid-contrib/pivot
 root:~# cd pivot
 root:~/pivot# npm ci --skip=dev
 root:~/pivot# npm run build
-root:~/pivot# npx community-solid-server -c ./config/prod.json -f ./data --httpsKey /etc/letsencrypt/live/pivot.pondersource.com-0001/privkey.pem --httpsCert /etc/letsencrypt/live/pivot.pondersource.com-0001/fullchain.pem -p 443 -b https://pivot.pondersource.com -m .
+root:~/pivot# mkdir -p data
+root:~/pivot# cp -r www data/
+root:~/pivot# npx community-solid-server -c ./config/prod.json ./custom-config.json -f ./data --httpsKey /etc/letsencrypt/live/pivot.pondersource.com/privkey.pem --httpsCert /etc/letsencrypt/live/pivot.pondersource.com/fullchain.pem -p 443 -b https://pivot.pondersource.com -m .
 2024-11-13T11:28:02.426Z [Components.js] info: Initiating component discovery from /root/pivot
 2024-11-13T11:28:02.919Z [Components.js] info: Discovered 169 component packages within 1345 packages
 2024-11-13T11:28:02.921Z [Components.js] info: Initiating component loading
@@ -42,6 +69,7 @@ cd pivot
 npm install
 npm run build
 npm test
+openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -sha256 -days 3650 -nodes -subj "/C=XX/ST=StateName/L=CityName/O=CompanyName/OU=CompanySectionName/CN=CommonNameOrHostname"
 npm start
 ```
 
