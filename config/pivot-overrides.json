@@ -16,6 +16,15 @@
     },
     {
       "@type": "Override",
+      "overrideInstance": { "@id": "urn:solid-server:default:OidcConsentHtml" },
+      "overrideParameters": {
+        "@type": "HtmlViewEntry",
+        "filePath": "./templates/identity/oidc/consent.html.ejs",
+        "route": { "@id": "urn:solid-server:default:OidcConsentRoute" }
+      }
+    },
+    {
+      "@type": "Override",
       "overrideInstance": { "@id": "urn:solid-server:default:ResponseWriter" },
       "overrideParameters": {
         "@type": "PivotResponseWriter",
