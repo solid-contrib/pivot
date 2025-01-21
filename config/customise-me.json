@@ -54,7 +54,8 @@
         "options_minQuality": 1,
         "options_disabledMediaRanges": [
           "image/*",
-          "application/pdf"
+          "application/pdf",
+          "text/html"
         ]
       },
       {
