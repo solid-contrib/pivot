@@ -23,7 +23,7 @@ You can also join the Matrix chat [for solidcommunity.net](https://matrix.to/#/#
 or [for Pivot as piece of config+software](https://matrix.to/#/#solid_pivot:matrix.org).
 
 ## Warning
-When a pod owner authenticates to a Solid app, this app gets full access to that user's data, on their own pod and elsewhere. This is not how we envision Solid's trinity of WebId's, Pods, and Solid apps, but it's what we have implemented so far. This is a problem that is not specific to Pivot, but that is shared among all WAC-based implementations of Solid.
+With Pivot's default settings, when a pod owner authenticates to a Solid app, this app can get full access to that user's data, on their own pod and elsewhere. This is not how we envision Solid's trinity of WebId's, Pods, and Solid apps, but it's what we have implemented so far. This is a problem that is not specific to Pivot, but that is shared among all WAC-based implementations of Solid.
 
 See [this issue](https://github.com/solid-contrib/pivot/issues/78) for a discussion of how we might fix this situation.
 In the meantime, we [warn the user](https://github.com/solid-contrib/pivot/pull/38) (in a much sterner way than most other WAC-based servers do) that in the Solid-OIDC flow they are not just sharing their identity with a Solid app, but are actually allowing that app to read and write any data on their behalf. Still, we are aware that the current situation is insecure.
