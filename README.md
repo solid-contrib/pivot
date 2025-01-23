@@ -58,11 +58,12 @@ root:~/pivot# npm ci --skip=dev
 root:~/pivot# npm run build
 root:~/pivot# mkdir -p data
 root:~/pivot# cp -r www data/
+root:~/pivot# cp config/customise-me.json custom-config.json
 root:~/pivot# npx community-solid-server -c ./config/prod.json ./custom-config.json -f ./data --httpsKey /etc/letsencrypt/live/pivot.pondersource.com/privkey.pem --httpsCert /etc/letsencrypt/live/pivot.pondersource.com/fullchain.pem -p 443 -b https://pivot.pondersource.com -m .
 2024-11-13T11:28:02.426Z [Components.js] info: Initiating component discovery from /root/pivot
-2024-11-13T11:28:02.919Z [Components.js] info: Discovered 169 component packages within 1345 packages
+2024-11-13T11:28:02.919Z [Components.js] info: Discovered 169 component packages within 1339 packages
 2024-11-13T11:28:02.921Z [Components.js] info: Initiating component loading
-2024-11-13T11:28:10.017Z [Components.js] info: Registered 901 components
+2024-11-13T11:28:10.017Z [Components.js] info: Registered 904 components
 2024-11-13T11:28:10.018Z [Components.js] info: Loaded configs
 2024-11-13T11:28:12.002Z [ServerInitializer] {Primary} info: Listening to server at https://localhost/
 ```
