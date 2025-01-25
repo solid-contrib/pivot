@@ -20,7 +20,6 @@
   },
   "scripts": {
     "start": "community-solid-server --loggingLevel debug -c config/prod.json config/customise-me.json -f ./data --httpsKey ./key.pem --httpsCert ./cert.pem -p 443 -b https://lolcathost.de -m .",
-    "start:http": "community-solid-server --loggingLevel debug -c config/http.json config/customise-me.json -f ./data -p 8080 -b http://localhost:8080 -m .",
     "staging": "npx community-solid-server -c ./config/prod.json ./custom-config.json -f ./data --httpsKey /etc/letsencrypt/live/pivot.pondersource.com-0001/privkey.pem --httpsCert /etc/letsencrypt/live/pivot.pondersource.com-0001/fullchain.pem -p 443 -b https://pivot.pondersource.com -m .",
     "build": "npm run build:ts && npm run build:components",
     "build:components": "componentsjs-generator -s src -c dist/components -i .componentsignore -r pivot",
