@@ -30,9 +30,7 @@ export class PivotResponseWriter extends BasicResponseWriter {
       if (
         (input.response.req.method === 'GET') &&
         (typeof input.response.req.url === 'string') &&
-        // This was changed in https://github.com/solid-contrib/pivot/pull/81:
-        // ([401, 403, 404].indexOf(input.result.statusCode) !== -1) &&
-        (input.result.statusCode === 404) &&
+        ([401, 403, 404].indexOf(input.result.statusCode) !== -1) &&
         (hasTrailingSlash(input.response.req.url) === false)) {
         const target = await this.targetExtractor.handleSafe({ request: input.response.req as HttpRequest });
         const withSlash = addTrailingSlash(target.path);
