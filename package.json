@@ -32,10 +32,9 @@
     "config"
   ],
   "dependencies": {
-    "@solid/community-server": "^7.1.5",
+    "@solid/community-server": "^7.1.6",
     "css-mashlib": "^1.0.0",
-    "mashlib": "^1.10.2",
-    "rdflib": "^2.2.35"
+    "mashlib": "^1.10.3"
   },
   "devDependencies": {
     "@tsconfig/node14": "^1.0.3",
