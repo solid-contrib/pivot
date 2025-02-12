@@ -54,6 +54,21 @@
         "A filesystem-based server with Databrowser as UI.",
         "Derived from config/file-no-setup.json"
       ]
+    },
+    {
+      "@id": "urn:solid-server:default:CookieStorage",
+      "@type": "WrappedExpiringStorage",
+      "timeout": 0
+    },
+    {
+      "@id": "urn:solid-server:default:ForgotPasswordStorage",
+      "@type": "WrappedExpiringStorage",
+      "timeout": 0
+    },
+    {
+      "@id": "urn:solid-server:default:ExpiringTokenStorage",
+      "@type": "WrappedExpiringStorage",
+      "timeout": 0
     }
   ]
 }
