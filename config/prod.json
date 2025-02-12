@@ -58,17 +58,17 @@
     {
       "@id": "urn:solid-server:default:CookieStorage",
       "@type": "WrappedExpiringStorage",
-      "timeout": 0
+      "timeout": 1
     },
     {
       "@id": "urn:solid-server:default:ForgotPasswordStorage",
       "@type": "WrappedExpiringStorage",
-      "timeout": 0
+      "timeout": 1
     },
     {
       "@id": "urn:solid-server:default:ExpiringTokenStorage",
       "@type": "WrappedExpiringStorage",
-      "timeout": 0
+      "timeout": 1
     }
   ]
 }
