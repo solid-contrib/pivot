@@ -7,6 +7,35 @@ A spec-compliant Solid server for use on the [Solid Community server](https://so
 based on a remix of building blocks from the
 [Community Solid Server](https://github.com/CommunitySolidServer/CommunitySolidServer) project.
 
+
+This repo is a very thin wrapper around
+[its four dependencies](https://github.com/solid-contrib/pivot/blob/70b0d5643d176ee90c70b955598973e3b97ab93d/package.json#L34-L39):
+* [CSS](https://github.com/CommunitySolidServer/CommunitySolidServer)
+* [mashlib](https://github.com/solidos/mashlib)
+* [rdflib.js](https://github.com/linkeddata/rdflib.js)
+* [css-mashlib](https://github.com/solidos/css-mashlib)
+
+Apart from that, even for the code that this repo does add, some parts were
+created using "copy, paste & edit" or in some cases also copied unchanged from the CSS repo,
+which has the following copyright notice:
+
+```
+Copyright (c) 2019-2025 Inrupt Inc. and imec
+```
+
+and from the css-mashlib repo, which has the following copyright notice:
+```
+Copyright (c) 2022 SolidOS
+```
+
+Whereas npm dependencies don't require you to copy the copyright notice,
+code copying and code remixing does. To honour the copyright involved in the
+code contained in this repo, we hereby publish it under an MIT license,
+with the following copyright notice:
+```
+Copyright (c) 2019-2025 Solid, CSS, and SolidOS Contributors, including Inrupt Inc. and imec
+```
+
 That is to say, this server implements a certain community flavour of Solid, namely:
 * using [the Solid protocol](https://solidproject.org/TR/protocol)
 * using WAC and not ACP
