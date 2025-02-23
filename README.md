@@ -119,7 +119,7 @@ code copying and code remixing does. To honour the copyright involved in the
 code contained in this repo, we hereby publish it under an MIT license,
 with the following copyright notice:
 ```
-Copyright (c) 2019-2025 Solid, CSS, and SolidOS Contributors. Including Inrupt Inc. and imec.
+Copyright (c) 2019-2025 Solid, CSS, and SolidOS Contributors, Inrupt Inc. and imec.
 ```
 
 Photo on this page (138720473) © Leo Lintang | Dreamstime.com
