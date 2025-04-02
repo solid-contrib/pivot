@@ -68,7 +68,7 @@ root:~/pivot# npx community-solid-server -c ./config/prod.json ./custom-config.j
 2024-11-13T11:28:12.002Z [ServerInitializer] {Primary} info: Listening to server at https://localhost/
 ```
 
-Or on https localhost:
+Or on `https localhost`:
 
 ```bash
 git clone https://github.com/solid-contrib/pivot
@@ -80,8 +80,8 @@ openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -sha256 -days 3
 npm start
 ```
 
-Or on http localhost, use `config/http-suffix.json`
-On `http configurtion` not add `custom-config.json`
+Or on `http localhost`, use `config/http-suffix.json`
+On `http configurtion` do not add `custom-config.json`
 ```
 npx community-solid-server -c ./config/http-suffix.json -f ./data -p 3000 -b http://localhost:3000 -m .
 ```
