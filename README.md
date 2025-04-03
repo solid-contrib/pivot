@@ -68,7 +68,7 @@ root:~/pivot# npx community-solid-server -c ./config/prod.json ./custom-config.j
 2024-11-13T11:28:12.002Z [ServerInitializer] {Primary} info: Listening to server at https://localhost/
 ```
 
-Or on localhost:
+Or on `https localhost`:
 
 ```bash
 git clone https://github.com/solid-contrib/pivot
@@ -79,6 +79,21 @@ npm test
 openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -sha256 -days 3650 -nodes -subj "/C=XX/ST=StateName/L=CityName/O=CompanyName/OU=CompanySectionName/CN=CommonNameOrHostname"
 npm start
 ```
+
+Or on `http localhost`, use `config/dev-http-suffix.json`
+```
+npx community-solid-server -c ./config/dev-http-suffix.json ./custom-config.json -f ./data -p 3000 -b http://localhost:3000 -m .
+```
+or `config/dev-http-subdomain.json`
+When using localhost with subdomain you must also declaree the subdomain in `/etc/hosts`.
+To create an account `bob.localhost:3000` you shall add the following record
+```
+127.0.0.1   bob.localhost
+```
+```
+npx community-solid-server -c ./config/dev-http-subdomain.json ./custom-config.json -f ./data -p 3000 -b http://localhost:3000 -m .
+```
+ 
 
 ## Why 'pivot'?
 
