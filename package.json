@@ -29,7 +29,8 @@
   },
   "files": [
     "dist",
-    "config"
+    "config",
+    "www"
   ],
   "dependencies": {
     "@solid/community-server": "^7.1.6",
