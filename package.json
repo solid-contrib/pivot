@@ -29,11 +29,11 @@
   },
   "files": [
     "dist",
-    "config"
+    "config",
+    "templates"
   ],
   "dependencies": {
     "@solid/community-server": "^7.1.7",
-    "css-mashlib": "^1.1.0",
     "mashlib": "^1.10.4",
     "rdflib": "^2.2.37"
   },

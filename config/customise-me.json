@@ -28,7 +28,7 @@
         },
         "overrideParameters": {
           "@type": "StaticFolderGenerator",
-          "templateFolder": "node_modules/css-mashlib/templates/pod"
+          "templateFolder": "templates/pod"
         }
       },
       {
