@@ -30,7 +30,8 @@
   "files": [
     "dist",
     "config",
-    "templates"
+    "templates",
+    "www"
   ],
   "dependencies": {
     "@solid/community-server": "^7.1.7",
