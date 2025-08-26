@@ -1,6 +1,6 @@
 {
   "name": "@solid/pivot",
-  "version": "1.6.4",
+  "version": "1.6.5",
   "description": "A module for the Community Solid Server that allows to create containers that do SHACL shape validation.",
   "repository": "git@github.com:solid-contrib/pivot.git",
   "bugs": {
