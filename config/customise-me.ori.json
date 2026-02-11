@@ -58,16 +58,6 @@
         ]
       },
       {
-        "comment": "Remove the Markdown to HTML converter from the default chained converter",
-        "@type": "Override",
-        "overrideInstance": { "@id": "urn:solid-server:default:ChainedConverter" },
-        "overrideSteps": [{
-          "@type": "OverrideListRemove",
-          "overrideParameter": { "@id": "ChainedConverter:_converters" },
-          "overrideTarget": { "@id": "urn:solid-server:default:MarkdownToHtmlConverter" }
-        }]
-      },
-      {
         "comment": "Serve Mashlib static files.",
         "@id": "urn:solid-server:default:StaticAssetHandler",
         "@type": "StaticAssetHandler",

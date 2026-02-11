@@ -22,6 +22,20 @@ to show a novel way for your Solid project to interact with a Solid pod server.
 You can also join the Matrix chat [for solidcommunity.net](https://matrix.to/#/#solid_solidcommunity.net:gitter.im)
 or [for Pivot as piece of config+software](https://matrix.to/#/#solid_pivot:matrix.org).
 
+## Changelog
+
+### - mashlib v2.0.0
+
+As from mashlib v2 the config/customise-me.json contains new parameters to :
+- remove CSS default `Markdown to Html converter`
+- include `mashlib chunks` in the static assets entries
+
+### - removal of css-mashlib dependency
+
+With the removal of css-mashlib dependency, templates are located in the `/templates folder`. The config/customise-me.json has been updated accordingly.
+
+
+
 ## Warning
 With Pivot's default settings, when a pod owner authenticates to a Solid app, this app can get full access to that user's data, on their own pod and elsewhere. This is not how we envision Solid's trinity of WebId's, Pods, and Solid apps, but it's what we have implemented so far. This is a problem that is not specific to Pivot, but that is shared among all WAC-based implementations of Solid.
 
