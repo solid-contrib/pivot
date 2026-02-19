@@ -158,7 +158,7 @@ describe('A Server supporting N3 Patch', (): void => {
       await setResource('/write-only', '<a> <b> ( <c> <d> ).', { write: true });
       await expectPatch(
         { path: '/write-only', body: `<> a solid:InsertDeletePatch; solid:inserts { <x> <y> <z>. }.` },
-        { status: 205, turtle: `@prefix : </write-only#>.\n@prefix loc: </>.\n\nloc:a loc:b ( loc:c loc:d ).\n\nloc:x loc:y loc:z.\n\n` },
+        { status: 205, turtle: `@prefix : </write-only#>.\n\n</a> </b> ( </c> </d> ).\n\n</x> </y> </z>.\n\n` },
         true,
       );
     });
