@@ -77,7 +77,7 @@ jobs:
           run: 'sed -i -E "s/\"((pre|post)publish)/\"ignore:\1/" package.json'
         - name: Publish to npm
           if: github.actor != 'dependabot[bot]' && github.actor != 'dependabot-preview[bot]'
-          run: npm publish --tag ${{ env.GITHUB_REF_SLUG }}
+          run: npm publish --tag ${{ env.GITHUB_REF_SLUG }} --ignore-scripts
 
   npm-publish-latest:
     needs: [build, npm-publish-build]
@@ -100,4 +100,4 @@ jobs:
         run: 'sed -i -E "s/\"((pre|post)publish)/\"ignore:\1/" package.json'
       - name: Publish to npm
         if: github.actor != 'dependabot[bot]' && github.actor != 'dependabot-preview[bot]'
-        run: npm publish --tag latest
+        run: npm publish --tag latest --ignore-scripts
