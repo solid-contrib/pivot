@@ -24,7 +24,7 @@ or [for Pivot as piece of config+software](https://matrix.to/#/#solid_pivot:matr
 
 ## Changelog
 
-### - mashlib v2.0.0
+### - mashlib >= v2.0.0
 
 As from mashlib v2 the config/customise-me.json contains new parameters to :
 - remove CSS default `Markdown to Html converter`
