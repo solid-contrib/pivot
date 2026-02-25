@@ -4,3 +4,4 @@ export * from './FedcmHttpHandler';
 export * from './http/output/PivotResponseWriter';
 export * from './identity/interaction/password/MigratedPasswordLoginHandler';
 export * from './identity/PivotOidcHttpHandler';
+export * from './server/middleware/PivotStaticAssetHandler';

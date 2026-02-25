@@ -12,7 +12,7 @@
     "css:config/http/middleware/default.json",
     "css:config/http/notifications/all.json",
     "css:config/http/server-factory/https.json",
-    "css:config/http/static/default.json",
+    "pivot:config/http/static/default.json",
     "css:config/identity/access/public.json",
     "css:config/identity/email/example.json",
     "css:config/identity/handler/default.json",

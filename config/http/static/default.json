@@ -1,0 +1,52 @@
+{
+    "@context": [
+      "https://linkedsoftwaredependencies.org/bundles/npm/@solid/community-server/^7.0.0/components/context.jsonld",
+      "https://linkedsoftwaredependencies.org/bundles/npm/@solid/pivot/^1.0.0/components/context.jsonld"
+    ],
+    "@graph": [
+      {
+        "comment": "Serve static assets with automatic root folder expansion.",
+        "@id": "urn:solid-server:default:StaticAssetHandler",
+        "@type": "PivotStaticAssetHandler",
+        "baseUrl": { "@id": "urn:solid-server:default:variable:baseUrl" },
+        "assets": [
+            {
+              "@type": "StaticAssetEntry",
+              "relativeUrl": "/favicon.ico",
+              "filePath": "@css:templates/images/favicon.ico"
+            },
+            {
+              "@type": "StaticAssetEntry",
+              "relativeUrl": "/.well-known/css/styles/",
+              "filePath": "@css:templates/styles/"
+            },
+            {
+              "@type": "StaticAssetEntry",
+              "relativeUrl": "/.well-known/css/fonts/",
+              "filePath": "@css:templates/fonts/"
+            },
+            {
+              "@type": "StaticAssetEntry",
+              "relativeUrl": "/.well-known/css/images/",
+              "filePath": "@css:templates/images/"
+            },
+            {
+              "@type": "StaticAssetEntry",
+              "relativeUrl": "/.well-known/css/scripts/",
+              "filePath": "@css:templates/scripts/"
+            },
+            {
+              "@type": "StaticAssetEntry",
+              "relativeUrl": "/solid.svg",
+              "filePath": "@css:templates/images/solid.svg"
+            },
+            {
+              "@type": "StaticAssetEntry",
+              "relativeUrl": "/util.js",
+              "filePath": "@css:templates/scripts/util.js"
+            }
+          ]
+      }
+    ]
+  }
+  
