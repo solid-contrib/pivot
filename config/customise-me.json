@@ -105,7 +105,7 @@
           {
             "@type": "StaticAssetEntry",
             "relativeUrl": "/841.mashlib.js",
-            "filePath": "./node_modules/mashlib/dist/841.mashlibDo you know if .js"
+            "filePath": "./node_modules/mashlib/dist/841.mashlib.js"
           },
           {
             "@type": "StaticAssetEntry",
@@ -127,3 +127,4 @@
     ]
   }
   
+
