@@ -24,11 +24,13 @@ or [for Pivot as piece of config+software](https://matrix.to/#/#solid_pivot:matr
 
 ## Changelog
 
+### - CSS >= 7.1.9
+mashlib chunks do not need to be declared anymore. CSS >= 7.1.9 implements folder expansion from root in StaticAssets. See static asset entries in `config/customise-me.json`
 ### - mashlib >= v2.0.0
 
 As from mashlib v2 the config/customise-me.json contains new parameters to :
 - remove CSS default `Markdown to Html converter`
-- include `mashlib chunks` in the static assets entries
+- ~~include `mashlib chunks` in the static assets entries~~
 
 ### - removal of css-mashlib dependency
 
@@ -94,12 +96,15 @@ openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -sha256 -days 3
 npm start
 ```
 
-Or on `http localhost`, use `config/dev-http-suffix.json`
+Or on `http localhost`
 ```
-npx community-solid-server -c ./config/dev-http-suffix.json ./custom-config.json -f ./data -p 3000 -b http://localhost:3000 -m .
+npm run start-dev/suffix # will start http://localhost:3100
 ```
-or `config/dev-http-subdomain.json`
-When using localhost with subdomain you must also declaree the subdomain in `/etc/hosts`.
+
+```
+npm run start-dev/subdomain # will start http://localhost:3000
+```
+When using localhost with subdomain you must also declare the subdomain in `/etc/hosts`.
 To create an account `bob.localhost:3000` you shall add the following record
 ```
 127.0.0.1   bob.localhost
