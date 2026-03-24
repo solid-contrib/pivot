@@ -25,7 +25,7 @@ or [for Pivot as piece of config+software](https://matrix.to/#/#solid_pivot:matr
 ## Changelog
 
 ### - CSS >= 7.1.9
-mashlib chunks do not need to be declared anymore. CSS >= 7.1.9 implements folder expansion from root in StaticAssets. See static asset entries in `config/customise-me.json`
+CSS >= 7.1.9 implements folder expansion from root in StaticAssets. Please replace the mashlib StaticAssets entries in your configuration file with the mashlib StaticAssets entries from `config/customise-me.json`
 ### - mashlib >= v2.0.0
 
 As from mashlib v2 the config/customise-me.json contains new parameters to :
