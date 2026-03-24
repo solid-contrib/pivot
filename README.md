@@ -26,7 +26,8 @@ or [for Pivot as piece of config+software](https://matrix.to/#/#solid_pivot:matr
 
 ### - CSS >= 7.1.9
 CSS >= 7.1.9 implements folder expansion from root in StaticAssets. Please replace the mashlib StaticAssets entries in your configuration file with the mashlib StaticAssets entries from `config/customise-me.json`
-````json
+
+```
       {
         "comment": "Serve Mashlib static files from /dist/ folder.",
         "@id": "urn:solid-server:default:StaticAssetHandler",
@@ -40,10 +41,10 @@ CSS >= 7.1.9 implements folder expansion from root in StaticAssets. Please repla
         ]
       }
 ```
-### - mashlib >= v2.0.0
 
-As from mashlib v2 the `config/customise-me.json` contains new parameters to :
-- remove CSS default `Markdown to Html converter`
+### - mashlib >= v2.0.0
+As from mashlib v2 the `config/customise-me.json` contains a new parameter to add to your configuration file :
+- to remove CSS default `Markdown to Html converter`
 ```json
       {
         "comment": "Remove the Markdown to HTML converter from the default chained converter",
