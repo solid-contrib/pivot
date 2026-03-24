@@ -1,6 +1,6 @@
 {
   "name": "@solid/pivot",
-  "version": "1.7.0",
+  "version": "1.8.0",
   "description": "A module for the Community Solid Server that allows to create containers that do SHACL shape validation.",
   "repository": "git@github.com:solid-contrib/pivot.git",
   "bugs": {
@@ -20,7 +20,7 @@
   },
   "scripts": {
     "start": "community-solid-server --loggingLevel debug -c config/prod.json ./custom-config.json -f ./data --httpsKey ./key.pem --httpsCert ./cert.pem -p 443 -b https://lolcathost.de -m .",
-    "start-dev/suffix": "npx community-solid-server -c ./config/dev-http-suffix.json config/customise-me.json -f ./data-suffix -p 3100 -b http://localhost:3000 -m .",
+    "start-dev/suffix": "npx community-solid-server -c ./config/dev-http-suffix.json config/customise-me.json -f ./data-suffix -p 3100 -b http://localhost:3100 -m .",
     "start-dev/subdomain": "npx community-solid-server -c ./config/dev-http-subdomain.json config/customise-me.json -f ./data-subdomain -p 3000 -b http://localhost:3000 -m .",
     "staging": "npx community-solid-server -c ./config/prod.json ./custom-config.json -f ./data --httpsKey /etc/letsencrypt/live/pivot.pondersource.com-0001/privkey.pem --httpsCert /etc/letsencrypt/live/pivot.pondersource.com-0001/fullchain.pem -p 443 -b https://pivot.pondersource.com -m .",
     "build": "npm run build:ts && npm run build:components",
@@ -37,16 +37,16 @@
   ],
   "dependencies": {
     "@inrupt/solid-client-authn-core": "^3.1.1",
-    "@solid/community-server": "^7.1.8",
-    "mashlib": "^2.1.1",
-    "rdflib": "^2.3.5"
+    "@solid/community-server": "^7.1.9",
+    "mashlib": "^2.1.4",
+    "rdflib": "^2.3.6"
   },
   "devDependencies": {
     "@tsconfig/node14": "^14.1.8",
     "@types/jest": "^30.0.0",
     "@types/node-fetch": "^2.6.13",
     "componentsjs-generator": "^3.1.2",
-    "jest": "^30.2.0",
+    "jest": "^30.3.0",
     "jest-rdf": "^2.0.0",
     "node-fetch": "^3.3.2",
     "ts-jest": "^29.4.6",
