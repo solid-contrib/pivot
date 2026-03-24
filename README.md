@@ -26,10 +26,36 @@ or [for Pivot as piece of config+software](https://matrix.to/#/#solid_pivot:matr
 
 ### - CSS >= 7.1.9
 CSS >= 7.1.9 implements folder expansion from root in StaticAssets. Please replace the mashlib StaticAssets entries in your configuration file with the mashlib StaticAssets entries from `config/customise-me.json`
+````json
+      {
+        "comment": "Serve Mashlib static files from /dist/ folder.",
+        "@id": "urn:solid-server:default:StaticAssetHandler",
+        "@type": "StaticAssetHandler",
+        "assets": [
+          {
+            "@type": "StaticAssetEntry",
+            "relativeUrl": "/",
+            "filePath": "./node_modules/mashlib/dist/"
+          }
+        ]
+      }
+```
 ### - mashlib >= v2.0.0
 
-As from mashlib v2 the config/customise-me.json contains new parameters to :
+As from mashlib v2 the `config/customise-me.json` contains new parameters to :
 - remove CSS default `Markdown to Html converter`
+```json
+      {
+        "comment": "Remove the Markdown to HTML converter from the default chained converter",
+        "@type": "Override",
+        "overrideInstance": { "@id": "urn:solid-server:default:ChainedConverter" },
+        "overrideSteps": [{
+          "@type": "OverrideListRemove",
+          "overrideParameter": { "@id": "ChainedConverter:_converters" },
+          "overrideTarget": { "@id": "urn:solid-server:default:MarkdownToHtmlConverter" }
+        }]
+      }
+```
 - ~~include `mashlib chunks` in the static assets entries~~
 
 ### - removal of css-mashlib dependency
