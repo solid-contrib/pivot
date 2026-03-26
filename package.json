@@ -50,7 +50,7 @@
     "jest-rdf": "^2.0.0",
     "node-fetch": "^3.3.2",
     "ts-jest": "^29.4.6",
-    "typescript": "^5.9.3"
+    "typescript": "^6.0.2"
   },
   "license": "MIT"
 }
