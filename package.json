@@ -36,7 +36,7 @@
     "www"
   ],
   "dependencies": {
-    "@inrupt/solid-client-authn-core": "^3.1.1",
+    "@inrupt/solid-client-authn-core": "^4.0.0",
     "@solid/community-server": "^7.1.9",
     "mashlib": "^2.1.4",
     "rdflib": "^2.3.6"
