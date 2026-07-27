@@ -25,6 +25,16 @@
     },
     {
       "@type": "Override",
+      "overrideInstance": { "@id": "urn:solid-server:default:CreatePodHtml" },
+      "overrideParameters": {
+        "@type": "HtmlViewEntry",
+        "comment": "removes the default create-pod.html.ejs template and replaces it with a custom one",
+        "filePath": "./templates/identity/account/create-pod.html.ejs",
+        "route": { "@id": "urn:solid-server:default:AccountPodRoute" }
+      }
+    },
+    {
+      "@type": "Override",
       "overrideInstance": { "@id": "urn:solid-server:default:ResponseWriter" },
       "overrideParameters": {
         "@type": "PivotResponseWriter",
