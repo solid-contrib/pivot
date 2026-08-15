@@ -5,7 +5,7 @@
       "https://linkedsoftwaredependencies.org/bundles/npm/@solid/pivot/^1.0.0/components/context.jsonld"
     ],
     "import": [
-      "pivot:config/storage/backend/quota-fast-file.json"
+      "pivot:config/storage/backend/quota-counter-file.json"
     ],
     "@graph": [
       {

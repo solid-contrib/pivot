@@ -378,3 +378,80 @@ Findings / documented differences:
   occurs in normal Solid pod storage.
 
 ---
+
+## 8. Design C — incremental per-pod counter (implemented 2026-08-15)
+
+**Files:** `src/storage/quota/QuotaCounter.ts`, `src/storage/quota/IncrementalSizeReporter.ts`,
+`src/storage/quota/QuotaDeltaDataAccessor.ts`, `config/storage/backend/quota-counter-file.json`,
+`src/index.ts`, `config/customise-me.json`, `test/unit/storage/*`, `scripts/benchmark-quota-c.js`,
+`scripts/smoke-design-c.js`
+
+Steady-state writes become **O(1)**: a per-pod byte counter is updated by a
+delta hook and read by the quota strategy; a full `du`/Node walk happens only
+once per pod (bootstrap / recovery).
+
+### 8.1 Components
+
+| Component | Role |
+|---|---|
+| **`QuotaCounter`** | In-memory `Map<podPath, {total, valid, podMtimeMs}>` + per-pod mutex; sidecar `<podRoot>/.internal/pivot-quota.json` written atomically (temp + rename) on every delta; lazy recount via an uncached `DuSizeReporter`; §4.8 mtime staleness check on read; `register / isPodRoot / getSize / add / remove / sizeOfResource / walk`. |
+| **`IncrementalSizeReporter`** | `SizeReporter` replacing `urn:solid-server:default:SizeReporter`: pod root → O(1) counter read; any other resource → single `stat`. |
+| **`QuotaDeltaDataAccessor`** | `PassthroughDataAccessor` wrapping the top of the accessor chain; before/after apparent size (data + `.meta` stat; containers walked) on `writeDocument` / `writeContainer` / `writeMetadata` / `deleteResource` → `counter.add(pod, Δ)`. Pod discovery mirrors `PodQuotaStrategy.searchPimStorage` (metadata walk for `pim:Storage`, cached per path); deleting the pod root drops the counter. |
+
+### 8.2 Config wiring (no CSS fork)
+
+`config/storage/backend/quota-counter-file.json` (imported by `customise-me.json`):
+- `QuotaCounter` instance (fileIdentifierMapper, rootFilePath, `ignoreFolders: ["^/\\.internal$"]`)
+- `Override` `urn:solid-server:default:SizeReporter` → `IncrementalSizeReporter`
+- `Override` `urn:solid-server:default:FileDataAccessor` → `QuotaDeltaDataAccessor`
+  (wrapping the original FilterMetadata → Validating → Atomic chain, preserving
+  the content-length filter)
+- `Override` `urn:solid-server:default:QuotaStrategy` → `FastQuotaStrategy` (70 MB)
+
+`QuotaValidator`, `ValidatingDataAccessor`, `AtomicFileDataAccessor` unchanged.
+
+### 8.3 Verification — `scripts/benchmark-quota-c.js`
+
+Old vs A+B vs C under identical conditions, with COLD (first write) and WARM
+(steady state) separated. Same host, 5 000 files × 1 KB, 4 MB write in 64 KB
+chunks:
+
+| Measure | old | A+B | C |
+|---|---|---|---|
+| walk `getSize(podRoot)` | 664.8 ms | 745.7 ms cold / 0.19 ms cached | 0.48 ms |
+| write guard **cold** | 36 660 ms (64 walks) | 673.7 ms | 630.4 ms (bootstrap) |
+| write guard **warm** | — (no cache) | 32.8 ms | **3.38 ms** |
+
+At 10 000 files (WSL1): old = **108 670 ms**, A+B warm = 49.1 ms,
+**C warm = 10.6 ms** — C is the only write that stays O(1)/flat.
+
+Notes:
+- The early A+B benchmark's "3.3 ms" was warm-cache with the Node-walk fallback
+  (no `du`), which is why it differed from later runs — the corrected script
+  separates cold/warm and uses the same pod layout for all three.
+- C warm's remaining per-write cost is a few `fs.stat`s (pod-root mtime check +
+  overwritten-resource stat) plus identifier mapping — no walks. On WSL1
+  (drvfs) each stat crosses the WSL→Windows boundary (~1 ms); on native Linux
+  (ext4) it is microseconds, so C warm is sub-millisecond and flat.
+- The mtime staleness check (one stat per quota read, §4.8) is a deliberate
+  robustness tradeoff; it can be made periodic/configurable if stat latency
+  matters.
+
+### 8.4 Implementation notes / fixes found by the test run
+
+- `discoverPod` must return the pod root **identifier** (URL), not a filesystem
+  path (counter methods map identifiers).
+- Tests/config must pass `ignoreFolders: ["^/\\.internal$"]` or the sidecar
+  inflates recounts.
+- `QuotaCounter.add` records the pod-root mtime **after** persisting
+  (`persistWithMtime`): creating `.internal/` bumps the pod-root mtime, so
+  recording before would cause a spurious recount on every read.
+- The delta hook registers the pod even when a write's delta is 0 (e.g. an
+  empty container on filesystems reporting directory size 0), so the reporter
+  routes pod-root reads to the counter.
+- `scripts/smoke-design-c.js` verifies the compiled dist without jest:
+  accumulate, sidecar reload, staleness recount, remove/re-bootstrap, reporter
+  O(1)+stat, delta accessor create/overwrite/meta/delete == real walk, pod-root
+  delete drops the counter — all pass.
+
+---
