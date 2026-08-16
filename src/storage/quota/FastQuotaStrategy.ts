@@ -34,6 +34,26 @@ export class FastQuotaStrategy extends PodQuotaStrategy {
     super(limit, reporter, identifierStrategy, accessor);
   }
 
+  /** CSS internal storage (locks, IDP adapter, ...) lives under `/.internal/`. */
+  private isInternalPath(identifier: ResourceIdentifier): boolean {
+    return identifier.path === '/.internal' || identifier.path.startsWith('/.internal/');
+  }
+
+  /**
+   * Exempt CSS internal paths from quota checks. The QuotaValidator calls
+   * `getAvailableSpace` before AND after every write (and `createQuotaGuard`
+   * mid-stream); for `/.internal/*` writes (e.g. the IDP AuthorizationCode
+   * store) the inherited pod-discovery + size walk could take longer than the
+   * `WrappedExpiringReadWriteLocker` 6s expiry. Returning unlimited here
+   * short-circuits the validator without any pod walk.
+   */
+  public override async getAvailableSpace(identifier: ResourceIdentifier): Promise<Size> {
+    if (this.isInternalPath(identifier)) {
+      return { amount: Number.MAX_SAFE_INTEGER, unit: 'bytes' };
+    }
+    return super.getAvailableSpace(identifier);
+  }
+
   public async createQuotaGuard(identifier: ResourceIdentifier): Promise<Guarded<PassThrough>> {
     // Compute the available space ONCE. getAvailableSpace already subtracts
     // the overwritten resource's own size, and nothing else about the pod
