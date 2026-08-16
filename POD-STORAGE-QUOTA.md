@@ -482,20 +482,31 @@ chain:
 `ignoreFolders: ["^/\\.internal$"]` on the reporter only excludes `.internal`
 from `du`/walk sizes — it does **not** stop the QuotaValidator from running.
 
-**Fix (two commits on `pod-quota-counter`):**
+**Fix (three commits on `pod-quota-counter`):**
 - `d8c1135` — `QuotaDeltaDataAccessor`: skip delta tracking for `/.internal`
   paths (still performs the write).
 - `6692db8` — `FastQuotaStrategy.getAvailableSpace` returns unlimited for
   `/.internal` paths, short-circuiting the QuotaValidator's before/after checks
   and the guard's available-space computation — no pod discovery/walk on
   internal writes.
+- `5e54d02` — **root cause of the guard never matching:** `ResourceIdentifier.path`
+  is the **full canonical URL** (e.g. `https://pivot-test.solidproject.org:3000/.internal/...`),
+  not a bare path — identifier strategies test it against URL regexes
+  (`createSubdomainRegexp`). The initial `startsWith('/.internal/')` check in
+  both `d8c1135`/`6692db8` never matched, so the quota chain kept running on
+  internal writes (hence the subdomain/suffix difference observed on
+  pivot-test: only prod-sized pods blew the 6 s lock). New shared helper
+  `src/storage/quota/InternalPath.ts` extracts `new URL(path).pathname` before
+  comparing, covering suffix *and* subdomain modes (and bare-path fallback).
 
 **Verification:** `benchmark-quota-c.js` C-warm unchanged (~3 ms flat);
-`smoke-design-c.js` ALL CHECKS PASSED (calculation intact); lock errors gone on
-pivot-test after deploying both commits.
+`smoke-design-c.js` ALL CHECKS PASSED (calculation intact); unit check of
+`isInternalPath` matches subdomain/suffix internal URLs and rejects pod URLs;
+lock errors gone on pivot-test after deploying all three commits.
 
 **Lesson:** quota hooks must treat CSS-internal paths (`/.internal/`) as exempt
 at **every** layer (delta accessor *and* quota validator/strategy), not just in
-the size-reporter's walk excludes.
+the size-reporter's walk excludes — and remember that `ResourceIdentifier.path`
+is a URL, so prefix checks must go through `new URL(...).pathname`.
 
 ---
