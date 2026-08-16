@@ -50,6 +50,11 @@ export class QuotaDeltaDataAccessor extends PassthroughDataAccessor {
     this.fileIdentifierMapper = fileIdentifierMapper;
   }
 
+  /** CSS internal storage (locks, IDP adapter, ...) lives under `/.internal/`. */
+  private isInternalPath(identifier: ResourceIdentifier): boolean {
+    return identifier.path === '/.internal' || identifier.path.startsWith('/.internal/');
+  }
+
   public async writeDocument(
     identifier: ResourceIdentifier,
     data: Guarded<Readable>,
@@ -67,6 +72,10 @@ export class QuotaDeltaDataAccessor extends PassthroughDataAccessor {
   }
 
   public async deleteResource(identifier: ResourceIdentifier): Promise<void> {
+    if (this.isInternalPath(identifier)) {
+      await this.accessor.deleteResource(identifier);
+      return;
+    }
     const before = await this.sizeOf(identifier);
     await this.accessor.deleteResource(identifier);
     const after = await this.sizeOf(identifier);
@@ -89,6 +98,13 @@ export class QuotaDeltaDataAccessor extends PassthroughDataAccessor {
   // --- Delta tracking ---
 
   private async track(identifier: ResourceIdentifier, op: () => Promise<void>): Promise<void> {
+    // Skip the delta bookkeeping on CSS internal paths: the stat + pod-discovery
+    // walk + counter sidecar work can otherwise push internal writes (e.g. IDP
+    // authorization codes) past the WrappedExpiringReadWriteLocker's lock expiry.
+    if (this.isInternalPath(identifier)) {
+      await op();
+      return;
+    }
     const before = await this.sizeOf(identifier);
     await op();
     const after = await this.sizeOf(identifier);
