@@ -499,14 +499,32 @@ from `du`/walk sizes — it does **not** stop the QuotaValidator from running.
   `src/storage/quota/InternalPath.ts` extracts `new URL(path).pathname` before
   comparing, covering suffix *and* subdomain modes (and bare-path fallback).
 
+**Deployment root cause (found 2026-08-16, errors persisted on pivot-test):**
+pivot-test runs `config/prod.json`, which imported **`css:config/storage/backend/
+pod-quota-file.json` — the STANDARD CSS quota** (`QuotaValidator` +
+`PodQuotaStrategy` + `FileSizeReporter`, per-chunk pod walks, no `/.internal`
+exemption). The design-C config `pivot:config/storage/backend/quota-counter-file.json`
+was only wired via `customise-me.json`, which the **dev** scripts pass as a
+second config but **`prod.json` did not** — so all three fixes were correct but
+never active in production. Hence the symptom looked subdomain-only: pivot-test
+(subdomain, prod.json, big pods → standard quota → >6 s walk → lock expiry) vs
+local (suffix, dev config + customise-me → design C + small pods → no error).
+
+**Fix:** `config/prod.json` now also imports
+`pivot:config/storage/backend/quota-counter-file.json` (design C active in
+production). Redeploy = `git pull` + `npm run build` + restart.
+
 **Verification:** `benchmark-quota-c.js` C-warm unchanged (~3 ms flat);
 `smoke-design-c.js` ALL CHECKS PASSED (calculation intact); unit check of
 `isInternalPath` matches subdomain/suffix internal URLs and rejects pod URLs;
-lock errors gone on pivot-test after deploying all three commits.
+`config/prod.json` is valid JSON and `dist/components/components.jsonld`
+contains all four design-C components.
 
 **Lesson:** quota hooks must treat CSS-internal paths (`/.internal/`) as exempt
 at **every** layer (delta accessor *and* quota validator/strategy), not just in
 the size-reporter's walk excludes — and remember that `ResourceIdentifier.path`
-is a URL, so prefix checks must go through `new URL(...).pathname`.
+is a URL, so prefix checks must go through `new URL(...).pathname`. Also:
+**verify which config the production server actually runs** — a fixed module is
+useless if the prod config doesn't import it.
 
 ---
