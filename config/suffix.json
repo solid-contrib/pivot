@@ -1,5 +1,5 @@
 {
-  "comment": "Copied from https://github.com/SolidOS/css-mashlib/blob/ae21af4685f6c95c1f091cacd952831f272ea119/config/https-mashlib-subdomain-file.json, (1) pivot:config/http/handler/default.json, (2) pivot:config/storage/middleware/default.json, (3) pivot:config/pivot-overrides.json added as the last import, (4) pivot:config/storage/backend/quota-counter-file.json added (design C: fast per-pod counter, exempts /.internal from quota — avoids IDP lock expiry)",
+  "comment": "Copied from https://github.com/SolidOS/css-mashlib/blob/ae21af4685f6c95c1f091cacd952831f272ea119/config/https-mashlib-subdomain-file.json, (1) pivot:config/http/handler/default.json, (2) pivot:config/storage/middleware/default.json, (3) pivot:config/pivot-overrides.json added as the last import",
   "@context": [
     "https://linkedsoftwaredependencies.org/bundles/npm/@solid/community-server/^7.0.0/components/context.jsonld",
     "https://linkedsoftwaredependencies.org/bundles/npm/@solid/pivot/^1.0.0/components/context.jsonld"
@@ -26,7 +26,6 @@
     "css:config/ldp/metadata-writer/default.json",
     "css:config/ldp/modes/default.json",
     "css:config/storage/backend/pod-quota-file.json",
-    "pivot:config/storage/backend/quota-counter-file.json",
     "css:config/storage/key-value/resource-store.json",
     "css:config/storage/location/pod.json",
     "pivot:config/storage/middleware/default.json",
