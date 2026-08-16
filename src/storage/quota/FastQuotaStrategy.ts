@@ -13,6 +13,7 @@ import type { ResourceIdentifier } from '@solid/community-server';
 import type { Size } from '@solid/community-server';
 import type { SizeReporter } from '@solid/community-server';
 import type { DuSizeReporter } from '../size-reporter/DuSizeReporter';
+import { isInternalPath } from './InternalPath';
 
 /**
  * Pod quota strategy that avoids the per-chunk full pod walk.
@@ -34,11 +35,6 @@ export class FastQuotaStrategy extends PodQuotaStrategy {
     super(limit, reporter, identifierStrategy, accessor);
   }
 
-  /** CSS internal storage (locks, IDP adapter, ...) lives under `/.internal/`. */
-  private isInternalPath(identifier: ResourceIdentifier): boolean {
-    return identifier.path === '/.internal' || identifier.path.startsWith('/.internal/');
-  }
-
   /**
    * Exempt CSS internal paths from quota checks. The QuotaValidator calls
    * `getAvailableSpace` before AND after every write (and `createQuotaGuard`
@@ -48,7 +44,7 @@ export class FastQuotaStrategy extends PodQuotaStrategy {
    * short-circuits the validator without any pod walk.
    */
   public override async getAvailableSpace(identifier: ResourceIdentifier): Promise<Size> {
-    if (this.isInternalPath(identifier)) {
+    if (isInternalPath(identifier)) {
       return { amount: Number.MAX_SAFE_INTEGER, unit: 'bytes' };
     }
     return super.getAvailableSpace(identifier);

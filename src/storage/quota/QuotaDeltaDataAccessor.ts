@@ -13,6 +13,7 @@ import type {
 } from '@solid/community-server';
 import type { Guarded } from '@solid/community-server';
 import type { QuotaCounter } from './QuotaCounter';
+import { isInternalPath } from './InternalPath';
 
 const RDF_TYPE = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type';
 const PIM_STORAGE = 'http://www.w3.org/ns/pim/space#Storage';
@@ -50,11 +51,6 @@ export class QuotaDeltaDataAccessor extends PassthroughDataAccessor {
     this.fileIdentifierMapper = fileIdentifierMapper;
   }
 
-  /** CSS internal storage (locks, IDP adapter, ...) lives under `/.internal/`. */
-  private isInternalPath(identifier: ResourceIdentifier): boolean {
-    return identifier.path === '/.internal' || identifier.path.startsWith('/.internal/');
-  }
-
   public async writeDocument(
     identifier: ResourceIdentifier,
     data: Guarded<Readable>,
@@ -72,7 +68,7 @@ export class QuotaDeltaDataAccessor extends PassthroughDataAccessor {
   }
 
   public async deleteResource(identifier: ResourceIdentifier): Promise<void> {
-    if (this.isInternalPath(identifier)) {
+    if (isInternalPath(identifier)) {
       await this.accessor.deleteResource(identifier);
       return;
     }
@@ -101,7 +97,7 @@ export class QuotaDeltaDataAccessor extends PassthroughDataAccessor {
     // Skip the delta bookkeeping on CSS internal paths: the stat + pod-discovery
     // walk + counter sidecar work can otherwise push internal writes (e.g. IDP
     // authorization codes) past the WrappedExpiringReadWriteLocker's lock expiry.
-    if (this.isInternalPath(identifier)) {
+    if (isInternalPath(identifier)) {
       await op();
       return;
     }
