@@ -455,3 +455,47 @@ Notes:
   delete drops the counter — all pass.
 
 ---
+
+## 9. Production incident: IDP lock expiry on `/.internal` (2026-08-16)
+
+**Symptom** (pivot-test, quota-counter config, during real logins):
+```
+[WrappedExpiringReadWriteLocker] error: Lock expired after 6000ms on https://.../.internal/idp/adapter/AuthorizationCode/
+[WrappedExpiringStorage]        error: Error during interval callback: Failed to remove expired entries - Lock expired after 6000ms ...
+```
+
+**Why `/.internal` was affected.** The IDP's `KeyValueStorage` (AuthorizationCode
+store, `/.internal/idp/adapter/`) is backed by `ResourceStore` →
+`ResourceStore_Backend` → `FileDataAccessor` (see CSS
+`config/storage/key-value/resource-store.json`). Since `QuotaDeltaDataAccessor`
+overrides `FileDataAccessor`, **every** internal write ran through the quota
+chain:
+
+1. `QuotaDeltaDataAccessor.track()` — stat + pod-discovery walk + counter sidecar.
+2. **`QuotaValidator`** (inside `ValidatingFileDataAccessor`) — calls
+   `getAvailableSpace` **before and after** every write + `createQuotaGuard`
+   mid-stream. For `/.internal/*`, `getAvailableSpace` did pod discovery
+   (`searchPimStorage`) + `reporter.getSize(pod)` — a **full pod walk** whenever
+   the pod wasn't counter-registered → pushed the IDP write past the 6 s
+   `WrappedExpiringReadWriteLocker` expiry.
+
+`ignoreFolders: ["^/\\.internal$"]` on the reporter only excludes `.internal`
+from `du`/walk sizes — it does **not** stop the QuotaValidator from running.
+
+**Fix (two commits on `pod-quota-counter`):**
+- `d8c1135` — `QuotaDeltaDataAccessor`: skip delta tracking for `/.internal`
+  paths (still performs the write).
+- `6692db8` — `FastQuotaStrategy.getAvailableSpace` returns unlimited for
+  `/.internal` paths, short-circuiting the QuotaValidator's before/after checks
+  and the guard's available-space computation — no pod discovery/walk on
+  internal writes.
+
+**Verification:** `benchmark-quota-c.js` C-warm unchanged (~3 ms flat);
+`smoke-design-c.js` ALL CHECKS PASSED (calculation intact); lock errors gone on
+pivot-test after deploying both commits.
+
+**Lesson:** quota hooks must treat CSS-internal paths (`/.internal/`) as exempt
+at **every** layer (delta accessor *and* quota validator/strategy), not just in
+the size-reporter's walk excludes.
+
+---
