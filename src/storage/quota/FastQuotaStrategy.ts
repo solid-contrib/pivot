@@ -14,6 +14,7 @@ import type { Size } from '@solid/community-server';
 import type { SizeReporter } from '@solid/community-server';
 import type { DuSizeReporter } from '../size-reporter/DuSizeReporter';
 import { isInternalPath } from './InternalPath';
+import { discoverPod } from './PodDiscovery';
 
 /**
  * Pod quota strategy that avoids the per-chunk full pod walk.
@@ -26,6 +27,9 @@ import { isInternalPath } from './InternalPath';
  * post-write check (and the next write's pre-check) re-walk fresh.
  */
 export class FastQuotaStrategy extends PodQuotaStrategy {
+  private readonly discoveryStrategy: IdentifierStrategy;
+  private readonly discoveryAccessor: DataAccessor;
+
   public constructor(
     limit: Size,
     reporter: SizeReporter<unknown>,
@@ -33,6 +37,8 @@ export class FastQuotaStrategy extends PodQuotaStrategy {
     accessor: DataAccessor,
   ) {
     super(limit, reporter, identifierStrategy, accessor);
+    this.discoveryStrategy = identifierStrategy;
+    this.discoveryAccessor = accessor;
   }
 
   /**
@@ -47,7 +53,18 @@ export class FastQuotaStrategy extends PodQuotaStrategy {
     if (isInternalPath(identifier)) {
       return { amount: Number.MAX_SAFE_INTEGER, unit: 'bytes' };
     }
-    return super.getAvailableSpace(identifier);
+    // Corrected pod discovery (metadata before root-container test) so
+    // subdomain-mode pods are found — CSS's searchPimStorage returns unlimited
+    // for every subdomain pod root.
+    const pod = await discoverPod(identifier, this.discoveryAccessor, this.discoveryStrategy);
+    if (pod === null) {
+      return { amount: Number.MAX_SAFE_INTEGER, unit: this.limit.unit };
+    }
+    // Pod total, minus the resource's own size (it will be overwritten, so its
+    // space counts as available) — mirrors QuotaStrategy.getAvailableSpace.
+    const totalUsed = (await this.reporter.getSize(pod)).amount
+      - (await this.reporter.getSize(identifier)).amount;
+    return { amount: this.limit.amount - totalUsed, unit: this.limit.unit };
   }
 
   public async createQuotaGuard(identifier: ResourceIdentifier): Promise<Guarded<PassThrough>> {

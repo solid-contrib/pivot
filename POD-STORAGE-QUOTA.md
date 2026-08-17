@@ -510,3 +510,29 @@ the size-reporter's walk excludes — and remember that `ResourceIdentifier.path
 is a URL, so prefix checks must go through `new URL(...).pathname`.
 
 ---
+
+## 10. Subdomain-mode pod discovery bug (2026-08-17)
+
+**Symptom:** in subdomain mode no `pivot-quota.json` sidecar is ever created
+(e.g. `data-subdomain/alice` after a real write), while suffix mode works
+(`data-suffix/bourgeoa` has one).
+
+**Root cause:** `QuotaDeltaDataAccessor.discoverPod` (copied from CSS's
+`PodQuotaStrategy.searchPimStorage`) tests `identifierStrategy.isRootContainer()`
+**before** reading metadata. In subdomain mode every pod root IS a root
+container (`SubdomainIdentifierStrategy.isRootContainer(alice.localhost/)` ->
+true), so discovery bails with "no pod" without ever checking `pim:Storage` —
+no counter, no delta updates, and `getAvailableSpace` returns unlimited. This
+is an **upstream CSS limitation** too: standard `PodQuotaStrategy` never finds
+pods in subdomain mode, so pod quota is silently unlimited there.
+
+**Fix:** new shared `src/storage/quota/PodDiscovery.ts` — reads metadata
+**first**, returns the pod if it has `pim:Storage`, and only then falls back to
+the root-container stop. Used by both `QuotaDeltaDataAccessor` and
+`FastQuotaStrategy.getAvailableSpace` (which no longer delegates to
+`super.getAvailableSpace` — it replicates `QuotaStrategy.getAvailableSpace`
+semantics: pod total minus the overwritten resource's size).
+
+**Verification:** subdomain smoke (`pod registered: true`, sidecar created,
+`getAvailableSpace` returns `limit - used`); suffix `smoke-design-c.js` ALL
+CHECKS PASSED in WSL; tsc clean.

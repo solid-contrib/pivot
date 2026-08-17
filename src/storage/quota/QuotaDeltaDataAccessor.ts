@@ -1,7 +1,6 @@
 import { promises as fs } from 'node:fs';
 import type { Readable } from 'node:stream';
 import {
-  NotFoundHttpError,
   PassthroughDataAccessor,
 } from '@solid/community-server';
 import type {
@@ -14,10 +13,7 @@ import type {
 import type { Guarded } from '@solid/community-server';
 import type { QuotaCounter } from './QuotaCounter';
 import { isInternalPath } from './InternalPath';
-
-const RDF_TYPE = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type';
-const PIM_STORAGE = 'http://www.w3.org/ns/pim/space#Storage';
-const TYPE_TERM = { termType: 'NamedNode', value: RDF_TYPE };
+import { discoverPod } from './PodDiscovery';
 
 /**
  * Delta hook for design C. Wraps the top of the file accessor chain and, for
@@ -152,23 +148,9 @@ export class QuotaDeltaDataAccessor extends PassthroughDataAccessor {
   }
 
   private async discoverPod(identifier: ResourceIdentifier): Promise<ResourceIdentifier | null> {
-    if (this.identifierStrategy.isRootContainer(identifier)) {
-      return null;
-    }
-    let metadata;
-    try {
-      metadata = await this.accessor.getMetadata(identifier);
-    } catch (error: unknown) {
-      if (NotFoundHttpError.isInstance(error)) {
-        return this.discoverPod(this.identifierStrategy.getParentContainer(identifier));
-      }
-      throw error;
-    }
-    const hasPimStorage = metadata.getAll(TYPE_TERM as any)
-      .some((term): boolean => term.value === PIM_STORAGE);
-    if (hasPimStorage) {
-      return identifier;
-    }
-    return this.discoverPod(this.identifierStrategy.getParentContainer(identifier));
+    // Uses the corrected discovery (metadata check before the root-container
+    // test) so subdomain-mode pod roots are found — CSS's own searchPimStorage
+    // bails at root containers and never finds subdomain pods.
+    return discoverPod(identifier, this.accessor, this.identifierStrategy);
   }
 }
