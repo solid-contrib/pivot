@@ -2,24 +2,40 @@ import { PassThrough } from 'node:stream';
 import type {
   DataAccessor,
   IdentifierStrategy,
+  RepresentationMetadata,
   ResourceIdentifier,
   Size,
   SizeReporter,
 } from '@solid/community-server';
 import { FastQuotaStrategy } from '../../../src/storage/quota/FastQuotaStrategy';
 
-// A strategy with a fixed pod total so createQuotaGuard can be exercised
-// without a real pod/accessor setup.
-class FixedTotalStrategy extends FastQuotaStrategy {
-  private readonly used: number;
-  public constructor(used: number, limit: Size, reporter: SizeReporter<unknown>) {
-    super(limit, reporter, {} as IdentifierStrategy, {} as DataAccessor);
-    this.used = used;
-  }
+const PIM_STORAGE = 'http://www.w3.org/ns/pim/space#Storage';
+const POD = { path: 'http://example.com/' };
 
-  protected async getTotalSpaceUsed(): Promise<Size> {
-    return { unit: 'bytes', amount: this.used };
-  }
+// A strategy with a fixed pod total so createQuotaGuard can be exercised
+// without a real pod/accessor setup. Discovery is mocked so `getAvailableSpace`
+// finds POD and the reporter reports `podTotal` for it and `resourceSize` for
+// the resource being written. With `noPod` discovery reports no pod (quota
+// does not apply → unlimited).
+function createStrategy(
+  podTotal: number,
+  resourceSize: number,
+  limit: Size,
+  reporter: jest.Mocked<SizeReporter<unknown>> & { invalidate: jest.Mock },
+  noPod = false,
+): FastQuotaStrategy {
+  const accessor: any = {
+    getMetadata: jest.fn(async (id: ResourceIdentifier): Promise<any> => ({
+      getAll: (): any[] => (id.path === POD.path ? [{ value: PIM_STORAGE }] : []),
+    })),
+  };
+  const identifierStrategy: any = {
+    isRootContainer: jest.fn((): boolean => noPod),
+    getParentContainer: jest.fn((): ResourceIdentifier => POD),
+  };
+  reporter.getSize.mockImplementation(async (id: ResourceIdentifier): Promise<Size> =>
+    id.path === POD.path ? { unit: 'bytes', amount: podTotal } : { unit: 'bytes', amount: resourceSize });
+  return new FastQuotaStrategy(limit, reporter, identifierStrategy, accessor);
 }
 
 function mockReporter(oldResourceSize: number): jest.Mocked<SizeReporter<unknown>> & { invalidate: jest.Mock } {
@@ -56,18 +72,18 @@ describe('A FastQuotaStrategy', (): void => {
 
   it('calls getAvailableSpace (the pod walk) only once per write, not per chunk.', async(): Promise<void> => {
     const reporter = mockReporter(10);
-    const strategy = new FixedTotalStrategy(90, limit, reporter);
+    const strategy = createStrategy(90, 10, limit, reporter);
     const guard = await strategy.createQuotaGuard(identifier);
     // Two 5-byte chunks → 10 bytes total, under the 20-byte budget.
     await writeChunks(guard, [ Buffer.alloc(5), Buffer.alloc(5) ]);
-    // getSize is called once by getAvailableSpace (for the overwritten
-    // resource) and must NOT be called again per chunk.
-    expect(reporter.getSize).toHaveBeenCalledTimes(1);
+    // getSize is called exactly twice by getAvailableSpace (once for the pod,
+    // once for the overwritten resource) and must NOT be called again per chunk.
+    expect(reporter.getSize).toHaveBeenCalledTimes(2);
   });
 
   it('passes chunks through while the write stays under the available space.', async(): Promise<void> => {
     const reporter = mockReporter(10);
-    const strategy = new FixedTotalStrategy(90, limit, reporter);
+    const strategy = createStrategy(90, 10, limit, reporter);
     const guard = await strategy.createQuotaGuard(identifier);
     const received: Buffer[] = [];
     guard.on('data', (chunk: Buffer): void => {
@@ -79,7 +95,7 @@ describe('A FastQuotaStrategy', (): void => {
 
   it('errors when the write exceeds the available space.', async(): Promise<void> => {
     const reporter = mockReporter(10);
-    const strategy = new FixedTotalStrategy(90, limit, reporter);
+    const strategy = createStrategy(90, 10, limit, reporter);
     const guard = await strategy.createQuotaGuard(identifier);
     // 25 bytes > 20 available.
     await expect(writeChunks(guard, [ Buffer.alloc(25) ])).rejects.toThrow(/Quota exceeded/);
@@ -87,7 +103,7 @@ describe('A FastQuotaStrategy', (): void => {
 
   it('invalidates the reporter cache when the write completes.', async(): Promise<void> => {
     const reporter = mockReporter(10);
-    const strategy = new FixedTotalStrategy(90, limit, reporter);
+    const strategy = createStrategy(90, 10, limit, reporter);
     const guard = await strategy.createQuotaGuard(identifier);
     await writeChunks(guard, [ Buffer.alloc(5) ]);
     expect(reporter.invalidate).toHaveBeenCalledTimes(1);
@@ -97,14 +113,15 @@ describe('A FastQuotaStrategy', (): void => {
   it('does not fail the write when cache invalidation fails.', async(): Promise<void> => {
     const reporter = mockReporter(10);
     reporter.invalidate.mockRejectedValue(new Error('mapping failed'));
-    const strategy = new FixedTotalStrategy(90, limit, reporter);
+    const strategy = createStrategy(90, 10, limit, reporter);
     const guard = await strategy.createQuotaGuard(identifier);
     await expect(writeChunks(guard, [ Buffer.alloc(5) ])).resolves.toBeUndefined();
   });
 
   it('never errors when the quota does not apply (infinite space).', async(): Promise<void> => {
     const reporter = mockReporter(0);
-    const strategy = new FixedTotalStrategy(Number.MAX_SAFE_INTEGER, limit, reporter);
+    // noPod → discovery finds no storage → unlimited space.
+    const strategy = createStrategy(0, 0, limit, reporter, true);
     const guard = await strategy.createQuotaGuard(identifier);
     await expect(writeChunks(guard, [ Buffer.alloc(10_000) ])).resolves.toBeUndefined();
   });
