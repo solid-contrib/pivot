@@ -1,0 +1,88 @@
+{
+  "comment": "Design C: incremental per-pod byte counter. QuotaCounter + IncrementalSizeReporter + QuotaDeltaDataAccessor (delta hook) + FastQuotaStrategy. Writes are O(1) after bootstrap; a full du/Node walk only seeds/repairs a pod's counter.",
+  "@context": [
+    "https://linkedsoftwaredependencies.org/bundles/npm/@solid/community-server/^7.0.0/components/context.jsonld",
+    "https://linkedsoftwaredependencies.org/bundles/npm/@solid/pivot/^1.0.0/components/context.jsonld"
+  ],
+  "@graph": [
+    {
+      "comment": "The shared per-pod counter (in-memory + sidecar + recount engine).",
+      "@id": "urn:solid-server:default:QuotaCounter",
+      "@type": "QuotaCounter",
+      "fileIdentifierMapper": {
+        "@id": "urn:solid-server:default:FileIdentifierMapper"
+      },
+      "rootFilePath": {
+        "@id": "urn:solid-server:default:variable:rootFilePath"
+      },
+      "ignoreFolders": [
+        "^/\\.internal$"
+      ]
+    },
+    {
+      "comment": "SizeReporter backed by the counter: O(1) pod reads, single stat for resources.",
+      "@type": "Override",
+      "overrideInstance": {
+        "@id": "urn:solid-server:default:SizeReporter"
+      },
+      "overrideParameters": {
+        "@type": "IncrementalSizeReporter",
+        "counter": {
+          "@id": "urn:solid-server:default:QuotaCounter"
+        }
+      }
+    },
+    {
+      "comment": "Delta hook: wraps the accessor chain, feeds per-write deltas to the counter. Preserves the content-length filter.",
+      "@type": "Override",
+      "overrideInstance": {
+        "@id": "urn:solid-server:default:FileDataAccessor"
+      },
+      "overrideParameters": {
+        "@type": "QuotaDeltaDataAccessor",
+        "fileIdentifierMapper": {
+          "@id": "urn:solid-server:default:FileIdentifierMapper"
+        },
+        "identifierStrategy": {
+          "@id": "urn:solid-server:default:IdentifierStrategy"
+        },
+        "counter": {
+          "@id": "urn:solid-server:default:QuotaCounter"
+        },
+        "accessor": {
+          "@type": "FilterMetadataDataAccessor",
+          "accessor": {
+            "@id": "urn:solid-server:default:ValidatingFileDataAccessor"
+          },
+          "filters": [
+            {
+              "@type": "FilterPattern",
+              "predicate": "http://www.w3.org/2011/http-headers#content-length"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "comment": "Pod quota strategy that computes the available space once per write (no per-chunk walk).",
+      "@type": "Override",
+      "overrideInstance": {
+        "@id": "urn:solid-server:default:QuotaStrategy"
+      },
+      "overrideParameters": {
+        "@type": "FastQuotaStrategy",
+        "limit_amount": 70000000,
+        "limit_unit": "bytes",
+        "reporter": {
+          "@id": "urn:solid-server:default:SizeReporter"
+        },
+        "identifierStrategy": {
+          "@id": "urn:solid-server:default:IdentifierStrategy"
+        },
+        "accessor": {
+          "@id": "urn:solid-server:default:AtomicFileDataAccessor"
+        }
+      }
+    }
+  ]
+}
