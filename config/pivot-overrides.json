@@ -71,17 +71,6 @@
       }
     },
     {
-      "comment": "Bound the lock acquisition retries so a contended lock fails fast instead of spinning the event loop and filesystem threadpool forever (~30s max wait).",
-      "@type": "Override",
-      "overrideInstance": { "@id": "urn:solid-server:default:FileSystemResourceLocker" },
-      "overrideParameters": {
-        "@type": "FileSystemResourceLocker",
-        "attemptSettings_retryCount": 600,
-        "attemptSettings_retryDelay": 50,
-        "attemptSettings_retryJitter": 30
-      }
-    },
-    {
       "comment": "Scope the cookie sweep to its own container so entries()/sweeps do not walk the entire /.internal/ tree (sustained high CPU with many accounts).",
       "@type": "Override",
       "overrideInstance": { "@id": "urn:solid-server:default:CookieStorage" },
