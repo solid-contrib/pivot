@@ -1,0 +1,12 @@
+diff --git a/node_modules/@solid/community-server/config/identity/handler/base/adapter-factory.json b/node_modules/@solid/community-server/config/identity/handler/base/adapter-factory.json
+index c2b9890..c406ba6
+--- a/node_modules/@solid/community-server/config/identity/handler/base/adapter-factory.json
++++ b/node_modules/@solid/community-server/config/identity/handler/base/adapter-factory.json
+@@ -13,6 +13,7 @@
+         "source": {
+           "@type": "ExpiringAdapterFactory",
+           "storage": {
++            "@id": "urn:solid-server:default:ExpiringAdapterStorage",
+             "@type": "WrappedExpiringStorage",
+             "source": {
+               "@type": "ContainerPathStorage",
