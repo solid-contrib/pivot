@@ -61,6 +61,82 @@
         "templateEngine": { "@id": "urn:solid-server:default:TemplateEngine" },
         "template": "./templates/main.html.ejs"
       }
+    },
+    {
+      "@type": "Override",
+      "overrideInstance": { "@id": "urn:solid-server:default:AccountStorage" },
+      "overrideParameters": {
+        "@type": "SafeBaseLoginAccountStorage",
+        "storage": { "@id": "urn:solid-server:default:IndexedStorage" }
+      }
+    },
+    {
+      "comment": "Scope the cookie sweep to its own container so entries()/sweeps do not walk the entire /.internal/ tree (sustained high CPU with many accounts).",
+      "@type": "Override",
+      "overrideInstance": { "@id": "urn:solid-server:default:CookieStorage" },
+      "overrideParameters": {
+        "@type": "WrappedExpiringStorage",
+        "source": {
+          "@type": "MaxKeyLengthStorage",
+          "source": {
+            "@type": "JsonResourceStorage",
+            "source": { "@id": "urn:solid-server:default:ResourceStore_Backend" },
+            "baseUrl": { "@id": "urn:solid-server:default:variable:baseUrl" },
+            "container": "/.internal/accounts/cookies/"
+          }
+        }
+      }
+    },
+    {
+      "comment": "Scope the forgot-password sweep to its own container.",
+      "@type": "Override",
+      "overrideInstance": { "@id": "urn:solid-server:default:ForgotPasswordStorage" },
+      "overrideParameters": {
+        "@type": "WrappedExpiringStorage",
+        "source": {
+          "@type": "MaxKeyLengthStorage",
+          "source": {
+            "@type": "JsonResourceStorage",
+            "source": { "@id": "urn:solid-server:default:ResourceStore_Backend" },
+            "baseUrl": { "@id": "urn:solid-server:default:variable:baseUrl" },
+            "container": "/.internal/accounts/forgot-password/"
+          }
+        }
+      }
+    },
+    {
+      "comment": "Scope the token sweep to its own container.",
+      "@type": "Override",
+      "overrideInstance": { "@id": "urn:solid-server:default:ExpiringTokenStorage" },
+      "overrideParameters": {
+        "@type": "WrappedExpiringStorage",
+        "source": {
+          "@type": "MaxKeyLengthStorage",
+          "source": {
+            "@type": "JsonResourceStorage",
+            "source": { "@id": "urn:solid-server:default:ResourceStore_Backend" },
+            "baseUrl": { "@id": "urn:solid-server:default:variable:baseUrl" },
+            "container": "/.internal/idp/tokens/"
+          }
+        }
+      }
+    },
+    {
+      "comment": "Scope the adapter sweep to its own container. Requires the @id added to the installed CSS adapter-factory.json by the patch-package override.",
+      "@type": "Override",
+      "overrideInstance": { "@id": "urn:solid-server:default:ExpiringAdapterStorage" },
+      "overrideParameters": {
+        "@type": "WrappedExpiringStorage",
+        "source": {
+          "@type": "MaxKeyLengthStorage",
+          "source": {
+            "@type": "JsonResourceStorage",
+            "source": { "@id": "urn:solid-server:default:ResourceStore_Backend" },
+            "baseUrl": { "@id": "urn:solid-server:default:variable:baseUrl" },
+            "container": "/.internal/idp/adapter/"
+          }
+        }
+      }
     }
   ]
 }

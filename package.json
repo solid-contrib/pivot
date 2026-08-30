@@ -27,6 +27,7 @@
     "build:components": "componentsjs-generator -s src -c dist/components -i .componentsignore -r pivot",
     "build:ts": "tsc",
     "prepare": "npm run build",
+    "postinstall": "patch-package",
     "test": "jest"
   },
   "files": [
