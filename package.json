@@ -37,8 +37,8 @@
   ],
   "dependencies": {
     "@inrupt/solid-client-authn-core": "3.1.1",
-    "@jeswr/css-cached-storage": "0.2.0-alpha.0",
-    "@solid/community-server": "npm:@jeswr/community-solid-server@7.1.10-alpha.1",
+    "@jeswr/css-cached-storage": "0.2.0-alpha.1",
+    "@solid/community-server": "npm:@jeswr/community-solid-server@7.1.10-alpha.2",
     "mashlib": "2.3.3",
     "patch-package": "8.0.1",
     "rdflib": "2.4.0"
