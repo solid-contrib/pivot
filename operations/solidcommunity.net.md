@@ -12,7 +12,7 @@ The runtime dependencies are intentionally pinned in `package.json` and
 `package-lock.json`. In particular, the deployment uses:
 
 - `@jeswr/community-solid-server@7.1.10-alpha.1`
-- `@jeswr/css-cached-storage@0.2.0`
+- `@jeswr/css-cached-storage@0.2.0-alpha.0`
 - `mashlib@2.3.3`
 
 ## One-time host preparation
