@@ -11,8 +11,8 @@ TLS proxy. Runtime state stays outside the release checkout:
 The runtime dependencies are intentionally pinned in `package.json` and
 `package-lock.json`. In particular, the deployment uses:
 
-- `@jeswr/community-solid-server@7.1.10-alpha.2`
-- `@jeswr/css-cached-storage@0.2.0-alpha.1`
+- `@jeswr/community-solid-server@7.1.10-alpha.3`
+- `@jeswr/css-cached-storage@0.2.0-alpha.2`
 - `mashlib@2.3.3`
 
 ## Transitional quota policy
@@ -62,6 +62,33 @@ npm ls @solid/community-server @jeswr/community-solid-server \
 
 Rename `pivot-new` to `pivot-<git-sha>` after the install succeeds. Confirm the
 secret file exists with mode `0600`; never log its contents.
+
+## Stage with throwaway storage
+
+Start the reviewed release on port `3334` against a new, empty directory. This
+checks package installation, configuration, initialization, and basic HTTP
+handling without allowing the staging process to touch live pod data. Never run
+a second process against `/mnt/volume_lon1_01/solidcommunity.net`: locking is
+deliberately single-process and in-memory.
+
+```bash
+install -d -m 0755 /home/solid/staging/pivot-<git-sha>
+SOLIDCOMMUNITY_APP_NAME=pivot-staging \
+SOLIDCOMMUNITY_DATA_DIR=/home/solid/staging/pivot-<git-sha> \
+SOLIDCOMMUNITY_PORT=3334 \
+pm2 startOrReload \
+  /home/solid/releases/pivot-<git-sha>/ecosystem.solidcommunity.net.config.cjs \
+  --only pivot-staging --update-env
+curl --fail --silent --show-error \
+  http://127.0.0.1:3334/.well-known/openid-configuration \
+  -H 'Host: solidcommunity.net'
+pm2 logs pivot-staging --lines 200 --nostream
+pm2 delete pivot-staging
+```
+
+Keep the throwaway directory until production verification is complete so any
+unexpected files can be inspected. It is not a backup and must never be used as
+the production data directory.
 
 ## Activate
 

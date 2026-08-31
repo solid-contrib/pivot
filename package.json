@@ -1,6 +1,6 @@
 {
   "name": "@solid/pivot",
-  "version": "1.8.2",
+  "version": "1.8.3-alpha.0",
   "description": "A module for the Community Solid Server that allows to create containers that do SHACL shape validation.",
   "repository": "git@github.com:solid-contrib/pivot.git",
   "bugs": {
@@ -37,8 +37,8 @@
   ],
   "dependencies": {
     "@inrupt/solid-client-authn-core": "3.1.1",
-    "@jeswr/css-cached-storage": "0.2.0-alpha.1",
-    "@solid/community-server": "npm:@jeswr/community-solid-server@7.1.10-alpha.2",
+    "@jeswr/css-cached-storage": "0.2.0-alpha.2",
+    "@solid/community-server": "npm:@jeswr/community-solid-server@7.1.10-alpha.3",
     "mashlib": "2.3.3",
     "patch-package": "8.0.1",
     "rdflib": "2.4.0"

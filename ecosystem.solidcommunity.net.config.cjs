@@ -6,6 +6,8 @@ const sharedDirectory =
 const dataDirectory =
   process.env.SOLIDCOMMUNITY_DATA_DIR ||
   "/mnt/volume_lon1_01/solidcommunity.net";
+const appName = process.env.SOLIDCOMMUNITY_APP_NAME || "pivot";
+const port = process.env.SOLIDCOMMUNITY_PORT || "3333";
 const nodeInterpreter =
   process.env.SOLIDCOMMUNITY_NODE ||
   "/root/.nvm/versions/node/v20.18.0/bin/node";
@@ -13,7 +15,7 @@ const nodeInterpreter =
 module.exports = {
   apps: [
     {
-      name: "pivot",
+      name: appName,
       cwd: releaseDirectory,
       script: path.join(
         releaseDirectory,
@@ -30,7 +32,7 @@ module.exports = {
         "-f",
         dataDirectory,
         "-p",
-        "3333",
+        port,
         "-b",
         "https://solidcommunity.net",
         "-m",

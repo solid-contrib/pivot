@@ -51,7 +51,7 @@
       }
     },
     {
-      "comment": "Run cleanup once a second for short-lived account and OIDC records.",
+      "comment": "Run cleanup once a minute for short-lived account and OIDC records.",
       "@id": "urn:solid-server:default:CookieStorage",
       "@type": "WrappedExpiringStorage",
       "timeout": 1

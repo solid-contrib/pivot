@@ -108,18 +108,76 @@
       }
     },
     {
-      "comment": "Persist dynamic OIDC Client registrations under the existing /idp/adapter/ keyspace so registered apps survive restarts.",
+      "comment": "Persist dynamic OIDC client registrations under their existing keyspace, but scope expiration sweeps to that subtree. The wrapper preserves the existing root-relative key and hash format.",
       "@type": "Override",
       "overrideInstance": {
         "@id": "urn:solid-server:default:IdpClientAdapterExpiringStorage"
       },
       "overrideParameters": {
         "@type": "WrappedExpiringStorage",
+        "batchSize": 8,
         "source": {
           "@type": "ContainerPathStorage",
           "relativePath": "/idp/adapter/",
           "source": {
-            "@id": "urn:solid-server:default:KeyValueStorage"
+            "@type": "MaxKeyLengthStorage",
+            "source": {
+              "@type": "ScopedJsonResourceStorage",
+              "source": { "@id": "urn:solid-server:default:ResourceStore" },
+              "baseUrl": { "@id": "urn:solid-server:default:variable:baseUrl" },
+              "container": "/.internal/",
+              "entryContainer": "/.internal/idp/adapter/"
+            }
+          }
+        }
+      }
+    },
+    {
+      "comment": "Scope forgot-password expiration sweeps to their existing subtree without changing key hashing or on-disk paths.",
+      "@type": "Override",
+      "overrideInstance": {
+        "@id": "urn:solid-server:default:ForgotPasswordStorage"
+      },
+      "overrideParameters": {
+        "@type": "WrappedExpiringStorage",
+        "batchSize": 8,
+        "source": {
+          "@type": "ContainerPathStorage",
+          "relativePath": "/accounts/forgot-password/",
+          "source": {
+            "@type": "MaxKeyLengthStorage",
+            "source": {
+              "@type": "ScopedJsonResourceStorage",
+              "source": { "@id": "urn:solid-server:default:ResourceStore" },
+              "baseUrl": { "@id": "urn:solid-server:default:variable:baseUrl" },
+              "container": "/.internal/",
+              "entryContainer": "/.internal/accounts/forgot-password/"
+            }
+          }
+        }
+      }
+    },
+    {
+      "comment": "Scope ownership-token expiration sweeps to their existing subtree without changing key hashing or on-disk paths.",
+      "@type": "Override",
+      "overrideInstance": {
+        "@id": "urn:solid-server:default:ExpiringTokenStorage"
+      },
+      "overrideParameters": {
+        "@type": "WrappedExpiringStorage",
+        "batchSize": 8,
+        "source": {
+          "@type": "ContainerPathStorage",
+          "relativePath": "/idp/tokens/",
+          "source": {
+            "@type": "MaxKeyLengthStorage",
+            "source": {
+              "@type": "ScopedJsonResourceStorage",
+              "source": { "@id": "urn:solid-server:default:ResourceStore" },
+              "baseUrl": { "@id": "urn:solid-server:default:variable:baseUrl" },
+              "container": "/.internal/",
+              "entryContainer": "/.internal/idp/tokens/"
+            }
           }
         }
       }

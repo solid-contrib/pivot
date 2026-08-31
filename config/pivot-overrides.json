@@ -61,15 +61,6 @@
         "templateEngine": { "@id": "urn:solid-server:default:TemplateEngine" },
         "template": "./templates/main.html.ejs"
       }
-    },
-    {
-      "comment": "Prevent a transient cleanup failure for an abandoned account from terminating the server.",
-      "@type": "Override",
-      "overrideInstance": { "@id": "urn:solid-server:default:AccountStorage" },
-      "overrideParameters": {
-        "@type": "SafeBaseLoginAccountStorage",
-        "storage": { "@id": "urn:solid-server:default:IndexedStorage" }
-      }
     }
   ]
 }
