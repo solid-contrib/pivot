@@ -15,6 +15,19 @@ The runtime dependencies are intentionally pinned in `package.json` and
 - `@jeswr/css-cached-storage@0.2.0-alpha.1`
 - `mashlib@2.3.3`
 
+## Transitional quota policy
+
+Hard per-pod quota enforcement is deliberately disabled during this migration.
+The previous validator performed repeated full-pod filesystem walks in the write
+path, while the proposed incremental replacement does not yet provide reliable
+restart recovery, bounded caches, or concurrent-write reservations. Atomic file
+writes remain enabled by `config/storage/backend/atomic-file-no-quota.json`.
+
+This is a temporary availability-first decision, not the final quota design.
+Until strict quotas return, monitor filesystem capacity operationally. Re-enable
+hard limits only after the replacement has per-pod serialization or reservations,
+bounded memory use, crash-safe reconciliation, and concurrency regression tests.
+
 ## One-time host preparation
 
 Create the shared directories and copy the existing live SMTP override to the

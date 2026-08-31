@@ -30,18 +30,6 @@
       }
     },
     {
-      "comment": "Limit each pod to 50 MB.",
-      "@type": "Override",
-      "overrideInstance": {
-        "@id": "urn:solid-server:default:QuotaStrategy"
-      },
-      "overrideParameters": {
-        "@type": "PodQuotaStrategy",
-        "limit_amount": 50000000,
-        "limit_unit": "bytes"
-      }
-    },
-    {
       "comment": "Serve Mashlib's data browser as the default HTML representation.",
       "@id": "urn:solid-server:default:DefaultUiConverter",
       "@type": "ConstantConverter",
@@ -169,25 +157,6 @@
         "metadataStrategy": {
           "@id": "urn:solid-server:default:MetadataStrategy"
         }
-      }
-    },
-    {
-      "comment": "Avoid an expensive pod-tree walk for every streamed write chunk. The request-size filter and atomic file writes remain active.",
-      "@type": "Override",
-      "overrideInstance": {
-        "@id": "urn:solid-server:default:FileDataAccessor"
-      },
-      "overrideParameters": {
-        "@type": "FilterMetadataDataAccessor",
-        "accessor": {
-          "@id": "urn:solid-server:default:AtomicFileDataAccessor"
-        },
-        "filters": [
-          {
-            "@type": "FilterPattern",
-            "predicate": "http://www.w3.org/2011/http-headers#content-length"
-          }
-        ]
       }
     },
     {
