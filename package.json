@@ -24,7 +24,7 @@
     "start-dev/subdomain": "npx community-solid-server -c ./config/dev-http-subdomain.json config/customise-me.json -f ./data-subdomain -p 3000 -b http://localhost:3000 -m .",
     "staging": "npx community-solid-server -c ./config/prod.json ./custom-config.json -f ./data --httpsKey /etc/letsencrypt/live/pivot.pondersource.com-0001/privkey.pem --httpsCert /etc/letsencrypt/live/pivot.pondersource.com-0001/fullchain.pem -p 443 -b https://pivot.pondersource.com -m .",
     "build": "npm run build:ts && npm run build:components",
-    "build:components": "componentsjs-generator -s src -c dist/components -i .componentsignore -r pivot",
+    "build:components": "componentsjs-generator -s src -c dist/components -i .componentsignore -r pivot && node scripts/fix-components-metadata.cjs",
     "build:ts": "tsc",
     "prepare": "npm run build",
     "test": "jest"
@@ -36,17 +36,18 @@
     "www"
   ],
   "dependencies": {
-    "@inrupt/solid-client-authn-core": "^3.1.1",
-    "@solid/community-server": "^7.2.0",
-    "mashlib": "^2.3.3",
-    "patch-package": "^8.0.1",
-    "rdflib": "^2.4.0"
+    "@inrupt/solid-client-authn-core": "3.1.1",
+    "@jeswr/css-cached-storage": "0.2.0",
+    "@solid/community-server": "npm:@jeswr/community-solid-server@7.1.10-alpha.1",
+    "mashlib": "2.3.3",
+    "patch-package": "8.0.1",
+    "rdflib": "2.4.0"
   },
   "devDependencies": {
     "@tsconfig/node14": "^14.1.8",
     "@types/jest": "^30.0.0",
     "@types/node-fetch": "^2.6.13",
-    "componentsjs-generator": "^3.1.2",
+    "componentsjs-generator": "3.1.2",
     "jest": "^30.3.0",
     "jest-rdf": "^2.0.0",
     "node-fetch": "^3.3.2",

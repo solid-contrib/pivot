@@ -1,0 +1,226 @@
+{
+  "comment": "Non-secret production overrides for solidcommunity.net.",
+  "@context": [
+    "https://linkedsoftwaredependencies.org/bundles/npm/@solid/community-server/^7.0.0/components/context.jsonld",
+    "https://linkedsoftwaredependencies.org/bundles/npm/@solid/pivot/^1.0.0/components/context.jsonld",
+    "https://linkedsoftwaredependencies.org/bundles/npm/@jeswr/css-cached-storage/^0.0.0/components/context.jsonld"
+  ],
+  "@graph": [
+    {
+      "comment": "Allow enough time for active response streams while retaining a hard upper bound on abandoned locks.",
+      "@type": "Override",
+      "overrideInstance": {
+        "@id": "urn:solid-server:default:ResourceLocker"
+      },
+      "overrideParameters": {
+        "@type": "WrappedExpiringReadWriteLocker",
+        "expiration": 30000,
+        "maxHoldDuration": 60000
+      }
+    },
+    {
+      "comment": "Use Pivot's pod templates.",
+      "@type": "Override",
+      "overrideInstance": {
+        "@id": "urn:solid-server:default:PodResourcesGenerator"
+      },
+      "overrideParameters": {
+        "@type": "StaticFolderGenerator",
+        "templateFolder": "templates/pod"
+      }
+    },
+    {
+      "comment": "Limit each pod to 50 MB.",
+      "@type": "Override",
+      "overrideInstance": {
+        "@id": "urn:solid-server:default:QuotaStrategy"
+      },
+      "overrideParameters": {
+        "@type": "PodQuotaStrategy",
+        "limit_amount": 50000000,
+        "limit_unit": "bytes"
+      }
+    },
+    {
+      "comment": "Serve Mashlib's data browser as the default HTML representation.",
+      "@id": "urn:solid-server:default:DefaultUiConverter",
+      "@type": "ConstantConverter",
+      "contentType": "text/html",
+      "filePath": "./node_modules/mashlib/dist/databrowser.html",
+      "options_container": true,
+      "options_document": true,
+      "options_minQuality": 1,
+      "options_disabledMediaRanges": [
+        "image/*",
+        "application/pdf"
+      ]
+    },
+    {
+      "comment": "Mashlib handles Markdown, so remove CSS's Markdown-to-HTML converter.",
+      "@type": "Override",
+      "overrideInstance": {
+        "@id": "urn:solid-server:default:ChainedConverter"
+      },
+      "overrideSteps": [
+        {
+          "@type": "OverrideListRemove",
+          "overrideParameter": {
+            "@id": "ChainedConverter:_converters"
+          },
+          "overrideTarget": {
+            "@id": "urn:solid-server:default:MarkdownToHtmlConverter"
+          }
+        }
+      ]
+    },
+    {
+      "comment": "Expose the full Mashlib 2.3.3 distribution from the origin root.",
+      "@id": "urn:solid-server:default:StaticAssetHandler",
+      "@type": "StaticAssetHandler",
+      "assets": [
+        {
+          "@type": "StaticAssetEntry",
+          "relativeUrl": "/",
+          "filePath": "./node_modules/mashlib/dist/"
+        }
+      ]
+    },
+    {
+      "comment": "Keep session cookies in memory. A restart requires users to log in again but avoids high-frequency cookie writes to disk.",
+      "@type": "Override",
+      "overrideInstance": {
+        "@id": "urn:solid-server:default:CookieStorage"
+      },
+      "overrideParameters": {
+        "@type": "WrappedExpiringStorage",
+        "source": {
+          "@type": "ContainerPathStorage",
+          "relativePath": "/accounts/cookies/",
+          "source": {
+            "@type": "MemoryMapStorage"
+          }
+        }
+      }
+    },
+    {
+      "comment": "Keep transient OIDC grants, sessions, tokens, and replay-detection state in memory.",
+      "@type": "Override",
+      "overrideInstance": {
+        "@id": "urn:solid-server:default:IdpAdapterExpiringStorage"
+      },
+      "overrideParameters": {
+        "@type": "WrappedExpiringStorage",
+        "source": {
+          "@type": "ContainerPathStorage",
+          "relativePath": "/idp/adapter/",
+          "source": {
+            "@type": "MemoryMapStorage"
+          }
+        }
+      }
+    },
+    {
+      "comment": "Persist dynamic OIDC Client registrations under the existing /idp/adapter/ keyspace so registered apps survive restarts.",
+      "@type": "Override",
+      "overrideInstance": {
+        "@id": "urn:solid-server:default:IdpClientAdapterExpiringStorage"
+      },
+      "overrideParameters": {
+        "@type": "WrappedExpiringStorage",
+        "source": {
+          "@type": "ContainerPathStorage",
+          "relativePath": "/idp/adapter/",
+          "source": {
+            "@id": "urn:solid-server:default:KeyValueStorage"
+          }
+        }
+      }
+    },
+    {
+      "comment": "Cache file reads in memory. Write-back is disabled so acknowledged writes are already durable on disk.",
+      "@id": "urn:solid-server:default:CachedDataAccessor",
+      "@type": "CachingDataAccessor",
+      "source": {
+        "@id": "urn:solid-server:default:FileDataAccessor"
+      },
+      "maxReadCacheSize": 1073741824,
+      "maxReadFileSize": 1048576,
+      "maxWriteQueueSize": 0,
+      "maxWriteQueueFileSize": 0,
+      "flushIntervalMs": 0
+    },
+    {
+      "comment": "Route the backend resource store through the read cache.",
+      "@type": "Override",
+      "overrideInstance": {
+        "@id": "urn:solid-server:default:ResourceStore_Backend"
+      },
+      "overrideParameters": {
+        "@type": "DataAccessorBasedStore",
+        "accessor": {
+          "@id": "urn:solid-server:default:CachedDataAccessor"
+        },
+        "identifierStrategy": {
+          "@id": "urn:solid-server:default:IdentifierStrategy"
+        },
+        "auxiliaryStrategy": {
+          "@id": "urn:solid-server:default:AuxiliaryStrategy"
+        },
+        "metadataStrategy": {
+          "@id": "urn:solid-server:default:MetadataStrategy"
+        }
+      }
+    },
+    {
+      "comment": "Avoid an expensive pod-tree walk for every streamed write chunk. The request-size filter and atomic file writes remain active.",
+      "@type": "Override",
+      "overrideInstance": {
+        "@id": "urn:solid-server:default:FileDataAccessor"
+      },
+      "overrideParameters": {
+        "@type": "FilterMetadataDataAccessor",
+        "accessor": {
+          "@id": "urn:solid-server:default:AtomicFileDataAccessor"
+        },
+        "filters": [
+          {
+            "@type": "FilterPattern",
+            "predicate": "http://www.w3.org/2011/http-headers#content-length"
+          }
+        ]
+      }
+    },
+    {
+      "comment": "Persistent client-credentials store wrapped by the lookup cache below.",
+      "@id": "urn:solid-server:solidcommunity:InnerClientCredentialsStore",
+      "@type": "BaseClientCredentialsStore",
+      "storage": {
+        "@id": "urn:solid-server:default:AccountStorage"
+      }
+    },
+    {
+      "comment": "Cache positive and negative client-credential lookups, avoiding an O(n) index-directory scan during public-client OIDC traffic.",
+      "@type": "Override",
+      "overrideInstance": {
+        "@id": "urn:solid-server:default:ClientCredentialsStore"
+      },
+      "overrideParameters": {
+        "@type": "CachingClientCredentialsStore",
+        "source": {
+          "@id": "urn:solid-server:solidcommunity:InnerClientCredentialsStore"
+        },
+        "maxEntries": 100000
+      }
+    },
+    {
+      "comment": "Keep lock counters in memory. The deployment is deliberately single-process.",
+      "@type": "Override",
+      "overrideInstance": {
+        "@id": "urn:solid-server:default:LockStorage"
+      },
+      "overrideParameters": {
+        "@type": "MemoryMapStorage"
+      }
+    }
+  ]
+}
