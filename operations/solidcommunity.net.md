@@ -91,6 +91,25 @@ pm2 save
 ```
 
 For the first migration only, the legacy rollback target is
-`/home/solid/test-pivot`, using the PM2 command recorded in the administrator
-runbook. Keep that directory and its hotfix backups unchanged until the new
-release has been stable for at least one day.
+`/home/solid/test-pivot`. Restore its exact PM2 definition with:
+
+```bash
+pm2 delete pivot
+pm2 start /home/solid/test-pivot/node_modules/.bin/community-solid-server \
+  --name pivot \
+  --cwd /home/solid/test-pivot \
+  --interpreter /root/.nvm/versions/node/v20.18.0/bin/node \
+  --node-args="--max-old-space-size=6144" \
+  -- \
+  -c /home/solid/test-pivot/config/solidcommunity.net.prod.json \
+  /home/solid/test-pivot/config-override-solidcommunity.net.json \
+  -f /mnt/volume_lon1_01/solidcommunity.net \
+  -p 3333 \
+  -b https://solidcommunity.net \
+  -m /home/solid/test-pivot \
+  -l info
+pm2 save
+```
+
+Keep that directory and its hotfix backups unchanged until the new release has
+been stable for at least one day.
