@@ -69,6 +69,11 @@
       "@id": "urn:solid-server:default:ExpiringTokenStorage",
       "@type": "WrappedExpiringStorage",
       "timeout": 1
+    },
+    {
+      "@id": "urn:solid-server:default:ExpiringAdapterStorage",
+      "@type": "WrappedExpiringStorage",
+      "timeout": 1
     }
   ]
 }
