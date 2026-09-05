@@ -1,0 +1,105 @@
+{
+  "comment": "Pivot-test MEMORY sweep policy (imported by prod.json / suffix.json INSTEAD of pivot-scoped-sweeps.json when you want the solidcommunity.net behavior). Disposable session state (cookies, transient OIDC adapter state) lives in MemoryMapStorage - a restart logs users out but avoids high-frequency disk writes and their lock churn. State that must survive restarts (OIDC client registrations, forgot-password and ownership tokens) stays persisted with sweeps scoped to their own subtree via ContainerPathStorage + MaxKeyLengthStorage over ScopedJsonResourceStorage - no full /.internal/ tree walk, key hashing and on-disk layout unchanged. Memory storages keep ContainerPathStorage so the key space is identical to the disk layout. MUTUALLY EXCLUSIVE with pivot-scoped-sweeps.json: import exactly ONE of the two (both override CookieStorage and IdpAdapterExpiringStorage).",
+  "@context": [
+    "https://linkedsoftwaredependencies.org/bundles/npm/@solid/community-server/^7.0.0/components/context.jsonld",
+    "https://linkedsoftwaredependencies.org/bundles/npm/@solid/pivot/^1.0.0/components/context.jsonld"
+  ],
+  "@graph": [
+    {
+      "comment": "Keep session cookies in memory (a restart requires users to log in again) - avoids high-frequency cookie writes to disk and their lock churn.",
+      "@type": "Override",
+      "overrideInstance": { "@id": "urn:solid-server:default:CookieStorage" },
+      "overrideParameters": {
+        "@type": "WrappedExpiringStorage",
+        "source": {
+          "@type": "ContainerPathStorage",
+          "relativePath": "/accounts/cookies/",
+          "source": {
+            "@type": "MemoryMapStorage"
+          }
+        }
+      }
+    },
+    {
+      "comment": "Scope the forgot-password sweep to its own container (persisted - mailed links must survive restarts).",
+      "@type": "Override",
+      "overrideInstance": { "@id": "urn:solid-server:default:ForgotPasswordStorage" },
+      "overrideParameters": {
+        "@type": "WrappedExpiringStorage",
+        "source": {
+          "@type": "ContainerPathStorage",
+          "relativePath": "/accounts/forgot-password/",
+          "source": {
+            "@type": "MaxKeyLengthStorage",
+            "source": {
+              "@type": "ScopedJsonResourceStorage",
+              "source": { "@id": "urn:solid-server:default:ResourceStore_Backend" },
+              "baseUrl": { "@id": "urn:solid-server:default:variable:baseUrl" },
+              "container": "/.internal/",
+              "entryContainer": "/.internal/accounts/forgot-password/"
+            }
+          }
+        }
+      }
+    },
+    {
+      "comment": "Scope the ownership-token sweep to its own container (persisted).",
+      "@type": "Override",
+      "overrideInstance": { "@id": "urn:solid-server:default:ExpiringTokenStorage" },
+      "overrideParameters": {
+        "@type": "WrappedExpiringStorage",
+        "source": {
+          "@type": "ContainerPathStorage",
+          "relativePath": "/idp/tokens/",
+          "source": {
+            "@type": "MaxKeyLengthStorage",
+            "source": {
+              "@type": "ScopedJsonResourceStorage",
+              "source": { "@id": "urn:solid-server:default:ResourceStore_Backend" },
+              "baseUrl": { "@id": "urn:solid-server:default:variable:baseUrl" },
+              "container": "/.internal/",
+              "entryContainer": "/.internal/idp/tokens/"
+            }
+          }
+        }
+      }
+    },
+    {
+      "comment": "Keep transient OIDC grants/sessions/tokens/replay state in memory (fork-native @id) - short-lived by design, nothing of value survives a restart; eliminates adapter disk writes and sweep load.",
+      "@type": "Override",
+      "overrideInstance": { "@id": "urn:solid-server:default:IdpAdapterExpiringStorage" },
+      "overrideParameters": {
+        "@type": "WrappedExpiringStorage",
+        "source": {
+          "@type": "ContainerPathStorage",
+          "relativePath": "/idp/adapter/",
+          "source": {
+            "@type": "MemoryMapStorage"
+          }
+        }
+      }
+    },
+    {
+      "comment": "Scope the persistent OIDC client-registration sweep to its own container (fork-native @id, persisted). Client keys are long and hashed, so ContainerPathStorage + MaxKeyLengthStorage must be preserved for on-disk compatibility.",
+      "@type": "Override",
+      "overrideInstance": { "@id": "urn:solid-server:default:IdpClientAdapterExpiringStorage" },
+      "overrideParameters": {
+        "@type": "WrappedExpiringStorage",
+        "source": {
+          "@type": "ContainerPathStorage",
+          "relativePath": "/idp/adapter/",
+          "source": {
+            "@type": "MaxKeyLengthStorage",
+            "source": {
+              "@type": "ScopedJsonResourceStorage",
+              "source": { "@id": "urn:solid-server:default:ResourceStore_Backend" },
+              "baseUrl": { "@id": "urn:solid-server:default:variable:baseUrl" },
+              "container": "/.internal/",
+              "entryContainer": "/.internal/idp/adapter/"
+            }
+          }
+        }
+      }
+    }
+  ]
+}
