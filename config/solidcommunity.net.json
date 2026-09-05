@@ -1,5 +1,5 @@
 {
-  "comment": "Copied from https://github.com/SolidOS/css-mashlib/blob/ae21af4685f6c95c1f091cacd952831f272ea119/config/https-mashlib-subdomain-file.json, (1) pivot:config/http/handler/default.json, (2) pivot:config/storage/middleware/default.json, (3) pivot:config/pivot-overrides.json added as the last import",
+  "comment": "Production configuration for solidcommunity.net. TLS terminates upstream, so CSS listens over HTTP on the private origin. Site-specific, non-secret behavior lives in solidcommunity.net-overrides.json; email credentials are supplied as a separate ignored config file.",
   "@context": [
     "https://linkedsoftwaredependencies.org/bundles/npm/@solid/community-server/^7.0.0/components/context.jsonld",
     "https://linkedsoftwaredependencies.org/bundles/npm/@solid/pivot/^1.0.0/components/context.jsonld"
@@ -11,7 +11,7 @@
     "pivot:config/http/handler/default.json",
     "css:config/http/middleware/default.json",
     "css:config/http/notifications/all.json",
-    "css:config/http/server-factory/https.json",
+    "css:config/http/server-factory/http.json",
     "css:config/http/static/default.json",
     "css:config/identity/access/public.json",
     "css:config/identity/email/example.json",
@@ -25,23 +25,22 @@
     "css:config/ldp/metadata-parser/default.json",
     "css:config/ldp/metadata-writer/default.json",
     "css:config/ldp/modes/default.json",
-    "css:config/storage/backend/pod-quota-file.json",
+    "pivot:config/storage/backend/atomic-file-no-quota.json",
     "css:config/storage/key-value/resource-store.json",
     "css:config/storage/location/pod.json",
     "pivot:config/storage/middleware/default.json",
     "css:config/util/auxiliary/acl.json",
-    "css:config/util/identifiers/suffix.json",
+    "css:config/util/identifiers/subdomain.json",
     "css:config/util/logging/winston.json",
     "css:config/util/representation-conversion/default.json",
-    "css:config/util/resource-locker/file.json",
+    "css:config/util/resource-locker/memory.json",
     "css:config/util/variables/default.json",
     "pivot:config/pivot-overrides.json",
-    "pivot:config/pivot-scoped-sweeps.json",
-    "pivot:config/pivot-file-locker-overrides.json"
+    "pivot:config/solidcommunity.net-overrides.json"
   ],
   "@graph": [
-   {
-      "comment": "Where the WebID is located in the generated pod, relative to the root.",
+    {
+      "comment": "Where the WebID is located in a generated pod, relative to its root.",
       "@type": "Override",
       "overrideInstance": {
         "@id": "urn:solid-server:default:PodCreator"
@@ -52,12 +51,7 @@
       }
     },
     {
-      "comment": [
-        "A filesystem-based server with Databrowser as UI.",
-        "Derived from config/file-no-setup.json"
-      ]
-    },
-    {
+      "comment": "Run cleanup once a minute for short-lived account and OIDC records.",
       "@id": "urn:solid-server:default:CookieStorage",
       "@type": "WrappedExpiringStorage",
       "timeout": 1
@@ -69,16 +63,6 @@
     },
     {
       "@id": "urn:solid-server:default:ExpiringTokenStorage",
-      "@type": "WrappedExpiringStorage",
-      "timeout": 1
-    },
-    {
-      "@id": "urn:solid-server:default:IdpAdapterExpiringStorage",
-      "@type": "WrappedExpiringStorage",
-      "timeout": 1
-    },
-    {
-      "@id": "urn:solid-server:default:IdpClientAdapterExpiringStorage",
       "@type": "WrappedExpiringStorage",
       "timeout": 1
     }

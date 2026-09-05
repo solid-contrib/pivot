@@ -1,0 +1,119 @@
+{
+  "comment": "Pivot-test sweep policy (imported by prod.json / suffix.json): keep the expiring internal storages persisted on disk and scope each expiration sweep to its own container so sweeps never walk the whole /.internal/ tree (sustained high CPU with many accounts). All five use ContainerPathStorage + MaxKeyLengthStorage over a ScopedJsonResourceStorage rooted at /.internal/ so key hashing and on-disk layout are unchanged; entries()/sweeps are restricted to the storage's own subtree and run against the unlocked ResourceStore_Backend. solidcommunity.net.json deliberately does NOT import this file - it has its own (memory-based) sweep policy in solidcommunity.net-overrides.json.",
+  "@context": [
+    "https://linkedsoftwaredependencies.org/bundles/npm/@solid/community-server/^7.0.0/components/context.jsonld",
+    "https://linkedsoftwaredependencies.org/bundles/npm/@solid/pivot/^1.0.0/components/context.jsonld"
+  ],
+  "@graph": [
+    {
+      "comment": "Scope the cookie sweep to its own container.",
+      "@type": "Override",
+      "overrideInstance": { "@id": "urn:solid-server:default:CookieStorage" },
+      "overrideParameters": {
+        "@type": "WrappedExpiringStorage",
+        "source": {
+          "@type": "ContainerPathStorage",
+          "relativePath": "/accounts/cookies/",
+          "source": {
+            "@type": "MaxKeyLengthStorage",
+            "source": {
+              "@type": "ScopedJsonResourceStorage",
+              "source": { "@id": "urn:solid-server:default:ResourceStore_Backend" },
+              "baseUrl": { "@id": "urn:solid-server:default:variable:baseUrl" },
+              "container": "/.internal/",
+              "entryContainer": "/.internal/accounts/cookies/"
+            }
+          }
+        }
+      }
+    },
+    {
+      "comment": "Scope the forgot-password sweep to its own container.",
+      "@type": "Override",
+      "overrideInstance": { "@id": "urn:solid-server:default:ForgotPasswordStorage" },
+      "overrideParameters": {
+        "@type": "WrappedExpiringStorage",
+        "source": {
+          "@type": "ContainerPathStorage",
+          "relativePath": "/accounts/forgot-password/",
+          "source": {
+            "@type": "MaxKeyLengthStorage",
+            "source": {
+              "@type": "ScopedJsonResourceStorage",
+              "source": { "@id": "urn:solid-server:default:ResourceStore_Backend" },
+              "baseUrl": { "@id": "urn:solid-server:default:variable:baseUrl" },
+              "container": "/.internal/",
+              "entryContainer": "/.internal/accounts/forgot-password/"
+            }
+          }
+        }
+      }
+    },
+    {
+      "comment": "Scope the ownership-token sweep to its own container.",
+      "@type": "Override",
+      "overrideInstance": { "@id": "urn:solid-server:default:ExpiringTokenStorage" },
+      "overrideParameters": {
+        "@type": "WrappedExpiringStorage",
+        "source": {
+          "@type": "ContainerPathStorage",
+          "relativePath": "/idp/tokens/",
+          "source": {
+            "@type": "MaxKeyLengthStorage",
+            "source": {
+              "@type": "ScopedJsonResourceStorage",
+              "source": { "@id": "urn:solid-server:default:ResourceStore_Backend" },
+              "baseUrl": { "@id": "urn:solid-server:default:variable:baseUrl" },
+              "container": "/.internal/",
+              "entryContainer": "/.internal/idp/tokens/"
+            }
+          }
+        }
+      }
+    },
+    {
+      "comment": "Scope the transient OIDC adapter sweep to its own container (fork-native @id; a single ExpiringAdapterStorage on 7.2.0).",
+      "@type": "Override",
+      "overrideInstance": { "@id": "urn:solid-server:default:IdpAdapterExpiringStorage" },
+      "overrideParameters": {
+        "@type": "WrappedExpiringStorage",
+        "source": {
+          "@type": "ContainerPathStorage",
+          "relativePath": "/idp/adapter/",
+          "source": {
+            "@type": "MaxKeyLengthStorage",
+            "source": {
+              "@type": "ScopedJsonResourceStorage",
+              "source": { "@id": "urn:solid-server:default:ResourceStore_Backend" },
+              "baseUrl": { "@id": "urn:solid-server:default:variable:baseUrl" },
+              "container": "/.internal/",
+              "entryContainer": "/.internal/idp/adapter/"
+            }
+          }
+        }
+      }
+    },
+    {
+      "comment": "Scope the persistent OIDC client-registration sweep to its own container (fork-native @id). Client keys are long and hashed, so ContainerPathStorage + MaxKeyLengthStorage must be preserved for on-disk compatibility.",
+      "@type": "Override",
+      "overrideInstance": { "@id": "urn:solid-server:default:IdpClientAdapterExpiringStorage" },
+      "overrideParameters": {
+        "@type": "WrappedExpiringStorage",
+        "source": {
+          "@type": "ContainerPathStorage",
+          "relativePath": "/idp/adapter/",
+          "source": {
+            "@type": "MaxKeyLengthStorage",
+            "source": {
+              "@type": "ScopedJsonResourceStorage",
+              "source": { "@id": "urn:solid-server:default:ResourceStore_Backend" },
+              "baseUrl": { "@id": "urn:solid-server:default:variable:baseUrl" },
+              "container": "/.internal/",
+              "entryContainer": "/.internal/idp/adapter/"
+            }
+          }
+        }
+      }
+    }
+  ]
+}

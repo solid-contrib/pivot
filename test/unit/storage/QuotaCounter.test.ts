@@ -76,8 +76,13 @@ describe('A QuotaCounter', (): void => {
     const counter = new QuotaCounter(mapper, root, IGNORE);
     await counter.register(POD);
     await counter.add(POD, 100);
-    // Out-of-band change: a direct child appears in the pod root.
+    // Out-of-band change: a direct child appears in the pod root. Some filesystems
+    // (e.g. NTFS mounted via WSL) have coarse directory mtime granularity, so the
+    // new child may not bump the root mtime immediately; force it to a clearly
+    // different value to make the staleness detection deterministic.
     await fs.writeFile(join(root, 'alice', 'extra.bin'), Buffer.alloc(400));
+    const oldTime = new Date(2000, 0, 1);
+    await fs.utimes(join(root, 'alice'), oldTime, oldTime);
     const size = await counter.getSize(POD);
     expect(size.amount).toBe(await expectedWalk(root, mapper, POD));
     expect(size.amount).toBeGreaterThanOrEqual(400);

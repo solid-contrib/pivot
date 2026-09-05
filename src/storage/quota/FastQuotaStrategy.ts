@@ -35,8 +35,10 @@ export class FastQuotaStrategy extends PodQuotaStrategy {
     reporter: SizeReporter<unknown>,
     identifierStrategy: IdentifierStrategy,
     accessor: DataAccessor,
+    baseUrl: string,
+    internalFolder = '/.internal/',
   ) {
-    super(limit, reporter, identifierStrategy, accessor);
+    super(limit, reporter, identifierStrategy, accessor, baseUrl, internalFolder);
     this.discoveryStrategy = identifierStrategy;
     this.discoveryAccessor = accessor;
   }

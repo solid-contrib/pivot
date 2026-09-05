@@ -36,6 +36,7 @@
     "css:config/util/resource-locker/file.json",
     "css:config/util/variables/default.json",
     "pivot:config/pivot-overrides.json",
+    "pivot:config/pivot-scoped-sweeps.json",
     "pivot:config/pivot-file-locker-overrides.json"
   ],
   "@graph": [
@@ -72,7 +73,12 @@
       "timeout": 1
     },
     {
-      "@id": "urn:solid-server:default:ExpiringAdapterStorage",
+      "@id": "urn:solid-server:default:IdpAdapterExpiringStorage",
+      "@type": "WrappedExpiringStorage",
+      "timeout": 1
+    },
+    {
+      "@id": "urn:solid-server:default:IdpClientAdapterExpiringStorage",
       "@type": "WrappedExpiringStorage",
       "timeout": 1
     }

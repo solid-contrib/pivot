@@ -35,7 +35,7 @@ function createStrategy(
   };
   reporter.getSize.mockImplementation(async (id: ResourceIdentifier): Promise<Size> =>
     id.path === POD.path ? { unit: 'bytes', amount: podTotal } : { unit: 'bytes', amount: resourceSize });
-  return new FastQuotaStrategy(limit, reporter, identifierStrategy, accessor);
+  return new FastQuotaStrategy(limit, reporter, identifierStrategy, accessor, 'http://example.com/');
 }
 
 function mockReporter(oldResourceSize: number): jest.Mocked<SizeReporter<unknown>> & { invalidate: jest.Mock } {

@@ -1,0 +1,49 @@
+{
+  "comment": "Transitional atomic file backend for solidcommunity.net. It deliberately omits QuotaValidator while preserving atomic writes and content-length metadata filtering.",
+  "@context": [
+    "https://linkedsoftwaredependencies.org/bundles/npm/@solid/community-server/^7.0.0/components/context.jsonld",
+    "https://linkedsoftwaredependencies.org/bundles/npm/@solid/pivot/^1.0.0/components/context.jsonld"
+  ],
+  "import": [
+    "css:config/ldp/metadata-parser/parsers/content-length.json"
+  ],
+  "@graph": [
+    {
+      "comment": "Write resources through temporary files so completed writes are committed atomically.",
+      "@id": "urn:solid-server:default:AtomicFileDataAccessor",
+      "@type": "AtomicFileDataAccessor",
+      "resourceMapper": { "@id": "urn:solid-server:default:FileIdentifierMapper" },
+      "rootFilePath": { "@id": "urn:solid-server:default:variable:rootFilePath" },
+      "tempFilePath": "/.internal/tempFiles/"
+    },
+    {
+      "comment": "Remove request content-length metadata before persisting the representation.",
+      "@id": "urn:solid-server:default:FileDataAccessor",
+      "@type": "FilterMetadataDataAccessor",
+      "accessor": { "@id": "urn:solid-server:default:AtomicFileDataAccessor" },
+      "filters": [
+        {
+          "@type": "FilterPattern",
+          "predicate": "http://www.w3.org/2011/http-headers#content-length"
+        }
+      ]
+    },
+    {
+      "comment": "Filesystem resource store with atomic writes and no transitional hard-quota validator.",
+      "@id": "urn:solid-server:default:ResourceStore_Backend",
+      "@type": "DataAccessorBasedStore",
+      "identifierStrategy": { "@id": "urn:solid-server:default:IdentifierStrategy" },
+      "auxiliaryStrategy": { "@id": "urn:solid-server:default:AuxiliaryStrategy" },
+      "accessor": { "@id": "urn:solid-server:default:FileDataAccessor" },
+      "metadataStrategy": { "@id": "urn:solid-server:default:MetadataStrategy" }
+    },
+    {
+      "comment": "Parse content-length so the file accessor can remove this transport metadata.",
+      "@id": "urn:solid-server:default:MetadataParser",
+      "@type": "ParallelHandler",
+      "handlers": [
+        { "@id": "urn:solid-server:default:ContentLengthParser" }
+      ]
+    }
+  ]
+}

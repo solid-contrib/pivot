@@ -81,7 +81,11 @@
         },
         "accessor": {
           "@id": "urn:solid-server:default:AtomicFileDataAccessor"
-        }
+        },
+        "baseUrl": {
+          "@id": "urn:solid-server:default:variable:baseUrl"
+        },
+        "internalFolder": "/.internal/"
       }
     }
   ]
