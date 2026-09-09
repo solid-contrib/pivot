@@ -20,6 +20,7 @@ const portNames = [
   'Middleware',
   'N3Patch',
   'PermissionTable',
+  'ProfileCardGuard',
   'PodCreation',
   'PodQuota',
   'RedisLocker',
