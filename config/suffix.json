@@ -36,7 +36,8 @@
     "css:config/util/representation-conversion/default.json",
     "css:config/util/resource-locker/file.json",
     "css:config/util/variables/default.json",
-    "pivot:config/pivot-overrides.json"
+    "pivot:config/pivot-overrides.json",
+    "pivot:config/pivot-file-locker-overrides.json"
   ],
   "@graph": [
    {
@@ -68,6 +69,11 @@
     },
     {
       "@id": "urn:solid-server:default:ExpiringTokenStorage",
+      "@type": "WrappedExpiringStorage",
+      "timeout": 1
+    },
+    {
+      "@id": "urn:solid-server:default:ExpiringAdapterStorage",
       "@type": "WrappedExpiringStorage",
       "timeout": 1
     }

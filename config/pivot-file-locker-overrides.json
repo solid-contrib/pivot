@@ -1,0 +1,20 @@
+{
+  "comment": "Overrides specific to configs that use the file-system resource locker. Imported only by prod/dev configs, NOT by test.json (which uses the memory locker).",
+  "@context": [
+    "https://linkedsoftwaredependencies.org/bundles/npm/@solid/community-server/^7.0.0/components/context.jsonld",
+    "https://linkedsoftwaredependencies.org/bundles/npm/@solid/pivot/^1.0.0/components/context.jsonld"
+  ],
+  "@graph": [
+    {
+      "comment": "Bound the lock acquisition retries so a contended lock fails fast instead of spinning the event loop and filesystem threadpool forever (~30s max wait).",
+      "@type": "Override",
+      "overrideInstance": { "@id": "urn:solid-server:default:FileSystemResourceLocker" },
+      "overrideParameters": {
+        "@type": "FileSystemResourceLocker",
+        "attemptSettings_retryCount": 600,
+        "attemptSettings_retryDelay": 50,
+        "attemptSettings_retryJitter": 30
+      }
+    }
+  ]
+}

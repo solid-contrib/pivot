@@ -4,6 +4,10 @@
       "https://linkedsoftwaredependencies.org/bundles/npm/@solid/community-server/^7.0.0/components/context.jsonld",
       "https://linkedsoftwaredependencies.org/bundles/npm/@solid/pivot/^1.0.0/components/context.jsonld"
     ],
+    "import": [
+      "pivot:config/storage/backend/quota-counter-file.json",
+      "pivot:config/storage/resource-locker/long-expiry.json"
+    ],
     "@graph": [
       {
         "comment": "The settings of your email server.",
@@ -29,18 +33,6 @@
         "overrideParameters": {
           "@type": "StaticFolderGenerator",
           "templateFolder": "templates/pod"
-        }
-      },
-      {
-        "comment": "Sets the maximum size of a single pod to 70MB.",
-        "@type": "Override",
-        "overrideInstance": {
-            "@id": "urn:solid-server:default:QuotaStrategy"
-        },
-        "overrideParameters": {            
-            "@type": "PodQuotaStrategy",
-            "limit_amount": 70000000,
-            "limit_unit": "bytes"
         }
       },
       {

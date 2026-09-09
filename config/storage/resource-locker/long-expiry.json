@@ -1,0 +1,26 @@
+{
+  "comment": "Safety margin for the expiring read/write lock. The default WrappedExpiringReadWriteLocker (file.json) expires after 6000ms; on production disks a large internal container listing (e.g. the IDP AuthorizationCode store) can exceed 6s, aborting the WrappedExpiringStorage cleanup and letting expired entries accumulate (2026-08-16 incident: ~3900 stale auth codes). This override keeps the same file-based locker but allows 30s per operation. Import AFTER css:config/util/resource-locker/file.json (e.g. from customise-me.json).",
+  "@context": [
+    "https://linkedsoftwaredependencies.org/bundles/npm/@solid/community-server/^7.0.0/components/context.jsonld",
+    "https://linkedsoftwaredependencies.org/bundles/npm/@solid/pivot/^1.0.0/components/context.jsonld"
+  ],
+  "@graph": [
+    {
+      "comment": "Same as the default file-based locker, but with a 30s expiring lock instead of 6s.",
+      "@type": "Override",
+      "overrideInstance": {
+        "@id": "urn:solid-server:default:ResourceLocker"
+      },
+      "overrideParameters": {
+        "@type": "WrappedExpiringReadWriteLocker",
+        "locker": {
+          "@type": "PartialReadWriteLocker",
+          "locker": {
+            "@id": "urn:solid-server:default:FileSystemResourceLocker"
+          }
+        },
+        "expiration": 30000
+      }
+    }
+  ]
+}
