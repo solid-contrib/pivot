@@ -1,0 +1,50 @@
+{
+  "comment": "Fast per-pod quota: DuSizeReporter (du + TTL cache) and FastQuotaStrategy (no per-chunk pod walk).",
+  "@context": [
+    "https://linkedsoftwaredependencies.org/bundles/npm/@solid/community-server/^7.0.0/components/context.jsonld",
+    "https://linkedsoftwaredependencies.org/bundles/npm/@solid/pivot/^1.0.0/components/context.jsonld"
+  ],
+  "@graph": [
+    {
+      "comment": "SizeReporter backed by du with a per-path TTL cache, measuring apparent bytes (portable, user-manageable). Falls back to the Node walk when du is unavailable.",
+      "@type": "Override",
+      "overrideInstance": {
+        "@id": "urn:solid-server:default:SizeReporter"
+      },
+      "overrideParameters": {
+        "@type": "DuSizeReporter",
+        "fileIdentifierMapper": {
+          "@id": "urn:solid-server:default:FileIdentifierMapper"
+        },
+        "rootFilePath": {
+          "@id": "urn:solid-server:default:variable:rootFilePath"
+        },
+        "ignoreFolders": [
+          "^/\\.internal$"
+        ],
+        "ttl": 5000
+      }
+    },
+    {
+      "comment": "Pod quota strategy that computes the available space once per write instead of per stream chunk.",
+      "@type": "Override",
+      "overrideInstance": {
+        "@id": "urn:solid-server:default:QuotaStrategy"
+      },
+      "overrideParameters": {
+        "@type": "FastQuotaStrategy",
+        "limit_amount": 70000000,
+        "limit_unit": "bytes",
+        "reporter": {
+          "@id": "urn:solid-server:default:SizeReporter"
+        },
+        "identifierStrategy": {
+          "@id": "urn:solid-server:default:IdentifierStrategy"
+        },
+        "accessor": {
+          "@id": "urn:solid-server:default:AtomicFileDataAccessor"
+        }
+      }
+    }
+  ]
+}
