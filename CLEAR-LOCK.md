@@ -191,6 +191,10 @@ above.
   operations keep the same per-resource locking as before this change.
 * **Defaults**: `jitter` 0.15 and `batchSize` 32 are constructor defaults; both can be
   set per store in the configuration.
+* **Delay ceiling**: the worst-case jittered delay (`timeout * (1 + jitter)`) is validated
+  against the maximum `setTimeout` delay (2^31-1 ms, about 24.8 days). Longer delays are
+  clamped to 1 ms by Node.js, which would turn the sweep into a busy loop, so such a
+  configuration is rejected with a `TypeError` instead.
 * **Maintenance**: `PivotExpiringStorage` mirrors the body of CSS's
   `WrappedExpiringStorage`. It is a copy-in of a small, stable class (the three
   deltas are documented in its header) — if a future CSS version changes the stock

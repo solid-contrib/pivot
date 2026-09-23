@@ -11,6 +11,12 @@ import type {
 } from '@solid/community-server';
 
 /**
+ * The largest delay `setTimeout` accepts in milliseconds (about 24.8 days). Node.js clamps larger
+ * delays to 1 ms, so a sweep that asks for more would run in a busy loop instead of once.
+ */
+const MAX_TIMER_DELAY = 2 ** 31 - 1;
+
+/**
  * A storage that wraps around another storage and expires resources based on the given (optional)
  * expiry date, with the same behaviour as the default `WrappedExpiringStorage`, plus three
  * adjustments that make periodic expiration sweeps safe to run:
@@ -55,6 +61,14 @@ export class PivotExpiringStorage<TKey, TValue> implements ExpiringStorage<TKey,
     }
     if (!Number.isFinite(jitter) || jitter < 0) {
       throw new TypeError('The sweep jitter must be a non-negative finite number.');
+    }
+    // A delay above the timer maximum is clamped to 1 ms by Node.js, which would turn the sweep
+    // into a busy loop, so the worst-case jittered delay is validated as well.
+    if (timeout * 60 * 1000 * (1 + jitter) > MAX_TIMER_DELAY) {
+      throw new TypeError(
+        `The jittered sweep delay cannot exceed the maximum ${MAX_TIMER_DELAY} ms, ` +
+        'because setTimeout clamps larger delays to 1 ms.',
+      );
     }
     this.source = source;
     this.timeout = timeout;

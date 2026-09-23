@@ -283,6 +283,24 @@ describe('A PivotExpiringStorage', (): void => {
         new PivotExpiringStorage(source, timeout, jitter)).toThrow(TypeError);
     });
 
+    it.each([
+      // Finite values whose worst-case jittered delay exceeds the timer maximum are rejected,
+      // because Node.js would clamp such a delay to 1 ms and sweep in a busy loop.
+      [ 1e9, 0 ],
+      [ 60, 1e9 ],
+      [ 35792, 0 ],
+      [ 30000, 0.5 ],
+    ])('rejects a jittered delay above the timer maximum (%p, %p).', (timeout, jitter): void => {
+      expect((): PivotExpiringStorage<string, string> =>
+        new PivotExpiringStorage(source, timeout, jitter)).toThrow(TypeError);
+    });
+
+    it('accepts the largest delay the timer supports.', (): void => {
+      // 2147483647 ms (about 24.8 days) is the largest delay setTimeout accepts.
+      expect((): PivotExpiringStorage<string, string> =>
+        new PivotExpiringStorage(source, 35791, 0)).not.toThrow();
+    });
+
     it('stops sweeping when finalized.', async(): Promise<void> => {
       await expect(storage.finalize()).resolves.toBeUndefined();
       expect(mockClear).toHaveBeenCalledTimes(1);
