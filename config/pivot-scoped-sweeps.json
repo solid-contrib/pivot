@@ -1,5 +1,5 @@
 {
-  "comment": "Scoped expiration sweeps for the internal identity storages (imported by prod.json / suffix.json / dev configs, not by test.json). Each storage keeps its exact wrapper chain (ContainerPathStorage, then the key hashing of MaxKeyLengthStorage, over the shared /.internal/ JSON storage) so keys and the on-disk layout are unchanged, but its enumeration starts in the storage's own container: the stock chain delegates entries() to the root JSON storage, which recursively reads the whole /.internal/ tree on every sweep (persistent CPU cost with a large account base). The outer wrapper is pivot's PivotExpiringStorage: the sweep intervals are jittered so the storages no longer all fire in the same instant, expired entries are deleted in bounded batches, and each sweep timer is stopped on shutdown through urn:solid-server:default:Finalizer. The OIDC adapter factory is redefined here because the stock 7.2.0 config declares its storage inline, without an @id that could be overridden.",
+  "comment": "Scoped expiration sweeps for the internal identity storages (imported by prod.json / suffix.json / dev configs, not by test.json). Each storage keeps its exact wrapper chain (ContainerPathStorage, then the key hashing of MaxKeyLengthStorage, over the shared /.internal/ JSON storage) so keys and the on-disk layout are unchanged, but its enumeration starts in the storage's own container: the stock chain delegates entries() to the root JSON storage, which recursively reads the whole /.internal/ tree on every sweep (persistent CPU cost with a large account base). The outer wrapper is pivot's PivotExpiringStorage: each sweep is scheduled with jitter so the storages do not all fire in the same instant and never overlap, expired entries are deleted in bounded batches, and the pending sweep is cleared on shutdown through urn:solid-server:default:Finalizer. The chain keeps the stock locked ResourceStore as its source, so internal operations lock exactly as before. The OIDC adapter factory is redefined here because the stock 7.2.0 config declares its storage inline, without an @id that could be overridden.",
   "@context": [
     "https://linkedsoftwaredependencies.org/bundles/npm/@solid/community-server/^7.0.0/components/context.jsonld",
     "https://linkedsoftwaredependencies.org/bundles/npm/@solid/pivot/^1.0.0/components/context.jsonld"
@@ -19,7 +19,7 @@
             "@type": "MaxKeyLengthStorage",
             "source": {
               "@type": "ScopedJsonResourceStorage",
-              "source": { "@id": "urn:solid-server:default:ResourceStore_Backend" },
+              "source": { "@id": "urn:solid-server:default:ResourceStore" },
               "baseUrl": { "@id": "urn:solid-server:default:variable:baseUrl" },
               "container": "/.internal/",
               "entryContainer": "/.internal/accounts/cookies/"
@@ -42,7 +42,7 @@
             "@type": "MaxKeyLengthStorage",
             "source": {
               "@type": "ScopedJsonResourceStorage",
-              "source": { "@id": "urn:solid-server:default:ResourceStore_Backend" },
+              "source": { "@id": "urn:solid-server:default:ResourceStore" },
               "baseUrl": { "@id": "urn:solid-server:default:variable:baseUrl" },
               "container": "/.internal/",
               "entryContainer": "/.internal/accounts/forgot-password/"
@@ -65,7 +65,7 @@
             "@type": "MaxKeyLengthStorage",
             "source": {
               "@type": "ScopedJsonResourceStorage",
-              "source": { "@id": "urn:solid-server:default:ResourceStore_Backend" },
+              "source": { "@id": "urn:solid-server:default:ResourceStore" },
               "baseUrl": { "@id": "urn:solid-server:default:variable:baseUrl" },
               "container": "/.internal/",
               "entryContainer": "/.internal/idp/tokens/"
@@ -98,7 +98,7 @@
                   "@type": "MaxKeyLengthStorage",
                   "source": {
                     "@type": "ScopedJsonResourceStorage",
-                    "source": { "@id": "urn:solid-server:default:ResourceStore_Backend" },
+                    "source": { "@id": "urn:solid-server:default:ResourceStore" },
                     "baseUrl": { "@id": "urn:solid-server:default:variable:baseUrl" },
                     "container": "/.internal/",
                     "entryContainer": "/.internal/idp/adapter/"

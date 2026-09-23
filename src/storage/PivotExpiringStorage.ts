@@ -1,7 +1,7 @@
 import {
+  createErrorMessage,
   getLoggerFor,
   InternalServerError,
-  setSafeInterval,
 } from '@solid/community-server';
 import type {
   Expires,
@@ -15,25 +15,29 @@ import type {
  * expiry date, with the same behaviour as the default `WrappedExpiringStorage`, plus three
  * adjustments that make periodic expiration sweeps safe to run:
  *
- *  1. A random jitter is added to the sweep interval. The internal expiring storages (cookies,
- *     forgot-password, ownership tokens, OIDC adapter) are all created at startup, so without jitter
- *     their sweeps fire in the same instant and cause periodic latency spikes. The jitter spreads
- *     them out; it defaults to 0.15 (up to 15% of the timeout) and `0` disables it.
+ *  1. A random jitter is added to every sweep delay. The internal expiring storages (cookies,
+ *     forgot-password, ownership tokens, OIDC adapter) are all created at startup, so without
+ *     jitter their sweeps would run in the same instant; the jitter spreads them out. It defaults
+ *     to 0.15 (up to 15% of the timeout) and `0` disables it.
  *  2. Expired entries are deleted in bounded batches instead of one unbounded `Promise.all`, so a
  *     large number of expired entries cannot flood the event loop and the thread pool at once.
- *  3. The class is {@link Finalizable}: `finalize()` clears the sweep timer so a graceful shutdown
- *     does not leave the interval behind (the timer is also `unref`'d as a safety net).
+ *  3. The next sweep is scheduled only after the previous one has finished, so a cleanup that takes
+ *     longer than the timeout cannot overlap with the next run. The timer is `unref`'d, a failing
+ *     sweep is logged instead of rejecting, and `finalize()` clears the pending run.
  */
 export class PivotExpiringStorage<TKey, TValue> implements ExpiringStorage<TKey, TValue>, Finalizable {
   protected readonly logger = getLoggerFor(this);
   private readonly source: KeyValueStorage<TKey, Expires<TValue>>;
-  private readonly timer: NodeJS.Timeout;
+  private readonly timeout: number;
+  private readonly jitter: number;
   private readonly batchSize: number;
+  private timer?: NodeJS.Timeout;
+  private finalized = false;
 
   /**
    * @param source - KeyValueStorage to actually store the data.
    * @param timeout - How often the expired data needs to be checked in minutes.
-   * @param jitter - Maximum fraction of the timeout that is randomly added to the interval so that
+   * @param jitter - Maximum fraction of the timeout that is randomly added before a sweep so that
    *                 multiple instances do not all sweep at the same time. `0` disables jitter.
    * @param batchSize - Maximum number of expired entries deleted concurrently.
    */
@@ -47,16 +51,10 @@ export class PivotExpiringStorage<TKey, TValue> implements ExpiringStorage<TKey,
       throw new TypeError('The expired-entry deletion batch size must be a positive integer.');
     }
     this.source = source;
+    this.timeout = timeout;
+    this.jitter = jitter;
     this.batchSize = batchSize;
-    const period = timeout * 60 * 1000;
-    const jitterMs = Math.floor(Math.random() * period * jitter);
-    this.timer = setSafeInterval(
-      this.logger,
-      'Failed to remove expired entries',
-      this.removeExpiredEntries.bind(this),
-      period + jitterMs,
-    );
-    this.timer.unref();
+    this.scheduleSweep();
   }
 
   public async get(key: TKey): Promise<TValue | undefined> {
@@ -93,7 +91,42 @@ export class PivotExpiringStorage<TKey, TValue> implements ExpiringStorage<TKey,
   }
 
   public async finalize(): Promise<void> {
-    clearInterval(this.timer);
+    this.finalized = true;
+    if (this.timer) {
+      clearTimeout(this.timer);
+      this.timer = undefined;
+    }
+  }
+
+  /**
+   * Schedules the next sweep. Every delay gets a random jitter so that storages created at the same
+   * time do not sweep in the same instant.
+   */
+  private scheduleSweep(): void {
+    const period = this.timeout * 60 * 1000;
+    const jitterMs = Math.floor(Math.random() * period * this.jitter);
+    const timer = setTimeout((): void => {
+      void this.sweep();
+    }, period + jitterMs);
+    // A background sweep should never keep the Node.js process alive on its own.
+    timer.unref();
+    this.timer = timer;
+  }
+
+  /**
+   * Runs one sweep and schedules the next one afterwards, so overlapping sweeps are impossible.
+   * Errors are logged instead of thrown: the timer callback must never reject.
+   */
+  private async sweep(): Promise<void> {
+    try {
+      await this.removeExpiredEntries();
+    } catch (error: unknown) {
+      this.logger.error(`Failed to remove expired entries: ${createErrorMessage(error)}`);
+    } finally {
+      if (!this.finalized) {
+        this.scheduleSweep();
+      }
+    }
   }
 
   /**

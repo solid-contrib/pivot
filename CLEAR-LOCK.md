@@ -50,7 +50,7 @@ The same expiry semantics as `WrappedExpiringStorage` (values keep their expiry
 date; expired values are deleted on read and by the sweep), plus three things a
 periodic sweep needs:
 
-1. **Jitter** — the interval gets a random fraction of the timeout added
+1. **Jitter** — every sweep delay gets a random fraction of the timeout added
    (`jitter`, default `0.15`, `0` disables it), so the four instances created at
    startup no longer sweep in the same instant.
 2. **Bounded deletes** — expired entries are deleted in batches of `batchSize`
@@ -62,8 +62,10 @@ periodic sweep needs:
        .map(async(key): Promise<boolean> => this.source.delete(key)));
    }
    ```
-3. **`finalize()`** — clears the sweep timer on shutdown (the timer is still
-   `unref`'d as a safety net).
+3. **No overlapping sweeps** - the next sweep is scheduled only after the running
+   one has finished, so a slow cleanup cannot start a second enumeration. A failing
+   sweep is logged instead of rejecting, the timer is `unref`'d, and `finalize()`
+   clears the pending run on shutdown.
 
 ### 1.3 Config wiring (`config/pivot-scoped-sweeps.json`)
 
@@ -83,7 +85,7 @@ Each store is overridden to the same chain with a scoped bottom (cookie example)
         "@type": "MaxKeyLengthStorage",
         "source": {
           "@type": "ScopedJsonResourceStorage",
-          "source": { "@id": "urn:solid-server:default:ResourceStore_Backend" },
+          "source": { "@id": "urn:solid-server:default:ResourceStore" },
           "baseUrl": { "@id": "urn:solid-server:default:variable:baseUrl" },
           "container": "/.internal/",
           "entryContainer": "/.internal/accounts/cookies/"
@@ -125,12 +127,13 @@ Unchanged: keys, key hashing (`MaxKeyLengthStorage` stays in the chain), the
 on-disk layout, the expiry semantics, the sweep interval (`timeout: 1` minute keeps
 the production policy).
 
-Changed: enumeration reads only the store's container, the four sweeps are
-jittered/batched/finalized, and the stores read and write through
-`ResourceStore_Backend` instead of the locking store — like the lock storage
-itself does. Sweep deletes no longer take a lock per entry, and internal storage
-traffic no longer contends with the request pipeline. `/.internal/` stays hidden
-from clients (`PathBasedReader`), so this does not widen what a client can reach.
+Changed: enumeration reads only the store's container, and the four sweeps are
+jittered, batched and never overlapping. The chain keeps the stock locked
+`ResourceStore` as its source, so internal reads and writes take the same
+per-resource locks as before and sweep deletes take the same per-entry lock as the
+stock storage does - only the walk and the scheduling change. `/.internal/` stays
+hidden from clients (`PathBasedReader`), so this does not widen what a client can
+reach.
 
 ---
 
@@ -144,8 +147,9 @@ from clients (`PathBasedReader`), so this does not widen what a client can reach
   the storage root is rejected.
 * `test/unit/storage/PivotExpiringStorage.test.ts` — the expiry behaviour of the stock
   storage (get/has/set/delete/entries), plus jitter (disabled and enabled), `unref`,
-  the sweep deleting only expired entries, bounded batches, the batch-size validation
-  and `finalize()`.
+  the sweep deleting only expired entries, bounded batches, the batch-size validation,
+  and the scheduling: jitter, `unref`, no overlap while a sweep is running and
+  `finalize()` clearing the pending run.
 
 ### 2.2 Configuration tests
 
@@ -175,7 +179,11 @@ above.
 ## 3. Decisions and limitations
 
 * **Interval**: `timeout: 1` (minute) is kept from the deployed policy. A sweep is
-  now cheap, so a short interval only makes expired entries disappear sooner.
+  now cheap, so a short interval only makes expired entries disappear sooner; the
+  delay is measured from the end of the previous sweep, so runs never overlap.
+* **Locking**: the four chains keep the stock locked `ResourceStore` as their source
+  (only `BackendKeyValueStorage` is meant to use the backend directly), so internal
+  operations keep the same per-resource locking as before this change.
 * **Defaults**: `jitter` 0.15 and `batchSize` 32 are constructor defaults; both can be
   set per store in the configuration.
 * **Maintenance**: `PivotExpiringStorage` mirrors the body of CSS's

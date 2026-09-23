@@ -16,17 +16,17 @@ describe('A PivotExpiringStorage', (): void => {
   yesterday.setDate(yesterday.getDate() - 1);
   let source: jest.Mocked<KeyValueStorage<string, Internal>>;
   let storage: PivotExpiringStorage<string, string>;
-  let mockInterval: jest.SpyInstance;
+  let mockTimeout: jest.SpyInstance;
   let mockClear: jest.SpyInstance;
   let mockRandom: jest.SpyInstance;
   let mockTimer: { unref: jest.Mock };
 
   beforeEach((): void => {
-    // Never schedule a real sweep; capture the interval instead.
+    // Never schedule a real sweep; capture the scheduled timeout instead.
     mockTimer = { unref: jest.fn() };
-    mockInterval = jest.spyOn(globalThis, 'setInterval')
+    mockTimeout = jest.spyOn(globalThis, 'setTimeout')
       .mockImplementation(jest.fn().mockReturnValue(mockTimer) as any);
-    mockClear = jest.spyOn(globalThis, 'clearInterval').mockImplementation(jest.fn() as any);
+    mockClear = jest.spyOn(globalThis, 'clearTimeout').mockImplementation(jest.fn() as any);
     // Fixed jitter source so the scheduled delay is deterministic.
     mockRandom = jest.spyOn(globalThis.Math, 'random').mockReturnValue(0.5);
 
@@ -41,7 +41,7 @@ describe('A PivotExpiringStorage', (): void => {
   });
 
   afterEach((): void => {
-    mockInterval.mockRestore();
+    mockTimeout.mockRestore();
     mockClear.mockRestore();
     mockRandom.mockRestore();
   });
@@ -129,25 +129,25 @@ describe('A PivotExpiringStorage', (): void => {
   });
 
   describe('scheduling the cleanup sweep', (): void => {
-    it('schedules the sweep on the configured timeout when jitter is disabled.', (): void => {
+    it('schedules the first sweep on the configured timeout when jitter is disabled.', (): void => {
       storage = new PivotExpiringStorage(source, 1, 0);
-      expect(mockInterval).toHaveBeenCalledTimes(2);
-      expect(mockInterval.mock.calls[1]).toHaveLength(2);
-      expect(mockInterval.mock.calls[1][1]).toBe(60 * 1000);
+      expect(mockTimeout).toHaveBeenCalledTimes(2);
+      expect(mockTimeout.mock.calls[1]).toHaveLength(2);
+      expect(mockTimeout.mock.calls[1][1]).toBe(60 * 1000);
     });
 
-    it('adds a jitter fraction to the scheduled sweep interval.', (): void => {
+    it('adds a jitter fraction to the scheduled sweep delay.', (): void => {
       // Math.random is 0.5 and jitter is 0.2, so floor(0.5 * 60000 * 0.2) = 6000 is added.
       storage = new PivotExpiringStorage(source, 1, 0.2);
-      expect(mockInterval).toHaveBeenCalledTimes(2);
-      expect(mockInterval.mock.calls[1][1]).toBe(60 * 1000 + 6000);
+      expect(mockTimeout).toHaveBeenCalledTimes(2);
+      expect(mockTimeout.mock.calls[1][1]).toBe(60 * 1000 + 6000);
     });
 
     it('unrefs the timer so it does not keep the event loop alive.', (): void => {
       expect(mockTimer.unref).toHaveBeenCalledTimes(1);
     });
 
-    it('removes expired entries when the scheduled sweep fires.', async(): Promise<void> => {
+    it('removes expired entries when the scheduled sweep runs.', async(): Promise<void> => {
       const data = [
         [ 'key1', createExpires('data1', tomorrow) ],
         [ 'key2', createExpires('data2', yesterday) ],
@@ -157,8 +157,8 @@ describe('A PivotExpiringStorage', (): void => {
         yield* data;
       });
 
-      // Await the function the sweep interval was created with.
-      await (mockInterval.mock.calls[0][0] as () => Promise<void>)();
+      (mockTimeout.mock.calls[0][0] as () => void)();
+      await flushPromises();
 
       expect(source.delete).toHaveBeenCalledTimes(1);
       expect(source.delete).toHaveBeenLastCalledWith('key2');
@@ -183,14 +183,45 @@ describe('A PivotExpiringStorage', (): void => {
         .mockImplementationOnce(async(): Promise<boolean> => second)
         .mockResolvedValue(true);
 
-      const cleanup = (mockInterval.mock.calls[1][0] as () => Promise<void>)();
+      (mockTimeout.mock.calls[1][0] as () => void)();
       await flushPromises();
       expect(source.delete).toHaveBeenCalledTimes(2);
 
       resolveFirst(true);
       resolveSecond(true);
-      await cleanup;
+      await flushPromises();
       expect(source.delete).toHaveBeenCalledTimes(3);
+    });
+
+    it('schedules the next sweep only after the running one finished.', async(): Promise<void> => {
+      let resolveDelete!: (value: boolean) => void;
+      const deletion = new Promise<boolean>((resolve): void => {
+        resolveDelete = resolve;
+      });
+      source.entries.mockImplementationOnce(function* (): any {
+        yield [ 'key1', createExpires('data1', yesterday) ];
+      });
+      source.delete.mockImplementationOnce(async(): Promise<boolean> => deletion);
+
+      (mockTimeout.mock.calls[0][0] as () => void)();
+      await flushPromises();
+      // The sweep is still deleting: no new timeout may have been scheduled yet.
+      expect(mockTimeout).toHaveBeenCalledTimes(1);
+
+      resolveDelete(true);
+      await flushPromises();
+      expect(mockTimeout).toHaveBeenCalledTimes(2);
+    });
+
+    it('logs a failing sweep and still schedules the next one.', async(): Promise<void> => {
+      source.entries.mockImplementationOnce((): any => {
+        throw new Error('sweep failure');
+      });
+
+      (mockTimeout.mock.calls[0][0] as () => void)();
+      await flushPromises();
+
+      expect(mockTimeout).toHaveBeenCalledTimes(2);
     });
 
     it.each([ 0, -1, 1.5, Number.NaN ])('rejects invalid batch size %p.', (batchSize): void => {
@@ -198,10 +229,29 @@ describe('A PivotExpiringStorage', (): void => {
         new PivotExpiringStorage(source, 1, 0, batchSize)).toThrow(TypeError);
     });
 
-    it('clears the timer on finalize.', async(): Promise<void> => {
+    it('stops sweeping when finalized.', async(): Promise<void> => {
       await expect(storage.finalize()).resolves.toBeUndefined();
       expect(mockClear).toHaveBeenCalledTimes(1);
       expect(mockClear).toHaveBeenLastCalledWith(mockTimer);
+    });
+
+    it('does not schedule another sweep when finalized while one is running.', async(): Promise<void> => {
+      let resolveDelete!: (value: boolean) => void;
+      const deletion = new Promise<boolean>((resolve): void => {
+        resolveDelete = resolve;
+      });
+      source.entries.mockImplementationOnce(function* (): any {
+        yield [ 'key1', createExpires('data1', yesterday) ];
+      });
+      source.delete.mockImplementationOnce(async(): Promise<boolean> => deletion);
+
+      (mockTimeout.mock.calls[0][0] as () => void)();
+      await flushPromises();
+      await storage.finalize();
+      resolveDelete(true);
+      await flushPromises();
+
+      expect(mockTimeout).toHaveBeenCalledTimes(1);
     });
   });
 });

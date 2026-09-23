@@ -2,6 +2,9 @@ import { getDefaultVariables, getPresetConfigPath, instantiateFromConfig } from 
 
 describe('A server configured with the pivot scoped sweeps', (): void => {
   const config = getPresetConfigPath('prod.json');
+  // The store chain needs the companion customisation (it defines the UI converter used by the
+  // converting store), exactly like the production start scripts, which pass both files.
+  const companion = getPresetConfigPath('customise-me.json');
   const variables = {
     ...getDefaultVariables(3000, 'http://localhost:3000/'),
     'urn:solid-server:default:variable:rootFilePath': '/tmp/pivot-scoped-sweeps-test',
@@ -10,7 +13,7 @@ describe('A server configured with the pivot scoped sweeps', (): void => {
   // Instantiates the given storage from the configuration and returns the entry container of its scoped JSON storage.
   // Class names are compared instead of instanceof: the configuration instantiates the built classes from dist/.
   async function getEntryContainer(storageId: string): Promise<string> {
-    const storage = await instantiateFromConfig(storageId, config, variables) as any;
+    const storage = await instantiateFromConfig(storageId, [ config, companion ], variables) as any;
     expect(storage.constructor.name).toBe('PivotExpiringStorage');
     expect(storage.source.constructor.name).toBe('ContainerPathStorage');
     const scoped = storage.source.source.source;
