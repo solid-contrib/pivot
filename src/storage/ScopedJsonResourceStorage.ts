@@ -26,7 +26,9 @@ export class ScopedJsonResourceStorage<T> extends JsonResourceStorage<T> {
   public constructor(source: ResourceStore, baseUrl: string, container: string, entryContainer: string) {
     super(source, baseUrl, container);
     this.entryContainer = ensureTrailingSlash(joinUrl(baseUrl, entryContainer));
-    if (!this.entryContainer.startsWith(this.container)) {
+    // Normalise the root as well so the comparison is a segment boundary: a storage rooted at
+    // `/.internal/accounts/` must not accept `/.internal/accounts-evil/`.
+    if (!this.entryContainer.startsWith(ensureTrailingSlash(this.container))) {
       throw new TypeError('The entry container must be inside the storage container.');
     }
   }

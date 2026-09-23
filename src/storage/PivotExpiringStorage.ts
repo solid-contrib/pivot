@@ -62,7 +62,9 @@ export class PivotExpiringStorage<TKey, TValue> implements ExpiringStorage<TKey,
   }
 
   public async has(key: TKey): Promise<boolean> {
-    return Boolean(await this.getUnexpired(key));
+    // Compare against `undefined` instead of coercing, so falsy payloads (`''`, `0`, `false`)
+    // are reported as present, like `get` does.
+    return (await this.getUnexpired(key)) !== undefined;
   }
 
   public async set(key: TKey, value: TValue, expiration?: number): Promise<this>;

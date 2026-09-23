@@ -100,4 +100,10 @@ describe('A ScopedJsonResourceStorage', (): void => {
       new ScopedJsonResourceStorage(source, baseUrl, '/.internal/accounts/', '/.internal/idp/'))
       .toThrow('The entry container must be inside the storage container.');
   });
+
+  it('rejects a sibling container that only shares the prefix of the storage root.', (): void => {
+    expect((): ScopedJsonResourceStorage<unknown> =>
+      new ScopedJsonResourceStorage(source, baseUrl, '/.internal/accounts/', '/.internal/accounts-evil/'))
+      .toThrow('The entry container must be inside the storage container.');
+  });
 });

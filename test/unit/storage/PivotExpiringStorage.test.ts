@@ -75,6 +75,12 @@ describe('A PivotExpiringStorage', (): void => {
     await expect(storage.has('key')).resolves.toBe(true);
   });
 
+  it('treats a falsy value as present.', async(): Promise<void> => {
+    source.get.mockResolvedValue(createExpires('', tomorrow));
+    await expect(storage.get('key')).resolves.toBe('');
+    await expect(storage.has('key')).resolves.toBe(true);
+  });
+
   it('deletes expired data when checking if it exists.', async(): Promise<void> => {
     source.get.mockResolvedValueOnce(createExpires('data!', yesterday));
     await expect(storage.has('key')).resolves.toBe(false);
