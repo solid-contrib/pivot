@@ -50,6 +50,12 @@ export class PivotExpiringStorage<TKey, TValue> implements ExpiringStorage<TKey,
     if (!Number.isSafeInteger(batchSize) || batchSize < 1) {
       throw new TypeError('The expired-entry deletion batch size must be a positive integer.');
     }
+    if (!Number.isFinite(timeout) || timeout <= 0) {
+      throw new TypeError('The sweep timeout must be a positive finite number of minutes.');
+    }
+    if (!Number.isFinite(jitter) || jitter < 0) {
+      throw new TypeError('The sweep jitter must be a non-negative finite number.');
+    }
     this.source = source;
     this.timeout = timeout;
     this.jitter = jitter;
@@ -144,8 +150,14 @@ export class PivotExpiringStorage<TKey, TValue> implements ExpiringStorage<TKey,
       }
     }
     for (let index = 0; index < expired.length; index += this.batchSize) {
-      await Promise.all(expired.slice(index, index + this.batchSize)
+      // Wait for every delete of the batch, so a rejection cannot leave siblings running while
+      // the next sweep is already scheduled.
+      const results = await Promise.allSettled(expired.slice(index, index + this.batchSize)
         .map(async(key): Promise<boolean> => this.source.delete(key)));
+      const failure = results.find((result): result is PromiseRejectedResult => result.status === 'rejected');
+      if (failure) {
+        throw failure.reason;
+      }
     }
     this.logger.debug('Finished removing expired entries');
   }

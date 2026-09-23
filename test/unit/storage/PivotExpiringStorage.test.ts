@@ -199,6 +199,41 @@ describe('A PivotExpiringStorage', (): void => {
       expect(source.delete).toHaveBeenCalledTimes(3);
     });
 
+    it('waits for the whole batch before a failing sweep is rescheduled.', async(): Promise<void> => {
+      storage = new PivotExpiringStorage(source, 1, 0, 2);
+      let rejectFirst!: (reason?: any) => void;
+      let resolveSecond!: (value: boolean) => void;
+      const first = new Promise<boolean>((resolve, reject): void => {
+        rejectFirst = reject;
+      });
+      const second = new Promise<boolean>((resolve): void => {
+        resolveSecond = resolve;
+      });
+      source.entries.mockImplementationOnce(function* (): any {
+        yield [ 'key1', createExpires('data1', yesterday) ];
+        yield [ 'key2', createExpires('data2', yesterday) ];
+        yield [ 'key3', createExpires('data3', yesterday) ];
+      });
+      source.delete.mockImplementationOnce(async(): Promise<boolean> => first)
+        .mockImplementationOnce(async(): Promise<boolean> => second)
+        .mockResolvedValue(true);
+
+      (mockTimeout.mock.calls[1][0] as () => void)();
+      await flushPromises();
+      rejectFirst(new Error('delete failed'));
+      await flushPromises();
+      // The sibling delete is still running: no next sweep and no further batch yet. Two timeouts
+      // exist so far: one for the storage created in beforeEach and one for this storage.
+      expect(mockTimeout).toHaveBeenCalledTimes(2);
+      expect(source.delete).toHaveBeenCalledTimes(2);
+
+      resolveSecond(true);
+      await flushPromises();
+      // The batch settled, the failure aborted the sweep, and only then the next sweep was scheduled.
+      expect(source.delete).toHaveBeenCalledTimes(2);
+      expect(mockTimeout).toHaveBeenCalledTimes(3);
+    });
+
     it('schedules the next sweep only after the running one finished.', async(): Promise<void> => {
       let resolveDelete!: (value: boolean) => void;
       const deletion = new Promise<boolean>((resolve): void => {
@@ -233,6 +268,19 @@ describe('A PivotExpiringStorage', (): void => {
     it.each([ 0, -1, 1.5, Number.NaN ])('rejects invalid batch size %p.', (batchSize): void => {
       expect((): PivotExpiringStorage<string, string> =>
         new PivotExpiringStorage(source, 1, 0, batchSize)).toThrow(TypeError);
+    });
+
+    it.each([
+      [ 0, 0 ],
+      [ -1, 0 ],
+      [ Number.NaN, 0 ],
+      [ Number.POSITIVE_INFINITY, 0 ],
+      [ 1, -0.1 ],
+      [ 1, Number.NaN ],
+      [ 1, Number.POSITIVE_INFINITY ],
+    ])('rejects an invalid timeout and jitter (%p, %p).', (timeout, jitter): void => {
+      expect((): PivotExpiringStorage<string, string> =>
+        new PivotExpiringStorage(source, timeout, jitter)).toThrow(TypeError);
     });
 
     it('stops sweeping when finalized.', async(): Promise<void> => {

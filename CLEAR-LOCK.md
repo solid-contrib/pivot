@@ -29,7 +29,7 @@ export class ScopedJsonResourceStorage<T> extends JsonResourceStorage<T> {
   public constructor(source: ResourceStore, baseUrl: string, container: string, entryContainer: string) {
     super(source, baseUrl, container);
     this.entryContainer = ensureTrailingSlash(joinUrl(baseUrl, entryContainer));
-    if (!this.entryContainer.startsWith(this.container)) {
+    if (!this.entryContainer.startsWith(ensureTrailingSlash(this.container))) {
       throw new TypeError('The entry container must be inside the storage container.');
     }
   }
@@ -54,12 +54,17 @@ periodic sweep needs:
    (`jitter`, default `0.15`, `0` disables it), so the four instances created at
    startup no longer sweep in the same instant.
 2. **Bounded deletes** — expired entries are deleted in batches of `batchSize`
-   (default `32`) instead of one `Promise.all` over the whole set:
+   (default `32`) instead of one `Promise.all` over the whole set, and a batch always settles
+   completely before the sweep can fail or finish:
 
    ```ts
    for (let index = 0; index < expired.length; index += this.batchSize) {
-     await Promise.all(expired.slice(index, index + this.batchSize)
+     const results = await Promise.allSettled(expired.slice(index, index + this.batchSize)
        .map(async(key): Promise<boolean> => this.source.delete(key)));
+     const failure = results.find((result): result is PromiseRejectedResult => result.status === 'rejected');
+     if (failure) {
+       throw failure.reason;
+     }
    }
    ```
 3. **No overlapping sweeps** - the next sweep is scheduled only after the running
