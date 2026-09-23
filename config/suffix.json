@@ -1,5 +1,4 @@
 {
-  "comment": "Copied from https://github.com/SolidOS/css-mashlib/blob/ae21af4685f6c95c1f091cacd952831f272ea119/config/https-mashlib-subdomain-file.json, (1) pivot:config/http/handler/default.json, (2) pivot:config/storage/middleware/default.json, (3) pivot:config/pivot-overrides.json added as the last import",
   "@context": [
     "https://linkedsoftwaredependencies.org/bundles/npm/@solid/community-server/^7.0.0/components/context.jsonld",
     "https://linkedsoftwaredependencies.org/bundles/npm/@solid/pivot/^1.0.0/components/context.jsonld"
@@ -35,7 +34,8 @@
     "css:config/util/representation-conversion/default.json",
     "css:config/util/resource-locker/file.json",
     "css:config/util/variables/default.json",
-    "pivot:config/pivot-overrides.json"
+    "pivot:config/pivot-overrides.json",
+    "pivot:config/pivot-scoped-sweeps.json"
   ],
   "@graph": [
    {
@@ -56,19 +56,7 @@
       ]
     },
     {
-      "@id": "urn:solid-server:default:CookieStorage",
-      "@type": "WrappedExpiringStorage",
-      "timeout": 1
-    },
-    {
-      "@id": "urn:solid-server:default:ForgotPasswordStorage",
-      "@type": "WrappedExpiringStorage",
-      "timeout": 1
-    },
-    {
-      "@id": "urn:solid-server:default:ExpiringTokenStorage",
-      "@type": "WrappedExpiringStorage",
-      "timeout": 1
+      "comment": "The internal expiring storages and their scoped sweeps are defined in pivot:config/pivot-scoped-sweeps.json."
     }
   ]
 }
