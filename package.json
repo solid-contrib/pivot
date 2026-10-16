@@ -39,15 +39,18 @@
   "dependencies": {
     "@inrupt/solid-client-authn-core": "^3.1.1",
     "@rdfjs/types": "^1.1.2",
-    "@solid/community-server": "^7.2.0",
+    "@solid/community-server": "file:../../../CommunitySolidServer",
     "arrayify-stream": "^2.0.1",
+    "cookie": "^0.7.2",
     "mashlib": "^2.3.3",
     "patch-package": "^8.0.1",
     "rdflib": "^2.4.0"
   },
   "devDependencies": {
     "@tsconfig/node14": "^14.1.8",
+    "@types/cookie": "^0.6.0",
     "@types/jest": "^30.0.0",
+    "@types/n3": "^1.26.4",
     "@types/node-fetch": "^2.6.13",
     "componentsjs-generator": "^3.1.2",
     "cross-fetch": "^4.1.0",
