@@ -27,7 +27,6 @@
     "build:components": "componentsjs-generator -s src -c dist/components -i .componentsignore -r pivot",
     "build:ts": "tsc",
     "prepare": "npm run build",
-    "postinstall": "patch-package",
     "test": "jest"
   },
   "files": [
@@ -43,7 +42,6 @@
     "arrayify-stream": "^2.0.1",
     "cookie": "^0.7.2",
     "mashlib": "^2.3.3",
-    "patch-package": "^8.0.1",
     "rdflib": "^2.4.0"
   },
   "devDependencies": {
