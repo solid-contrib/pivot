@@ -1,0 +1,51 @@
+{
+  "comment": "Derived from pivot/config/dev-http-suffix.json with the solid-lws import delta applied (same swap-in as css-mashlib http-mashlib-*-solid-lws.json): (1) pivot http handler -> pivot:config/http/handler/lws.json, (2) css:config/identity/lws/default.json added, (3) LWS ldp authentication/handler/metadata-parser/metadata-writer/modes, (4) pivot storage middleware -> pivot:config/storage/middleware/lws.json (patching-lws adds the LWS merge patchers), (5) css util representation-conversion -> solid-lws.json. Requires a community-server build with the LWS suites (e.g. the solid-lws branch linked into node_modules).",
+  "@context": [
+    "https://linkedsoftwaredependencies.org/bundles/npm/@solid/community-server/^7.0.0/components/context.jsonld",
+    "https://linkedsoftwaredependencies.org/bundles/npm/@solid/pivot/^1.0.0/components/context.jsonld"
+    ],
+  "import": [
+    "css:config/app/init/default.json",
+    "css:config/app/main/default.json",
+    "css:config/app/variables/default.json",
+    "pivot:config/http/handler/lws.json",
+    "css:config/http/middleware/default.json",
+    "css:config/http/notifications/all.json",
+    "css:config/http/server-factory/http.json",
+    "css:config/http/static/default.json",
+    "css:config/identity/access/public.json",
+    "css:config/identity/email/default.json",
+    "css:config/identity/handler/default.json",
+    "css:config/identity/lws/default.json",
+    "pivot:config/identity/oidc/default.json",
+    "css:config/identity/ownership/token.json",
+    "css:config/identity/pod/static.json",
+    "css:config/ldp/authentication/solid-lws.json",
+    "css:config/ldp/authorization/webacl.json",
+    "css:config/ldp/handler/solid-lws.json",
+    "css:config/ldp/metadata-parser/lws.json",
+    "css:config/ldp/metadata-writer/solid-lws.json",
+    "css:config/ldp/modes/lws.json",
+    "css:config/storage/backend/pod-quota-file.json",
+    "css:config/storage/key-value/resource-store.json",
+    "css:config/storage/location/pod.json",
+    "pivot:config/storage/middleware/lws.json",
+    "pivot:config/storage/profile-card-guard.json",
+    "css:config/util/auxiliary/acl.json",
+    "css:config/util/identifiers/subdomain.json",
+    "css:config/util/logging/winston.json",
+    "css:config/util/representation-conversion/solid-lws.json",
+    "css:config/util/resource-locker/file.json",
+    "css:config/util/variables/default.json",
+    "pivot:config/pivot-overrides.json",
+    "pivot:config/pivot-file-locker-overrides.json"
+    ],
+  "@graph": [
+    {
+      "comment": [
+        "A filesystem-based server with Databrowser as UI.",
+        "Derived from config/file-no-setup.json and pivot/config/dev-http-suffix.json, with the solid-lws handlers, identity suites, middleware and representation conversion swapped in."
+      ]
+    }
+  ]
+}
