@@ -14,6 +14,15 @@
       "types",
       "node_modules/@types"
     ],
+    // @tsconfig/node14 >=14.1.9 sets "types": ["node"], and an explicit `types`
+    // array overrides typeRoots, so @types/jest was never auto-included and
+    // `npm test` failed with "Cannot find name 'describe'" / "namespace 'jest'".
+    // Listing jest explicitly restores it (strictly additive: only `node` was
+    // included before).
+    "types": [
+      "node",
+      "jest"
+    ],
     "resolveJsonModule": true,
   },
   "include": [
