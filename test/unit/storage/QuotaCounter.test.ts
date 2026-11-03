@@ -78,6 +78,12 @@ describe('A QuotaCounter', (): void => {
     await counter.add(POD, 100);
     // Out-of-band change: a direct child appears in the pod root.
     await fs.writeFile(join(root, 'alice', 'extra.bin'), Buffer.alloc(400));
+    // Directory mtime has microsecond granularity: if this write lands in the
+    // same tick as the counter's sidecar persist, the staleness check sees an
+    // identical mtime and skips the recount (observed on WSL2 ext4). Nudge the
+    // pod root's mtime so the out-of-band change is unambiguous.
+    const bumped = new Date(Date.now() + 2000);
+    await fs.utimes(join(root, 'alice'), bumped, bumped);
     const size = await counter.getSize(POD);
     expect(size.amount).toBe(await expectedWalk(root, mapper, POD));
     expect(size.amount).toBeGreaterThanOrEqual(400);

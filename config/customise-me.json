@@ -36,8 +36,14 @@
         }
       },
       {
-        "comment": "Serve Databrowser as default representation",
-        "@id": "urn:solid-server:default:DefaultUiConverter",
+        "comment": [
+          "Serve Databrowser as default representation.",
+          "CSS 7.3 moved the default instance into css:config/util/index/default.json,",
+          "so this is an Override of that instance rather than a second definition."
+        ],
+        "@type": "Override",
+        "overrideInstance": { "@id": "urn:solid-server:default:DefaultUiConverter" },
+        "overrideParameters": {
         "@type": "ConstantConverter",
         "contentType": "text/html",
         "filePath": "./node_modules/mashlib/dist/databrowser.html",
@@ -48,6 +54,7 @@
           "image/*",
           "application/pdf"
         ]
+        }
       },
       {
         "comment": "Remove the Markdown to HTML converter from the default chained converter",
