@@ -24,6 +24,16 @@ or [for Pivot as piece of config+software](https://matrix.to/#/#solid_pivot:matr
 
 ## Changelog
 
+### - CSS >= 7.3.0
+New fonctionality: implements `WebID page recovery` (called from consent page or edit account).
+- edit templates
+  - if needed update your own templates of
+    - templates/identity/oidc/consent.html.ejs
+    - templates/identity/account/resource.html.ejs
+- edit configuration
+  - in your configuration (your config/prod.json) check for css:config/util/index/default.json in the import configs, before representation-conversion;
+  - update your `custom-config.json` like in `customise-me.json` mashlib databrowser converter into an Override of the CSS-provided instance instead of a second definition, since defining both collides with "Detected more than one component types".
+
 ### - CSS >= 7.1.9
 CSS >= 7.1.9 implements folder expansion from root in StaticAssets. Please replace the mashlib StaticAssets entries in your configuration file with the mashlib StaticAssets entries from `config/customise-me.json`
 
