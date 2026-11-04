@@ -36,6 +36,18 @@
         }
       },
       {
+        "comment": "Sets the maximum size of a single pod to 70MB.",
+        "@type": "Override",
+        "overrideInstance": {
+            "@id": "urn:solid-server:default:QuotaStrategy"
+        },
+        "overrideParameters": {
+            "@type": "PodQuotaStrategy",
+            "limit_amount": 70000000,
+            "limit_unit": "bytes"
+        }
+      },
+      {
         "comment": [
           "Serve Databrowser as default representation.",
           "CSS 7.3 moved the default instance into css:config/util/index/default.json,",
