@@ -27,6 +27,7 @@
     "build:components": "componentsjs-generator -s src -c dist/components -i .componentsignore -r pivot",
     "build:ts": "tsc",
     "prepare": "npm run build",
+    "postinstall": "patch-package",
     "test": "jest"
   },
   "files": [
@@ -37,6 +38,8 @@
   ],
   "dependencies": {
     "@inrupt/solid-client-authn-core": "^3.1.1",
+    "@rdfjs/types": "^1.1.2",
+    "arrayify-stream": "^2.0.1",
     "@solid/community-server": "^7.3.0",
     "mashlib": "^3.0.0",
     "patch-package": "^8.0.1",
@@ -47,8 +50,10 @@
     "@types/jest": "^30.0.0",
     "@types/node-fetch": "^2.6.13",
     "componentsjs-generator": "^3.1.2",
+    "cross-fetch": "^4.1.0",
     "jest": "^30.5.2",
     "jest-rdf": "^2.0.0",
+    "n3": "^1.26.0",
     "node-fetch": "^3.3.2",
     "ts-jest": "^29.4.15",
     "typescript": "^5.9.3"

@@ -1,0 +1,18 @@
+diff --git a/node_modules/proper-lockfile/lib/lockfile.js b/node_modules/proper-lockfile/lib/lockfile.js
+index 97b6637..25bd0a2 100644
+--- a/node_modules/proper-lockfile/lib/lockfile.js
++++ b/node_modules/proper-lockfile/lib/lockfile.js
+@@ -99,6 +99,13 @@ function removeLock(file, options, callback) {
+ function updateLock(file, options) {
+     const lock = locks[file];
+ 
++    // Guard against a renewal timer racing with lock release:
++    // `locks[file]` may already be deleted when an in-flight fs callback recurses.
++    /* istanbul ignore if */
++    if (!lock) {
++        return;
++    }
++
+     // Just for safety, should never happen
+     /* istanbul ignore if */
+     if (lock.updateTimeout) {
