@@ -53,10 +53,12 @@ export class RdfPatchingStore<T extends ResourceStore = ResourceStore> extends P
           const result = await this.patchHandler.handleSafe({ source: this.source, identifier, patch });
           return result;
         } catch (nestedError: unknown) {
-          // console.log('inner error', nestedError);
           if (nestedError instanceof PatchRequiresTurtlePreservation) {
             return this.modifyResourceUsingRdflib(identifier, patch, conditions);
           }
+          // Any other error from a patcher is the answer to the request: a failed `test` operation or a
+          // rejected linkset change is a 409, not the 501 of the underlying store.
+          throw nestedError;
         }
       }
       throw error;
