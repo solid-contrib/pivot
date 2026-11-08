@@ -5,6 +5,7 @@
   ],
   "import": [
     "css:config/http/handler/handlers/storage-description.json",
+    "css:config/http/handler/handlers/lws-protected-resource-metadata.json",
     "pivot:config/http/handler/handlers/fedcm.json"
   ],
   "@graph": [
@@ -25,6 +26,7 @@
             { "@id": "urn:solid-server:default:LwsNotificationHttpHandler" },
             { "@id": "urn:solid-server:default:NotificationHttpHandler" },
             { "@id": "urn:solid-server:default:StorageDescriptionHandler" },
+            { "@id": "urn:solid-server:default:LwsProtectedResourceMetadataHandler" },
             { "@id": "urn:solid-server:default:LwsAuthorizationServerHandler" },
             { "@id": "urn:solid-server:default:AuthResourceHttpHandler" },
             { "@id": "urn:solid-server:default:IdentityProviderHandler" },

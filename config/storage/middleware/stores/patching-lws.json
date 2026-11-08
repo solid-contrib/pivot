@@ -22,14 +22,14 @@
               "defaultType": "text/turtle"
             },
             {
-              "comment": "Applies JSON Merge Patch documents to LWS linkset resources.",
-              "@type": "LinksetMergePatcher",
+              "comment": "Applies JSON Patch and JSON Merge Patch documents to LWS linkset resources.",
+              "@type": "LinksetPatcher",
               "metadataStrategy": { "@id": "urn:solid-server:default:MetadataIdentifierStrategy" },
               "mapper": { "@id": "urn:solid-server:default:LinksetMapper" }
             },
             {
-              "comment": "Applies JSON Merge Patch documents to JSON resources.",
-              "@type": "JsonMergePatcher"
+              "comment": "Applies JSON Patch and JSON Merge Patch documents to JSON resources.",
+              "@type": "JsonPatcher"
             },
             {
               "@type": "StaticThrowHandler",
